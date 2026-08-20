@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Connexion à l'espace d'administration Les Coulisses">
+  <title>Connexion · Les Coulisses</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Manrope','sans-serif'],display:['Sora','Manrope','sans-serif']},colors:{ink:'#30343b',lime:'#ffb52b',coral:'#e30613',paper:'#f7f8fa',sky:'#12a8df',teal:'#062b35'}}}};</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--paper:#f7f8fa;--ink:#30343b;--teal:#062b35;--lime:#ffb52b;--coral:#e30613;--sky:#12a8df;--line:#dfe5e8}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--paper);color:var(--ink)}
+    .font-display{font-family:Sora,Manrope,sans-serif}
+    .pattern{background-image:radial-gradient(#062b3514 1px,transparent 1px);background-size:18px 18px}
+    .dark body{background:#111916;color:#edf4ec}
+    .dark .pattern{background-image:radial-gradient(#edf4ec12 1px,transparent 1px)}
+    .dark .panel{background:#192c31;border-color:#ffffff1a}
+    .dark .field{background:#102329;color:#edf4ec;border-color:#ffffff1a}
+    .field{width:100%;border:1px solid var(--line);border-radius:.7rem;background:#fff;padding:.85rem 1rem;color:var(--ink);outline:0;transition:border-color .15s,box-shadow .15s}
+    .field:focus{border-color:var(--sky);box-shadow:0 0 0 3px #12a8df26}
+    .field.invalid{border-color:var(--coral);box-shadow:0 0 0 3px #e3061320}
+    .button{transition:transform .15s,box-shadow .15s}.button:hover{transform:translateY(-1px);box-shadow:0 10px 22px #062b3530}.button:active{transform:translateY(0)}
+    .form-message{display:none}.form-message.show{display:block}
+    @media(max-width:640px){.panel{border-radius:1.25rem}.brand-mark{max-width:190px}}
+  </style>
+</head>
+<body class="font-sans antialiased">
+  <main class="pattern flex min-h-screen items-center justify-center px-4 py-8 sm:px-6">
+    <div class="w-full max-w-[440px]">
+      <section class="panel rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl shadow-[#062b35]/10 sm:p-9">
+        <div class="flex flex-col items-center text-center">
+          <a href="index.html" aria-label="Retour au site public"><img src="illico.png" alt="illico" class="brand-mark h-16 w-52 object-contain"></a>
+          <span class="mt-5 inline-flex items-center gap-2 rounded-full bg-[#fff3d2] px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[.18em] text-ink"><i class="h-2 w-2 rounded-full bg-coral"></i> Espace sécurisé</span>
+          <h1 class="mt-6 font-display text-2xl font-semibold tracking-tight sm:text-3xl">Bienvenue</h1>
+          <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">Connectez-vous à votre espace Les Coulisses.</p>
+        </div>
+        <form id="loginForm" class="mt-8 space-y-5" novalidate>
+          <div>
+            <label for="email" class="mb-2 block text-xs font-extrabold text-slate-600 dark:text-slate-300">Adresse e-mail</label>
+            <input id="email" name="email" type="email" autocomplete="username" class="field" placeholder="vous@exemple.com" required>
+            <p id="emailError" class="form-message mt-2 text-xs font-bold text-coral">Saisissez une adresse e-mail valide.</p>
+          </div>
+          <div>
+            <div class="mb-2 flex items-center justify-between gap-3"><label for="password" class="block text-xs font-extrabold text-slate-600 dark:text-slate-300">Mot de passe</label><a href="#forgot" id="forgotLink" class="text-xs font-extrabold text-coral hover:underline">Mot de passe oublié ?</a></div>
+            <div class="relative"><input id="password" name="password" type="password" autocomplete="current-password" class="field pr-12" placeholder="Votre mot de passe" minlength="6" required><button id="togglePassword" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10" aria-label="Afficher le mot de passe" aria-pressed="false">◉</button></div>
+            <p id="passwordError" class="form-message mt-2 text-xs font-bold text-coral">Le mot de passe doit contenir au moins 6 caractères.</p>
+          </div>
+          <label class="flex items-center gap-3 text-xs font-bold text-slate-500 dark:text-slate-400"><input id="remember" type="checkbox" class="h-4 w-4 accent-coral"> Se souvenir de moi</label>
+          <p id="formMessage" class="form-message rounded-lg bg-[#fbe8e8] px-3 py-3 text-xs font-bold text-coral" role="alert"></p>
+          <button type="submit" class="button w-full rounded-lg bg-teal px-4 py-3.5 text-xs font-extrabold text-white dark:bg-lime dark:text-ink">Se connecter <span class="ml-1">→</span></button>
+        </form>
+        <div class="mt-7 flex items-center gap-3 text-[10px] font-extrabold uppercase tracking-[.15em] text-slate-400"><span class="h-px flex-1 bg-slate-200 dark:bg-white/10"></span><span>Les Coulisses · Ligue 1 RDC</span><span class="h-px flex-1 bg-slate-200 dark:bg-white/10"></span></div>
+      </section>
+      <div class="mt-5 flex items-center justify-between px-1 text-xs font-bold text-slate-400"><a href="index.html" class="hover:text-coral">← Retour au site</a><button id="themeButton" type="button" class="hover:text-coral" aria-label="Changer de thème">◐ Thème</button></div>
+    </div>
+  </main>
+  <script>
+    const form=document.getElementById('loginForm');
+    const email=document.getElementById('email');
+    const password=document.getElementById('password');
+    const formMessage=document.getElementById('formMessage');
+    const emailError=document.getElementById('emailError');
+    const passwordError=document.getElementById('passwordError');
+    const showError=(field,message)=>{field.classList.add('invalid');message.classList.add('show');};
+    const clearError=(field,message)=>{field.classList.remove('invalid');message.classList.remove('show');};
+    const showFormMessage=message=>{formMessage.textContent=message;formMessage.classList.add('show');};
+    form.addEventListener('submit',event=>{
+      event.preventDefault();
+      clearError(email,emailError); clearError(password,passwordError); formMessage.classList.remove('show');
+      let valid=true;
+      if(!email.validity.valid){showError(email,emailError);valid=false;}
+      if(!password.value || password.value.length<6){showError(password,passwordError);valid=false;}
+      if(!valid)return;
+      if(document.getElementById('remember').checked)localStorage.setItem('lcl-login-email',email.value);
+      sessionStorage.setItem('lcl-demo-session','active');
+      window.location.href='dashboard.html';
+    });
+    document.getElementById('togglePassword').addEventListener('click',event=>{const visible=password.type==='text';password.type=visible?'password':'text';event.currentTarget.setAttribute('aria-pressed',String(!visible));event.currentTarget.setAttribute('aria-label',visible?'Afficher le mot de passe':'Masquer le mot de passe');event.currentTarget.textContent=visible?'◉':'◌';});
+    document.getElementById('forgotLink').addEventListener('click',event=>{event.preventDefault();showFormMessage('La récupération du mot de passe sera disponible après connexion à l’API.');});
+    email.value=localStorage.getItem('lcl-login-email')||'';
+    document.getElementById('themeButton').addEventListener('click',()=>{document.documentElement.classList.toggle('dark');localStorage.setItem('lcl-login-theme',document.documentElement.classList.contains('dark')?'dark':'light');});
+    if(localStorage.getItem('lcl-login-theme')==='dark')document.documentElement.classList.add('dark');
+  </script>
+</body>
+</html>

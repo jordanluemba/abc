@@ -11,6 +11,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="content.js"></script>
   <style>
     body { background: #f7f8fa; color: #30343b; }
     .dark body { background: #111916; color: #edf4ec; }
@@ -88,6 +89,21 @@
     .dark .ad-slot-copy small { color: #c5cbd2; }
     @media (max-width: 640px) { .ad-slot { min-height: 150px; } .ad-slot-native { min-height: 110px; } .photo-zone, .photo-zone-small { height: 150px; } .standings-shell { padding: .5rem; border-radius: 1rem; } .standings-table { font-size: .75rem; } .standings-table th, .standings-table td { padding: .7rem .55rem; } .standings-table th:first-child, .standings-table td:first-child { position: sticky; left: 0; z-index: 3; background: #ffffff; } .standings-table th:nth-child(2), .standings-table td:nth-child(2) { position: sticky; left: 43px; z-index: 2; background: #ffffff; box-shadow: 8px 0 12px -12px rgba(48,52,59,.65); } .standings-head th:first-child, .standings-head th:nth-child(2) { background: #eef2f5; } html.dark .standings-table th:first-child, html.dark .standings-table td:first-child, html.dark .standings-table th:nth-child(2), html.dark .standings-table td:nth-child(2) { background: #071c24; } html.dark .standings-head th:first-child, html.dark .standings-head th:nth-child(2) { background: #062b35; } html.dark .standings-table th:nth-child(2), html.dark .standings-table td:nth-child(2) { box-shadow: 8px 0 12px -12px rgba(0,0,0,.9); } .standings-scroll::after { content: 'Glissez horizontalement pour voir les statistiques'; display: block; padding: .55rem .25rem .15rem; color: #69727e; font-size: .65rem; font-weight: 700; text-align: right; } html.dark .standings-scroll::after { color: #aebdc2; } main, main * { min-width: 0; max-width: 100%; } .mb-5.flex.items-end.justify-between { flex-wrap: wrap; row-gap: .7rem; } .mb-5.flex.items-end.justify-between > button { margin-left: auto; } }
   </style>
+  <style>
+    #mobileMenu.menu-panel { display:block; max-height:0; opacity:0; overflow:hidden; transform:translateY(-10px); transition:max-height .28s ease, opacity .22s ease, transform .28s ease; }
+    #mobileMenu.menu-panel.menu-open { max-height:80vh; opacity:1; transform:translateY(0); }
+    #mobileMenu.menu-panel.menu-closing { max-height:0; opacity:0; transform:translateY(-10px); }
+    .hamburger-button { position:relative; display:inline-flex; height:40px; width:40px; align-items:center; justify-content:center; }
+    .hamburger-button span { position:absolute; height:2px; width:20px; border-radius:999px; background:currentColor; transition:transform .22s ease, opacity .18s ease; }
+    .hamburger-button span:nth-child(1) { transform:translateY(-6px); }
+    .hamburger-button span:nth-child(3) { transform:translateY(6px); }
+    .hamburger-button.is-open span:nth-child(1) { transform:rotate(45deg); }
+    .hamburger-button.is-open span:nth-child(2) { opacity:0; transform:scaleX(0); }
+    .hamburger-button.is-open span:nth-child(3) { transform:rotate(-45deg); }
+  </style>
+<style>
+  html, body { overflow-x: hidden; }
+</style>
 </head>
 <body class="font-sans antialiased">
   <div id="app"></div>
@@ -158,23 +174,11 @@
       { name:'Mercey Ngimbi', club:'lupopo', position:'Ailier', goals:5, assists:6, nationality:'RDC', initials:'MN' },
       { name:'Faveurdi Bongeli', club:'mazembe', position:'Milieu de terrain', goals:0, assists:0, nationality:'RDC', initials:'FB', age:19, birth:'21.03.2007', loanTo:'Luzern', loanUntil:'30.06.2027', youth:'RDC -20', nationalMatches:3, nationalGoals:0 }
     ];
-    const articles = [
-      { cat:'Analyse', title:'Le grand rendez-vous de Lubumbashi tient toutes ses promesses', excerpt:'Dans un Kamalondo plein, le TP Mazembe a trouvé les ressources pour renverser Vita Club.', date:'22 août 2025', read:'6 min', image:'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1200&q=85' },
-      { cat:'Portrait', title:'Glody Likonza, le métronome qui donne le tempo', excerpt:'Lecture du jeu, volume et justesse : le milieu s’installe au cœur du projet des Corbeaux.', date:'21 août 2025', read:'4 min', image:'https://images.unsplash.com/photo-1560272564-c83b66b1ad12?auto=format&fit=crop&w=800&q=85' },
-      { cat:'Coulisses', title:'Dans les coulisses de la nouvelle génération d’académies', excerpt:'Des terrains de quartier aux pelouses de l’élite, immersion dans les filières de formation.', date:'20 août 2025', read:'8 min', image:'https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=800&q=85' },
-      { cat:'Data', title:'Ce que racontent les six premières journées', excerpt:'Buts, possession, efficacité : les premiers signaux forts de la saison 2025-2026.', date:'19 août 2025', read:'5 min', image:'https://images.unsplash.com/photo-1553778263-73a83bab9b0c?auto=format&fit=crop&w=800&q=85' }
-    ];
-    const tv = [
-      { title:'Le vestiaire après le choc', meta:'Épisode 08 · 18 min', image:'https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=800&q=85' },
-      { title:'Kinshasa, passion tribune', meta:'Reportage · 24 min', image:'https://images.unsplash.com/photo-1577223625816-7546f13df25d?auto=format&fit=crop&w=800&q=85' },
-      { title:'Un derby raconté par ses légendes', meta:'Interview · 31 min', image:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=85' }
-    ];
+    const liveEditorialContent = window.LCL_SHARED_CONTENT.read();
+    const articles = liveEditorialContent.articles;
+    const tv = liveEditorialContent.tv;
     const seasons = ['2025-2026','2024-2025','2023-2024','2022-2023'];
-    const magazines = [
-      { id:'numero-03', number:'N° 03', season:'2025-2026', title:'Le grand rendez-vous', date:'22 août 2025', cover:'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=900&q=85', intro:'Une édition consacrée aux nouveaux visages, aux grands rendez-vous et aux chiffres qui dessinent la saison.', contents:24, theme:'Dossier · Analyse · Data' },
-      { id:'numero-02', number:'N° 02', season:'2024-2025', title:'Les bâtisseurs du championnat', date:'30 juin 2025', cover:'https://images.unsplash.com/photo-1517466787929-bc90951d0974?auto=format&fit=crop&w=900&q=85', intro:'Portraits, coulisses et archives : celles et ceux qui font grandir le football congolais.', contents:25, theme:'Portrait · Coulisses · Rétrospective' },
-      { id:'numero-01', number:'N° 01', season:'2023-2024', title:'La mémoire en mouvement', date:'15 juillet 2024', cover:'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=900&q=85', intro:'Le premier chapitre de notre mémoire numérique : clubs historiques, matchs fondateurs et récits de tribunes.', contents:22, theme:'Histoire · Records · Impact partenaire' }
-    ];
+    const magazines = liveEditorialContent.magazines;
     let selectedSeason = localStorage.getItem('lcl-ranking-season') || '2025-2026';
     const standings2025 = {
       A: [
@@ -299,7 +303,7 @@
     function dataPage(id){ const title=id==='records'?'Record Watch':id==='ranking'?'Power Ranking':'Data Center'; const desc=id==='ranking'?'Un classement éditorial produit par Les Coulisses de la Ligue 1.': 'Des indicateurs lisibles, sourcés et reliés aux entités de la compétition.'; return pageTitle('Data · exploration',title,desc)+`<div class="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">${[['632','Buts'],['245','Matchs'],['14 820','Affluence record'],['18','Clubs']].map(x=>card(`<p class="font-display text-3xl">${x[0]}</p><p class="mt-2 text-xs font-bold uppercase tracking-widest text-slate-500">${x[1]}</p>`)).join('')}</div><div class="grid gap-8 lg:grid-cols-[1fr_320px]"><div class="space-y-5">${card(`<div class="flex items-center justify-between"><div><p class="text-xs font-extrabold uppercase tracking-widest text-emerald-700 dark:text-lime">${id==='records'?'Record de buts':'Buts par journée'}</p><h2 class="mt-2 font-display text-xl font-semibold">${id==='records'?'Glody Likonza · 8 buts':'La dynamique offensive de la saison'}</h2></div><span class="rounded-lg bg-lime px-3 py-2 text-xs font-bold text-ink">2025-26</span></div><div class="mt-8 flex h-48 items-end gap-3 border-b border-l border-slate-200 px-4 dark:border-white/10">${[42,60,48,75,68,92,80,100,76,88].map((h,i)=>`<div class="bar flex-1 rounded-t-md bg-emerald-700/80 dark:bg-lime" style="height:${h}%" title="Journée ${i+1}"></div>`).join('')}</div><div class="mt-3 flex justify-between text-[10px] text-slate-400"><span>J1</span><span>J5</span><span>J10</span></div>`)}${card(`<p class="text-xs font-extrabold uppercase tracking-widest text-emerald-700 dark:text-lime">${id==='ranking'?'Forme du moment':'Traçabilité'}</p><div class="mt-5 space-y-4 text-sm"><div class="flex justify-between"><span>Valeur</span><b>${id==='records'?'8 buts':'632 buts'}</b></div><div class="flex justify-between"><span>Saison</span><b>2025-2026</b></div><div class="flex justify-between"><span>Source</span><b>Base LCL RDC</b></div><div class="flex justify-between"><span>Fiabilité</span><b class="text-emerald-600">Vérifiée</b></div></div>`)}</div><aside>${card('<p class="text-xs font-extrabold uppercase tracking-widest">Filtres</p><div class="mt-5 space-y-3"><select class="w-full rounded-lg border border-slate-200 bg-paper p-3 text-sm dark:border-white/10 dark:bg-black/20"><option>Saison 2025-2026</option></select><select class="w-full rounded-lg border border-slate-200 bg-paper p-3 text-sm dark:border-white/10 dark:bg-black/20"><option>Tous les clubs</option></select><select class="w-full rounded-lg border border-slate-200 bg-paper p-3 text-sm dark:border-white/10 dark:bg-black/20"><option>Tous les indicateurs</option></select><button onclick="toast(\'Filtres appliqués\')" class="w-full rounded-lg bg-ink py-3 text-xs font-bold text-white dark:bg-lime dark:text-ink">Appliquer</button></div>')}</aside></div>`; }
     function searchResults(q){ const list=[...clubs.map(c=>({type:'Club',name:c.name,detail:c.city,id:'clubs'})),...players.map(p=>({type:'Joueur',name:p.name,detail:club(p.club).name,id:'joueurs'})),...articles.map(a=>({type:'Article',name:a.title,detail:a.cat,id:'article'}))].filter(x=>!q||x.name.toLowerCase().includes(q.toLowerCase())); return `<div class="grid gap-3">${list.map(x=>`<button onclick="go('${x.id}')" class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 text-left hover:border-emerald-500 dark:border-white/10 dark:bg-[#19241f]"><span class="flex h-10 w-10 items-center justify-center rounded-lg bg-lime font-bold text-ink">${x.type[0]}</span><span class="flex-1"><b class="block text-sm">${x.name}</b><small class="text-xs text-slate-500">${x.type} · ${x.detail}</small></span><span>→</span></button>`).join('')}</div>`; }
     function desktopSidebar(){ const items=[['home','Accueil'],['matchs','Matchs'],['classement','Classement'],['clubs','Clubs'],['joueurs','Joueurs'],['data','Data Center'],['records','Records'],['ranking','Power Ranking'],['saisons','Saisons'],['archives','Archives'],['actualites','Actualités'],['tv','Coulisses TV'],['magazine','Magazine'],['supporters','12e Homme'],['carte','Carte de la Ligue']]; const width=sidebarCollapsed?'w-[76px]':'w-[236px]'; return `<aside class="fixed left-4 top-28 bottom-6 z-20 hidden ${width} overflow-y-auto lg:block"><div class="rounded-2xl border border-slate-200/80 bg-white p-3 shadow-soft dark:border-white/10 dark:bg-[#19241f]"><div class="mb-3 flex items-center ${sidebarCollapsed?'justify-center':'justify-between'}"><p class="px-2 text-[10px] font-extrabold uppercase tracking-[.2em] text-slate-400 ${sidebarCollapsed?'sr-only':''}">Explorer la Ligue</p><button onclick="toggleSidebar()" class="rounded-lg p-2 text-sm font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10" aria-label="${sidebarCollapsed?'Agrandir':'Réduire'} la sidebar">${sidebarCollapsed?'→':'←'}</button></div><div class="space-y-1">${items.map(([id,label])=>`<button onclick="go('${id}')" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-bold ${sidebarCollapsed?'justify-center':''} ${current===id?'bg-lime text-ink':'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10'}" title="${label}"><span class="w-5 shrink-0 text-center text-base">${icon(id)}</span><span class="${sidebarCollapsed?'hidden':''}">${label}</span></button>`).join('')}</div><div class="mt-5 border-t border-slate-100 pt-4 dark:border-white/10"><button onclick="go('search')" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-bold text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 ${sidebarCollapsed?'justify-center':''}" title="Recherche"><span class="w-5 text-center">⌕</span><span class="${sidebarCollapsed?'hidden':''}">Recherche</span></button></div></div></aside>`; }
-    function adSlot(type='leaderboard'){ const compact=type==='native'; return `<section class="ad-slot ${compact?'ad-slot-native':''}" aria-label="Publicité"><div class="ad-slot-label">Publicité</div><div class="ad-slot-copy"><span class="ad-slot-kicker">Les Coulisses · partenaire</span><strong>${compact?'Un regard différent sur le football congolais':'Votre marque au cœur de la Ligue 1 RDC'}</strong><small>${compact?'Contenu sponsorisé · à découvrir':'Espace publicitaire · format responsive'}</small></div><span class="ad-slot-mark">${compact?'→':'PUBLICITÉ'}</span></section>`; }
+    function adSlot(type='leaderboard'){ const compact=type==='native'; const activeAds=(liveEditorialContent.ads||[]).filter(item=>item.status==='Active'); const ad=activeAds[activeAds.length-1]||liveEditorialContent.ads?.[0]; const title=ad?.title||(compact?'Un regard différent sur le football congolais':'Votre marque au cœur de la Ligue 1 RDC'); const copy=ad?.copy||(compact?'Contenu sponsorisé · à découvrir':'Espace publicitaire · format responsive'); const kicker=ad?.kicker||'Les Coulisses · partenaire'; const image=ad?.image?` style="background-image:linear-gradient(110deg,#eef1f4dd,#ffffffcc),url('${ad.image}');background-size:cover;background-position:center"`:''; return `<section class="ad-slot ${compact?'ad-slot-native':''}" aria-label="Publicité"${image}><div class="ad-slot-label">Publicité</div><div class="ad-slot-copy"><span class="ad-slot-kicker">${kicker}</span><strong>${title}</strong><small>${copy}</small></div><span class="ad-slot-mark">${compact?'→':'PUBLICITÉ'}</span></section>`; }
     function render(){ document.documentElement.classList.toggle('dark',dark); document.getElementById('app').innerHTML=shell(page(current)); const space=sidebarCollapsed?'116px':'276px'; const main=document.querySelector('main'); main.style.setProperty('--sidebar-space',space); main.classList.add('layout-with-sidebar'); const footer=document.querySelector('footer'); footer.style.setProperty('--sidebar-space',space); footer.classList.add('footer-with-sidebar'); main.insertAdjacentHTML('afterbegin',desktopSidebar()); const sidebar=main.querySelector('aside'); const contentRoot=document.createElement('div'); contentRoot.className='min-w-0'; [...main.children].filter(child=>child!==sidebar).forEach(child=>contentRoot.appendChild(child)); if(current==='home'){ [...contentRoot.children].filter(child=>child.tagName==='SECTION').forEach((section,index)=>section.insertAdjacentHTML('afterend',adSlot(index===0?'leaderboard':'native'))); } else { contentRoot.insertAdjacentHTML('beforeend',adSlot('native')); } main.appendChild(contentRoot); window.scrollTo({top:0,behavior:'smooth'}); }
     function go(id){ current=id; location.hash=id; render(); }
     function toggleTheme(){ dark=!dark; localStorage.setItem('lcl-theme',dark?'dark':'light'); render(); }
@@ -310,6 +314,55 @@
     window.addEventListener('hashchange',()=>{ current=location.hash.slice(1)||'home'; render(); });
     render();
   </script>
+<script>
+  window.toggleMenu = function(force) {
+    const menu = document.getElementById('mobileMenu');
+    const hamburger = document.querySelector('[aria-label="Menu"]');
+    if (!menu) return;
+    const shouldOpen = force === false ? false : menu.classList.contains('hidden');
+    if (shouldOpen) {
+      menu.classList.remove('hidden', 'menu-closing');
+      menu.classList.add('menu-panel');
+      requestAnimationFrame(() => menu.classList.add('menu-open'));
+    } else {
+      menu.classList.remove('menu-open');
+      menu.classList.add('menu-closing');
+      setTimeout(() => { menu.classList.add('hidden'); menu.classList.remove('menu-panel', 'menu-closing'); }, 280);
+    }
+    if (hamburger) hamburger.classList.toggle('is-open', shouldOpen);
+  };
+  const mountResponsiveAccess = () => {
+    const hamburger = document.querySelector('[aria-label="Menu"]');
+    if (hamburger && !hamburger.dataset.animated) {
+      hamburger.dataset.animated = 'true';
+      hamburger.classList.add('hamburger-button');
+      hamburger.textContent = '';
+      hamburger.innerHTML = '<span></span><span></span><span></span>';
+    }
+    const profileLink = [...document.querySelectorAll('button')].find(button => button.textContent.trim() === 'Mon espace');
+    if (profileLink && !document.querySelector('a[href="login.html"]')) {
+      const adminLink = document.createElement('a');
+      adminLink.href = 'login.html';
+      adminLink.textContent = '⚙';
+      adminLink.setAttribute('aria-label', 'Administration');
+      adminLink.title = 'Administration';
+      adminLink.className = 'rounded-lg p-2 text-lg text-slate-600 transition hover:bg-white hover:text-coral dark:text-slate-300 dark:hover:bg-white/10';
+      profileLink.before(adminLink);
+    }
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileMenu && !mobileMenu.querySelector('[data-mobile-profile]')) {
+      const mobileProfile = document.createElement('button');
+      mobileProfile.type = 'button';
+      mobileProfile.dataset.mobileProfile = 'true';
+      mobileProfile.textContent = '♙  Mon espace';
+      mobileProfile.className = 'col-span-2 rounded-lg px-3 py-2 text-left text-sm font-bold hover:bg-white dark:hover:bg-white/10';
+      mobileProfile.onclick = () => { toggleMenu(false); go('profile'); };
+      mobileMenu.firstElementChild.append(mobileProfile);
+    }
+  };
+  mountResponsiveAccess();
+  new MutationObserver(mountResponsiveAccess).observe(document.body, { childList: true, subtree: true });
+</script>
 </body>
 </html>
 
