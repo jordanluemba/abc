@@ -473,7 +473,7 @@
     const formDots = form => form.map(x=>`<span class="inline-flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-extrabold ${x==='V'?'bg-emerald-100 text-emerald-700':x==='N'?'bg-amber-100 text-amber-700':'bg-rose-100 text-rose-700'}">${x}</span>`).join('');
 
     function shell(content) {
-      return `<div class="min-h-screen bg-paper dark:bg-[#111916]">
+      return `<div class="min-h-screen bg-paper dark:bg-[#111916] pt-[68px]">
         <!-- Ticker de match en direct moderne -->
         <div class="border-b border-white/5 bg-gradient-to-r from-[#0a181b] via-[#102428] to-[#0a181b] px-4 py-2 text-center text-[11px] font-bold text-slate-300">
           <div class="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-2">
@@ -490,8 +490,8 @@
           </div>
         </div>
 
-        <!-- Header sticky avec glassmorphism -->
-        <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-paper/90 backdrop-blur-xl dark:border-white/10 dark:bg-[#111916]/90 transition-colors">
+        <!-- Header fixe avec glassmorphism -->
+        <header class="fixed top-0 left-0 right-0 z-50 border-b border-slate-200/80 bg-paper/90 backdrop-blur-xl dark:border-white/10 dark:bg-[#111916]/90 transition-colors shadow-sm">
           <div class="mx-auto flex max-w-[1440px] items-center gap-4 px-4 py-3.5 lg:px-8">
             <button onclick="toggleMenu()" class="rounded-xl p-2 text-xl hover:bg-slate-100 lg:hidden dark:hover:bg-white/10" aria-label="Menu">☰</button>
             <a href="#home" onclick="go('home')" class="flex items-center gap-2">
