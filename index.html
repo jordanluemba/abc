@@ -1499,8 +1499,9 @@
         ['carte','Carte de la Ligue','carte']
       ];
       const width = sidebarCollapsed ? 'w-[74px]' : 'w-[240px]';
-      return `<aside class="shrink-0 hidden lg:block sticky top-24 self-start ${width} transition-all duration-300 z-20">
-        <div class="rounded-2xl border border-slate-200/90 bg-white/95 p-3 shadow-soft backdrop-blur-md dark:border-white/10 dark:bg-[#19241f]/95 hide-scrollbar max-h-[calc(100vh-7.5rem)] overflow-y-auto">
+      const widthPx = sidebarCollapsed ? '74px' : '240px';
+      return `<aside class="shrink-0 hidden lg:block ${width} transition-all duration-300 z-40" style="position:fixed;top:104px;left:0;bottom:0;overflow:hidden;">
+        <div class="h-full rounded-tr-2xl border-r border-t border-slate-200/90 bg-white/95 p-3 shadow-soft backdrop-blur-md dark:border-white/10 dark:bg-[#19241f]/95 hide-scrollbar overflow-y-auto">
           <div class="mb-3 flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'} px-1">
             <span class="text-[10px] font-extrabold uppercase tracking-[.18em] text-slate-400 ${sidebarCollapsed ? 'hidden' : 'block'}">Navigation</span>
             <button onclick="toggleSidebar()" class="rounded-lg p-1.5 text-xs font-bold text-slate-400 hover:bg-slate-100 hover:text-ink dark:hover:bg-white/10 dark:hover:text-white transition" title="${sidebarCollapsed ? 'Agrandir le menu' : 'Réduire le menu'}">
@@ -1721,10 +1722,11 @@
       // Render page with flex layout
       const pageHtml = page(current);
       const appRoot = document.getElementById('app');
+      const sideW = sidebarCollapsed ? '74px' : '240px';
       appRoot.innerHTML = shell(`
-        <div class="flex items-start gap-6 lg:gap-8">
+        <div class="flex items-start gap-0">
           ${desktopSidebar()}
-          <div id="pageContentRoot" class="flex-1 min-w-0">
+          <div id="pageContentRoot" class="flex-1 min-w-0 transition-all duration-300" style="padding-left:calc(${sideW} + 1.5rem);">
             ${pageHtml}
           </div>
         </div>
