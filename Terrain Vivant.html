@@ -1,191 +1,741 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>Terrain Vivant</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<!doctype html>
+<html lang="fr" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Terrain Vivant · Match Center 3D & Analyse Tactique | Illicocash Ligue 1 RDC</title>
+<meta name="description" content="Visualiseur 3D interactif et atelier d'analyse tactique de match en direct - Les Coulisses de la Ligue 1 RDC.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Manrope:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
 <style>
-/* Layout: stade de nuit, score en haut, terrain 3D au centre, momentum + actions, puis l'atelier de données */
-:root{
-  --night:#070b1a; --deep:#0d1430; --panel:#111a3d; --line:#24305f;
-  --home:#5c9eff; --away:#2a3bb8; --teamA:#ff8a1f; --teamB:#9aa0aa; --chalk:#e8edff; --muted:#8c97c4; --goal:#ffd36b; --bad:#ff7a7a; --ok:#7be0a6;
-  --display:"Barlow Condensed","Arial Narrow",sans-serif;
-  --body:"Manrope",system-ui,sans-serif;
-  --mono:"JetBrains Mono",ui-monospace,monospace;
-  color-scheme:dark;
+/* ========================================================
+   CHARTE OFFICIELLE : LES COULISSES DE LA LIGUE 1 RDC
+   ======================================================== */
+:root {
+  --coral: #e30613;          /* Rouge officiel Illicocash / Linafoot */
+  --coral-glow: rgba(227, 6, 19, 0.45);
+  --lime: #ffb52b;           /* Jaune or officiel Illicocash */
+  --lime-glow: rgba(255, 181, 43, 0.4);
+  --sky: #12a8df;            /* Bleu ciel officiel Ligue 1 */
+  --night: #051419;          /* Fond nuit stade plateforme */
+  --deep: #072129;           /* Fond conteneur secondaire */
+  --panel: #0a2d37;          /* Fond cartes et modules */
+  --panel-hover: #0e3b48;
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.24);
+  
+  --home: #ffb52b;           /* Accentuation équipe domicile (or) */
+  --away: #12a8df;           /* Accentuation équipe extérieur (cyan) */
+  --teamA: #ffb52b;          /* Domicile */
+  --teamB: #e30613;          /* Extérieur */
+  
+  --chalk: #f7f8fa;          /* Blanc doux pour texte principal */
+  --muted: #8ea8ae;          /* Texte secondaire adouci */
+  --goal: #ffb52b;           /* But or éclatant */
+  --bad: #e30613;            /* Alerte / Faute / Rouge */
+  --ok: #10b981;             /* Vert validation */
+  
+  --display: "Sora", "Manrope", sans-serif;
+  --body: "Manrope", ui-sans-serif, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  color-scheme: dark;
 }
-body{background:var(--night);color:var(--chalk);font-family:var(--body);
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px;box-sizing:border-box}
-*,*::before,*::after{box-sizing:border-box}
-.wrap{max-width:1180px;margin:0 auto;display:grid;gap:14px}
-header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.teams{display:flex;gap:18px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);flex-wrap:wrap}
-.teams span{display:flex;align-items:center;gap:6px}
-.sw{width:22px;height:4px;border-radius:2px;display:inline-block}
-.score{font-family:var(--display);font-weight:800;font-size:clamp(48px,9vw,84px);line-height:.9;letter-spacing:.02em;font-variant-numeric:tabular-nums}
-.score small{font-size:.5em;color:var(--muted);margin:0 .2em}
-.clock{text-align:right}
-.clock b{font-family:var(--display);font-size:clamp(36px,6vw,56px);font-weight:700;font-variant-numeric:tabular-nums}
-.clock b sup{font-size:.45em;color:var(--muted)}
-.clock div{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
-.stage{position:relative;height:min(62vh,560px);min-height:320px;border-radius:14px;overflow:hidden;
-  background:radial-gradient(ellipse at 50% 45%,#1d3a8a 0%,var(--deep) 55%,var(--night) 100%);border:1px solid var(--line)}
-.stage canvas{display:block;width:100%;height:100%;touch-action:none}
-#labels{position:absolute;inset:0;pointer-events:none}
-.tag{position:absolute;transform:translate(-50%,-130%);background:rgba(7,11,26,.82);border:1px solid var(--line);
-  padding:4px 8px;border-radius:6px;font-size:11px;white-space:nowrap;font-family:var(--mono)}
-.tag.goal{border-color:var(--goal);color:var(--goal);font-size:12px}
-.hint{position:absolute;right:12px;bottom:10px;font-size:11px;color:var(--muted)}
-.viewbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.viewbar .note{margin-right:4px}
-.viewbar .sep{flex:1}
-#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
-#flash.on{animation:fl .7s ease-out}
-@keyframes fl{0%{opacity:.6}100%{opacity:0}}
-.banner{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;white-space:nowrap}
-.banner b{display:block;font-family:var(--display);font-weight:800;font-size:clamp(64px,14vw,150px);line-height:.9;color:var(--goal);letter-spacing:.04em;text-shadow:0 0 28px rgba(255,211,107,.65),0 4px 0 rgba(7,11,26,.6)}
-.banner span{display:block;margin-top:6px;font-family:var(--display);font-size:clamp(20px,4vw,34px);font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-shadow:0 2px 10px rgba(7,11,26,.9)}
-.banner.on{animation:pop 3.2s ease forwards}
-@keyframes pop{0%{opacity:0;transform:translate(-50%,-50%) scale(.6)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}20%{transform:translate(-50%,-50%) scale(1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
-@media (prefers-reduced-motion:reduce){.banner.on,#flash.on{animation:none}}
-.ctrl{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-.btns{display:flex;gap:6px;flex-wrap:wrap}
-button,.filebtn{font:600 13px var(--body);color:var(--chalk);background:var(--deep);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
-button:hover,.filebtn:hover{border-color:var(--home)}
-button:focus-visible,.filebtn:focus-within{outline:2px solid var(--home);outline-offset:2px}
-button[aria-pressed="true"]{background:var(--home);color:var(--night);border-color:var(--home)}
-button.primary{background:var(--home);color:var(--night);border-color:var(--home)}
-#play{width:44px;font-size:15px;justify-content:center}
-#mom{width:100%;height:70px;display:block;cursor:pointer;min-width:0}
-.bottom{display:grid;grid-template-columns:1fr 320px;gap:14px}
-.bottom>*{min-width:0}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0}
-.card h2{font-family:var(--display);font-weight:700;font-size:20px;margin:0 0 8px;letter-spacing:.02em}
-.card p{margin:0 0 8px;line-height:1.55;color:var(--muted);font-size:13.5px;max-width:70ch}
-.card p b{color:var(--chalk);font-weight:600}
-#feed{list-style:none;margin:0;padding:0;max-height:220px;overflow:auto;display:grid;gap:2px}
-#feed li{display:grid;grid-template-columns:38px 10px 1fr;gap:8px;align-items:center;padding:5px 6px;border-radius:6px;font-size:13px;cursor:pointer;opacity:.4}
-#feed li.past{opacity:1}
-#feed li:hover{background:var(--deep)}
-#feed .m{font-family:var(--mono);color:var(--muted);font-size:12px}
-#feed .d{width:8px;height:8px;border-radius:50%}
-.note{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 
-#tac{width:100%;display:block;border-radius:8px;cursor:pointer;margin-top:10px;background:#0d1430}
-.tacbar{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;align-items:flex-end}
-.tacsel{display:flex;gap:10px;flex-wrap:wrap}
-.tacsel label{display:grid;gap:4px;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-.tacsel select{max-width:240px}
-.lg{display:inline-block;width:14px;height:4px;border-radius:2px}
-.tacfoot{display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:8px;font-size:12.5px}
-.tacfoot span{display:inline-flex;align-items:center;gap:6px}
-.tacfoot .muted{color:var(--muted)}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%}
-.pdfmsg{display:block;font-size:13px;color:var(--ok);margin-top:6px;min-height:1em}
-button:disabled{opacity:.55;cursor:default}
-.lead{color:var(--muted);font-size:13.5px;line-height:1.55;max-width:80ch;margin:0 0 12px}
-.warnbox{background:rgba(255,122,122,.1);border:1px solid rgba(255,122,122,.4);color:var(--bad);border-radius:8px;padding:10px 12px;font-size:13px}
-.vasetup{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:16px}
-.vacol{min-width:0;display:grid;gap:10px;align-content:start}
-.filebtn.big{justify-content:center;padding:14px;border-style:dashed;font-size:14px}
-#vaVideo{width:100%;max-height:260px;border-radius:8px;background:#000}
-.vainfo{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
-.vainfo div{background:var(--deep);border:1px solid var(--line);border-radius:8px;padding:6px 8px;display:grid;gap:2px}
-.vainfo span{font-size:10.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-.vainfo b{font-size:13px;font-variant-numeric:tabular-nums}
-.genrow2{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
-.genrow2 label{display:grid;gap:4px;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-.genrow2 input,.genrow2 select{width:100%}
-.vprog{height:8px;background:var(--deep);border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:14px}
-.vprog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--teamA),var(--goal));transition:width .4s}
-.varunrow{display:flex;gap:12px;margin-top:10px;align-items:flex-start}
-#vaThumb{width:180px;max-width:35%;border-radius:6px;border:1px solid var(--line)}
-.vstatus{margin:0 0 6px;font-size:13px;font-weight:600}
-.valog{list-style:none;margin:0;padding:0;max-height:140px;overflow:auto;font-size:12.5px;font-family:var(--mono);display:grid;gap:2px}
-.valog li{color:var(--chalk)} .valog li.info{color:var(--muted)} .valog li.goal{color:var(--goal)}
-.vahead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
-.vahead h3{font-family:var(--display);font-size:26px;margin:0}
-.vagrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:6px}
-.vagrid>*{min-width:0}
-#video h4{font-family:var(--display);font-size:16px;margin:12px 0 6px;letter-spacing:.02em}
-.vtable{min-width:0;width:100%}
-.vtable td,.vtable th{padding:5px 6px}
-.vtable td.n{text-align:center;font-family:var(--mono);font-size:12.5px}
-.vtable tr.sel td{background:rgba(92,158,255,.12)}
-.vplayers tr:not(:first-child){cursor:pointer}
-.vplayers{min-width:520px}
-.vbar{display:flex;height:6px;border-radius:3px;overflow:hidden;background:var(--deep);min-width:60px}
-.vbar i{display:block;height:100%}
-.vwin{display:grid;grid-template-columns:70px 1fr 44px;gap:8px;align-items:center;font-size:12.5px;margin-bottom:4px}
-.vwin b{font-family:var(--mono);font-weight:500;text-align:right}
-.vaevents{list-style:none;margin:0;padding:0;max-height:330px;overflow:auto;display:grid;gap:2px}
-.vaevents li{display:grid;grid-template-columns:38px 10px 1fr auto;gap:8px;align-items:center;padding:5px 6px;border-radius:6px;font-size:13px;cursor:pointer}
-.vaevents li:hover{background:var(--deep)}
-.vaevents .m{font-family:var(--mono);color:var(--muted);font-size:12px}
-.vaevents .d{width:8px;height:8px;border-radius:50%}
-.vaevents .c{font-size:11px;color:var(--goal)}
-#vaHeat{width:100%;display:block;border-radius:8px;background:#0d1430}
-@media (max-width:860px){.vasetup,.vagrid{grid-template-columns:1fr}}
-/* Atelier de données */
-.data-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
-.data-head h2{margin:0}
-.filebtn input{position:absolute;opacity:0;width:1px;height:1px}
-.names{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
-.names label{display:grid;gap:4px;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-input,select,textarea{font:500 13px var(--body);color:var(--chalk);background:var(--deep);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
-input:focus,select:focus,textarea:focus{outline:2px solid var(--home);outline-offset:1px}
-.tabs{display:flex;gap:4px;margin-bottom:10px}
-.editor{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:14px;align-items:start}
-.tblwrap{overflow:auto;max-height:340px;border:1px solid var(--line);border-radius:8px}
-table{border-collapse:collapse;width:100%;min-width:560px;font-size:13px}
-th{position:sticky;top:0;background:var(--panel);text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:8px 6px;font-weight:600}
-td{padding:3px 4px;border-top:1px solid var(--line)}
-td input{width:100%}
-td input[type=number]{width:62px;font-family:var(--mono)}
-tr.sel td{background:rgba(92,158,255,.12)}
-tr.bad td{background:rgba(255,122,122,.14)}
-tr.warn td{background:rgba(255,211,107,.10)}
-button.validate{background:var(--ok);color:var(--night);border-color:var(--ok)}
-button.validate.pending{animation:pulse 1.6s ease-in-out infinite}
-button.validate:disabled{background:var(--deep);color:var(--muted);border-color:var(--line);cursor:default;animation:none}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(123,224,166,.55)}50%{box-shadow:0 0 0 6px rgba(123,224,166,0)}}
-@media (prefers-reduced-motion:reduce){button.validate.pending{animation:none}}
-.vstate{font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
-.vstate.ok{color:var(--ok);border-color:rgba(123,224,166,.45)}
-.vstate.dirty{color:var(--goal);border-color:rgba(255,211,107,.5)}
-.vstate.bad{color:var(--bad);border-color:rgba(255,122,122,.5)}
-#vreport{list-style:none;margin:10px 0 0;padding:10px 12px;display:grid;gap:4px;background:var(--deep);border:1px solid var(--line);border-radius:8px;font-size:13px;max-height:200px;overflow:auto}
-#vreport li{display:grid;grid-template-columns:22px 1fr;gap:6px;align-items:baseline}
-#vreport li.err{color:var(--bad)} #vreport li.warn{color:var(--goal)} #vreport li.info{color:var(--muted)}
-#vreport li[data-row]{cursor:pointer}
-#vreport li[data-row]:hover{text-decoration:underline}
-.del{padding:4px 8px;color:var(--muted)}
-.mini{background:var(--deep);border:1px solid var(--line);border-radius:8px;padding:10px}
-.mini svg{width:100%;height:auto;display:block;cursor:crosshair}
-.mini p{font-size:12px;margin:8px 0 0}
-.gen{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:14px;background:var(--deep)}
-.gen h3{font-family:var(--display);font-size:17px;margin:0 0 6px;letter-spacing:.02em}
-.gen .names{margin:8px 0}
-.glabel{display:grid;gap:4px;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
-.glabel textarea{text-transform:none;letter-spacing:0;font-family:var(--mono);font-size:12.5px;width:100%;max-width:520px}
-#csv{width:100%;min-height:220px;font-family:var(--mono);font-size:12.5px;line-height:1.5;resize:vertical}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
-#msg{font-size:13px}
-#msg.err{color:var(--bad)} #msg.ok{color:var(--ok)}
-code{font-family:var(--mono);font-size:12px;background:var(--deep);padding:1px 5px;border-radius:4px;color:var(--chalk)}
-@media (max-width:860px){.editor{grid-template-columns:1fr}}
-@media (max-width:760px){.bottom{grid-template-columns:1fr}.ctrl{grid-template-columns:1fr}}
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--night);
+  background-image: radial-gradient(rgba(255, 181, 43, 0.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+  color: var(--chalk);
+  font-family: var(--body);
+  -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 16px;
+}
+img { max-width: 100%; }
+[hidden]:not([hidden=until-found i]) { display: none !important; }
+
+.wrap {
+  max-width: 1220px;
+  margin: 0 auto;
+  display: grid;
+  gap: 16px;
+}
+
+/* ---------- Top Navbar Plateforme ---------- */
+.top-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  border-radius: 16px;
+  background: rgba(10, 45, 55, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+.top-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.top-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--line-strong);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.top-back-btn:hover {
+  background: var(--coral);
+  border-color: var(--coral);
+  color: #ffffff;
+  transform: translateX(-2px);
+  box-shadow: 0 4px 15px var(--coral-glow);
+}
+.brand-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(255, 181, 43, 0.15);
+  border: 1px solid rgba(255, 181, 43, 0.35);
+  color: var(--lime);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.brand-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 10px var(--lime);
+  animation: pulse 2s infinite;
+}
+.brand-sub {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.top-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.preset-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.preset-tag {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+.pill-btn {
+  font-family: var(--body);
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: var(--deep);
+  border: 1px solid var(--line);
+  color: var(--chalk);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.pill-btn:hover {
+  background: var(--panel-hover);
+  border-color: var(--lime);
+  color: var(--lime);
+}
+
+/* ---------- Header Scoreboard Match ---------- */
+header.match-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 16px 20px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(10, 45, 55, 0.95) 0%, rgba(7, 33, 41, 0.95) 100%);
+  border: 1px solid var(--line);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
+}
+.match-teams-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.teams-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.team-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.team-item .sw {
+  width: 22px;
+  height: 6px;
+  border-radius: 9999px;
+  display: inline-block;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+.team-vs {
+  font-family: var(--display);
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+}
+.competition-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  background: rgba(227, 6, 19, 0.16);
+  border: 1px solid rgba(227, 6, 19, 0.35);
+  color: #ff6b75;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.score-line {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+.score {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(52px, 8.5vw, 84px);
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  color: #ffffff;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+.score small {
+  font-size: 0.5em;
+  color: var(--muted);
+  margin: 0 0.2em;
+  font-weight: 600;
+}
+.live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: rgba(227, 6, 19, 0.2);
+  border: 1px solid var(--coral);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 0 0 12px var(--coral-glow);
+}
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--coral);
+  box-shadow: 0 0 8px var(--coral);
+  animation: pulse 1.5s infinite;
+}
+.clock-box {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.clock b {
+  font-family: var(--display);
+  font-size: clamp(38px, 6vw, 58px);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--lime);
+  text-shadow: 0 2px 15px var(--lime-glow);
+  line-height: 1;
+}
+.clock b sup {
+  font-size: 0.45em;
+  color: var(--muted);
+  font-weight: 600;
+}
+.clock-src {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ---------- 3D Stadium Stage ---------- */
+.stage {
+  position: relative;
+  height: min(64vh, 580px);
+  min-height: 340px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 45%, #0f4c5c 0%, var(--deep) 55%, var(--night) 100%);
+  border: 1px solid var(--line);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.5);
+}
+.stage canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+#labels { position: absolute; inset: 0; pointer-events: none; }
+.tag {
+  position: absolute;
+  transform: translate(-50%, -130%);
+  background: rgba(5, 20, 25, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--line-strong);
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  font-family: var(--mono);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+.tag.goal {
+  border-color: var(--goal);
+  color: var(--goal);
+  font-size: 12.5px;
+  box-shadow: 0 0 15px var(--lime-glow);
+}
+.hint {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  background: rgba(5, 20, 25, 0.7);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+.viewbar {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 4px 0;
+}
+.viewbar .note { margin-right: 4px; font-weight: 700; }
+.viewbar .sep { flex: 1; }
+#flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+#flash.on { animation: fl 0.7s ease-out; }
+@keyframes fl { 0% { opacity: 0.6; } 100% { opacity: 0; } }
+
+.banner {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 20;
+}
+.banner b {
+  display: block;
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: clamp(68px, 15vw, 150px);
+  line-height: 0.9;
+  color: var(--goal);
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 35px var(--lime-glow), 0 4px 0 rgba(5, 20, 25, 0.8);
+}
+.banner span {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--display);
+  font-size: clamp(22px, 4.5vw, 36px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+}
+.banner.on { animation: pop 3.2s ease forwards; }
+@keyframes pop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+  12% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+  20% { transform: translate(-50%, -50%) scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) { .banner.on, #flash.on { animation: none; } }
+
+/* ---------- Barre de Contrôles & Momentum ---------- */
+.ctrl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: center;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 12px 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+.btns {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+button, .filebtn {
+  font-family: var(--body);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--chalk);
+  background: var(--deep);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.18s ease;
+}
+button:hover, .filebtn:hover {
+  border-color: var(--lime);
+  background: var(--panel-hover);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+button:focus-visible, .filebtn:focus-within {
+  outline: 2px solid var(--lime);
+  outline-offset: 2px;
+}
+button[aria-pressed="true"] {
+  background: var(--lime);
+  color: #111916;
+  border-color: var(--lime);
+  font-weight: 800;
+  box-shadow: 0 4px 15px var(--lime-glow);
+}
+button.primary {
+  background: linear-gradient(135deg, var(--coral), #c30510);
+  color: #ffffff;
+  border-color: var(--coral);
+  box-shadow: 0 4px 18px var(--coral-glow);
+}
+button.primary:hover {
+  background: linear-gradient(135deg, #ff1a28, var(--coral));
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px var(--coral-glow);
+}
+#play {
+  width: 46px;
+  font-size: 16px;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--lime);
+  color: #111916;
+  border-color: var(--lime);
+}
+#mom {
+  width: 100%;
+  height: 72px;
+  display: block;
+  cursor: pointer;
+  min-width: 0;
+  border-radius: 8px;
+}
+
+/* ---------- Cartes et modules ---------- */
+.bottom {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 16px;
+}
+.bottom > * { min-width: 0; }
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 18px 20px;
+  min-width: 0;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+}
+.card h2 {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 20px;
+  margin: 0 0 10px;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+.card p {
+  margin: 0 0 8px;
+  line-height: 1.6;
+  color: var(--muted);
+  font-size: 13.5px;
+  max-width: 72ch;
+}
+.card p b {
+  color: var(--chalk);
+  font-weight: 700;
+}
+#feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 230px;
+  overflow: auto;
+  display: grid;
+  gap: 3px;
+}
+#feed li {
+  display: grid;
+  grid-template-columns: 42px 10px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: all 0.15s ease;
+}
+#feed li.past { opacity: 1; }
+#feed li:hover { background: var(--deep); transform: translateX(2px); }
+#feed .m { font-family: var(--mono); color: var(--lime); font-size: 12px; font-weight: 700; }
+#feed .d { width: 8px; height: 8px; border-radius: 50%; }
+.note { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; }
+
+#tac { width: 100%; display: block; border-radius: 12px; cursor: pointer; margin-top: 12px; background: #072129; border: 1px solid var(--line); }
+.tacbar { display: flex; gap: 14px; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; }
+.tacsel { display: flex; gap: 12px; flex-wrap: wrap; }
+.tacsel label { display: grid; gap: 5px; font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; }
+.tacsel select { max-width: 240px; }
+.lg { display: inline-block; width: 14px; height: 4px; border-radius: 2px; }
+.tacfoot { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-top: 10px; font-size: 12.5px; }
+.tacfoot span { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+.tacfoot .muted { color: var(--muted); font-weight: 500; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+.pdfmsg { display: block; font-size: 13px; color: var(--ok); margin-top: 6px; min-height: 1em; font-weight: 600; }
+button:disabled { opacity: 0.45; cursor: default; }
+.lead { color: var(--muted); font-size: 13.5px; line-height: 1.6; max-width: 80ch; margin: 0 0 14px; }
+.warnbox { background: rgba(227, 6, 19, 0.12); border: 1px solid rgba(227, 6, 19, 0.4); color: #ff858d; border-radius: 10px; padding: 12px 14px; font-size: 13px; font-weight: 600; }
+.vasetup { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 16px; }
+.vacol { min-width: 0; display: grid; gap: 12px; align-content: start; }
+.filebtn.big { justify-content: center; padding: 16px; border-style: dashed; font-size: 14px; }
+#vaVideo { width: 100%; max-height: 260px; border-radius: 10px; background: #000; border: 1px solid var(--line); }
+.vainfo { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.vainfo div { background: var(--deep); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: grid; gap: 2px; }
+.vainfo span { font-size: 10.5px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; }
+.vainfo b { font-size: 13.5px; font-variant-numeric: tabular-nums; color: #fff; }
+.genrow2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.genrow2 label { display: grid; gap: 4px; font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; }
+.genrow2 input, .genrow2 select { width: 100%; }
+.vprog { height: 8px; background: var(--deep); border: 1px solid var(--line); border-radius: 99px; overflow: hidden; margin-top: 14px; }
+.vprog i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--lime), var(--coral)); transition: width 0.4s; }
+.varunrow { display: flex; gap: 14px; margin-top: 12px; align-items: flex-start; }
+#vaThumb { width: 180px; max-width: 35%; border-radius: 8px; border: 1px solid var(--line); }
+.vstatus { margin: 0 0 6px; font-size: 13px; font-weight: 700; color: #fff; }
+.valog { list-style: none; margin: 0; padding: 0; max-height: 140px; overflow: auto; font-size: 12.5px; font-family: var(--mono); display: grid; gap: 2px; }
+.valog li { color: var(--chalk); } .valog li.info { color: var(--muted); } .valog li.goal { color: var(--goal); font-weight: 700; }
+.vahead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-top: 16px; border-top: 1px solid var(--line); padding-top: 14px; }
+.vahead h3 { font-family: var(--display); font-size: 26px; margin: 0; font-weight: 800; color: #fff; }
+.vagrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-top: 6px; }
+.vagrid > * { min-width: 0; }
+#video h4 { font-family: var(--display); font-size: 16px; margin: 12px 0 6px; letter-spacing: 0.02em; font-weight: 700; color: #fff; }
+.vtable { min-width: 0; width: 100%; }
+.vtable td, .vtable th { padding: 6px 8px; }
+.vtable td.n { text-align: center; font-family: var(--mono); font-size: 12.5px; }
+.vtable tr.sel td { background: rgba(255, 181, 43, 0.15); }
+.vplayers tr:not(:first-child) { cursor: pointer; }
+.vplayers { min-width: 520px; }
+.vbar { display: flex; height: 6px; border-radius: 3px; overflow: hidden; background: var(--deep); min-width: 60px; }
+.vbar i { display: block; height: 100%; }
+.vwin { display: grid; grid-template-columns: 70px 1fr 44px; gap: 8px; align-items: center; font-size: 12.5px; margin-bottom: 4px; }
+.vwin b { font-family: var(--mono); font-weight: 600; text-align: right; }
+.vaevents { list-style: none; margin: 0; padding: 0; max-height: 330px; overflow: auto; display: grid; gap: 2px; }
+.vaevents li { display: grid; grid-template-columns: 40px 10px 1fr auto; gap: 10px; align-items: center; padding: 6px 8px; border-radius: 6px; font-size: 13px; cursor: pointer; }
+.vaevents li:hover { background: var(--deep); }
+.vaevents .m { font-family: var(--mono); color: var(--lime); font-size: 12px; font-weight: 700; }
+.vaevents .d { width: 8px; height: 8px; border-radius: 50%; }
+.vaevents .c { font-size: 11px; color: var(--goal); font-weight: 700; }
+#vaHeat { width: 100%; display: block; border-radius: 10px; background: #072129; border: 1px solid var(--line); }
+@media (max-width: 860px) { .vasetup, .vagrid { grid-template-columns: 1fr; } }
+
+/* ---------- Atelier de Données ---------- */
+.data-head { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+.data-head h2 { margin: 0; font-family: var(--display); font-weight: 800; font-size: 20px; }
+.filebtn input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.names { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.names label { display: grid; gap: 5px; font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; }
+input, select, textarea {
+  font-family: var(--body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--chalk);
+  background: var(--deep);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 8px 12px;
+  transition: all 0.15s ease;
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--lime);
+  outline-offset: 1px;
+  border-color: var(--lime);
+}
+.tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.editor { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px; align-items: start; }
+.tblwrap { overflow: auto; max-height: 340px; border: 1px solid var(--line); border-radius: 12px; background: var(--deep); }
+table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 13px; }
+th {
+  position: sticky;
+  top: 0;
+  background: var(--panel);
+  text-align: left;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 10px 8px;
+  font-weight: 800;
+  border-bottom: 1px solid var(--line);
+}
+td { padding: 4px 6px; border-top: 1px solid var(--line); }
+td input { width: 100%; }
+td input[type=number] { width: 62px; font-family: var(--mono); }
+tr.sel td { background: rgba(255, 181, 43, 0.14); }
+tr.bad td { background: rgba(227, 6, 19, 0.16); }
+tr.warn td { background: rgba(255, 181, 43, 0.12); }
+button.validate { background: var(--ok); color: #042517; border-color: var(--ok); font-weight: 800; }
+button.validate.pending { animation: pulse 1.6s ease-in-out infinite; }
+button.validate:disabled { background: var(--deep); color: var(--muted); border-color: var(--line); cursor: default; animation: none; }
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55); }
+  50% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+}
+@media (prefers-reduced-motion: reduce) { button.validate.pending { animation: none; } }
+.vstate { font-size: 11.5px; font-weight: 800; padding: 5px 12px; border-radius: 9999px; border: 1px solid var(--line); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.06em; }
+.vstate.ok { color: var(--ok); border-color: rgba(16, 185, 129, 0.5); background: rgba(16, 185, 129, 0.1); }
+.vstate.dirty { color: var(--goal); border-color: rgba(255, 181, 43, 0.5); background: rgba(255, 181, 43, 0.1); }
+.vstate.bad { color: var(--bad); border-color: rgba(227, 6, 19, 0.5); background: rgba(227, 6, 19, 0.1); }
+#vreport { list-style: none; margin: 10px 0 0; padding: 10px 14px; display: grid; gap: 4px; background: var(--deep); border: 1px solid var(--line); border-radius: 10px; font-size: 13px; max-height: 200px; overflow: auto; }
+#vreport li { display: grid; grid-template-columns: 22px 1fr; gap: 6px; align-items: baseline; }
+#vreport li.err { color: #ff858d; } #vreport li.warn { color: var(--goal); } #vreport li.info { color: var(--muted); }
+#vreport li[data-row] { cursor: pointer; }
+#vreport li[data-row]:hover { text-decoration: underline; }
+.del { padding: 4px 8px; color: var(--muted); }
+.mini { background: var(--deep); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+.mini svg { width: 100%; height: auto; display: block; cursor: crosshair; }
+.mini p { font-size: 12px; margin: 8px 0 0; color: var(--muted); }
+.gen { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; background: var(--deep); }
+.gen h3 { font-family: var(--display); font-size: 17px; font-weight: 800; margin: 0 0 6px; color: #fff; }
+.gen .names { margin: 8px 0; }
+.glabel { display: grid; gap: 4px; font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 700; }
+.glabel textarea { text-transform: none; letter-spacing: 0; font-family: var(--mono); font-size: 12.5px; width: 100%; max-width: 520px; }
+#csv { width: 100%; min-height: 220px; font-family: var(--mono); font-size: 12.5px; line-height: 1.5; resize: vertical; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
+#msg { font-size: 13px; font-weight: 600; }
+#msg.err { color: #ff858d; } #msg.ok { color: var(--ok); }
+code { font-family: var(--mono); font-size: 12px; background: var(--deep); padding: 2px 6px; border-radius: 6px; color: var(--lime); border: 1px solid var(--line); }
+@media (max-width: 860px) { .editor { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .bottom { grid-template-columns: 1fr; } .ctrl { grid-template-columns: 1fr; } }
 </style>
+</head>
+<body>
 
 <div class="wrap">
-  <header>
-    <div>
-      <div class="teams">
-        <span><i class="sw" style="background:var(--teamA)"></i><span id="nHome">AS Fleuve</span></span>
-        <span><i class="sw" style="background:var(--teamB)"></i><span id="nAway">FC Kivu</span></span>
+  <!-- Top Navbar Plateforme -->
+  <nav class="top-nav">
+    <div class="top-nav-left">
+      <a href="index.html" class="top-back-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span>Retour à la plateforme</span>
+      </a>
+      <div class="brand-badge">
+        <span class="brand-pill"><i class="brand-dot"></i> Illicocash Linafoot RDC</span>
+        <span class="brand-sub">Match Center 3D · Terrain Vivant</span>
       </div>
-      <div class="score" id="score">0<small>–</small>0</div>
     </div>
-    <div class="clock"><b id="min">0<sup>'</sup></b><div id="src">Minute de jeu · match d'exemple</div></div>
+    <div class="top-nav-right">
+      <div class="preset-wrap">
+        <span class="preset-tag">Affiches :</span>
+        <button type="button" class="pill-btn" id="btnClasico" title="Le grand classique de la Linafoot">⚔️ Mazembe vs V.Club</button>
+        <button type="button" class="pill-btn" id="btnAigles" title="Match réel vérifié du 20/10/2026">🦅 Aigles vs Étoile</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Match Scoreboard Header -->
+  <header class="match-header">
+    <div class="match-teams-box">
+      <div class="teams-line">
+        <span class="team-item"><i class="sw" style="background:var(--teamA)"></i><span id="nHome">TP Mazembe</span></span>
+        <span class="team-vs">VS</span>
+        <span class="team-item"><i class="sw" style="background:var(--teamB)"></i><span id="nAway">AS Vita Club</span></span>
+        <span class="competition-badge">Linafoot Illicocash Ligue 1</span>
+      </div>
+      <div class="score-line">
+        <div class="score" id="score">0<small>–</small>0</div>
+        <span class="live-pill"><i class="live-dot"></i> Direct 3D</span>
+      </div>
+    </div>
+    <div class="clock-box">
+      <div class="clock"><b id="min">0<sup>'</sup></b></div>
+      <div class="clock-src" id="src">Minute de jeu · TP Mazembe vs AS Vita Club</div>
+    </div>
   </header>
 
   <div class="stage" id="stage">
@@ -199,7 +749,7 @@ code{font-family:var(--mono);font-size:12px;background:var(--deep);padding:1px 5
     <span class="note">Caméra</span>
     <button data-view="overview" aria-pressed="true">Vue d'ensemble</button>
     <button data-view="aerial" aria-pressed="false">Vue aérienne</button>
-    <button data-view="tv" aria-pressed="false">TV</button>
+    <button data-view="tv" aria-pressed="false">Caméra TV</button>
     <button data-view="tactic" aria-pressed="false">Tactique</button>
     <button data-view="goal" aria-pressed="false">Derrière le but</button>
     <button data-view="follow" aria-pressed="false">Suivre le ballon</button>
@@ -220,12 +770,12 @@ code{font-family:var(--mono);font-size:12px;background:var(--deep);padding:1px 5
 
   <div class="bottom">
     <div class="card">
-      <h2>Comment lire le terrain</h2>
-      <p><b style="color:var(--teamA)">Orange</b> : zone de l'équipe à domicile, qui attaque vers la droite. <b style="color:var(--teamB)">Gris</b> : zone de l'équipe à l'extérieur, soulevée comme une vague. Le pli entre les deux est la ligne de front.</p>
+      <h2>Comment lire le terrain 3D</h2>
+      <p><b style="color:var(--teamA)">Or / Jaune</b> : zone de l'équipe à domicile, qui attaque vers la droite. <b style="color:var(--teamB)">Rouge Corail</b> : zone de l'équipe à l'extérieur, soulevée comme une vague. Le pli entre les deux est la ligne de front.</p>
       <p>Les <b>grands pics blancs</b> sont des buts, les petits pics des tirs. Sous la courbe du bas, au-dessus de l'axe, l'équipe à domicile domine.</p>
     </div>
     <div class="card">
-      <h2>Actions</h2>
+      <h2>Actions du Match</h2>
       <ul id="feed"></ul>
     </div>
   </div>
@@ -238,10 +788,10 @@ code{font-family:var(--mono);font-size:12px;background:var(--deep);padding:1px 5
     <div class="tacbar">
       <div class="btns" role="group" aria-label="Calques">
         <button data-layer="players" aria-pressed="true">Joueurs</button>
-        <button data-layer="pass" aria-pressed="true"><i class="lg" style="background:#8fe3a8"></i>Passes</button>
-        <button data-layer="long" aria-pressed="true"><i class="lg" style="background:#a66bff"></i>Longues passes</button>
-        <button data-layer="shot" aria-pressed="true"><i class="lg" style="background:#2fd36b"></i>Tirs</button>
-        <button data-layer="corner" aria-pressed="true"><i class="lg" style="background:#5ec8ff"></i>Corners</button>
+        <button data-layer="pass" aria-pressed="true"><i class="lg" style="background:#10b981"></i>Passes</button>
+        <button data-layer="long" aria-pressed="true"><i class="lg" style="background:#a855f7"></i>Longues passes</button>
+        <button data-layer="shot" aria-pressed="true"><i class="lg" style="background:var(--lime)"></i>Tirs</button>
+        <button data-layer="corner" aria-pressed="true"><i class="lg" style="background:var(--sky)"></i>Corners</button>
       </div>
       <div class="tacsel">
         <label for="heatSel">Carte de chaleur<select id="heatSel"></select></label>
@@ -322,25 +872,25 @@ code{font-family:var(--mono);font-size:12px;background:var(--deep);padding:1px 5
       <div class="btns">
         <label class="filebtn">Importer un fichier (CSV ou JSON)<input type="file" id="file" accept=".csv,.json,.txt,text/csv,application/json"></label>
         <button id="tpl">Modèle vide</button>
-        <button id="sample">Match d'exemple</button>
-        <button id="real">Aigles 0–1 Étoile (20/10)</button>
+        <button id="sample">TP Mazembe vs V.Club (2–1)</button>
+        <button id="real">Aigles du Congo 0–1 Étoile</button>
       </div>
     </div>
     <div class="gen">
       <h3>Générer à partir du score</h3>
       <p>Entrez les noms des équipes ci-dessous et le score. La page invente des tirs, corners et fautes réalistes autour des buts, toutes marquées « estimé ». Les buts que vous connaissez restent exacts.</p>
       <div class="names">
-        <label for="gH">Buts domicile<input id="gH" type="number" min="0" max="15" value="0" style="width:80px"></label>
+        <label for="gH">Buts domicile<input id="gH" type="number" min="0" max="15" value="2" style="width:80px"></label>
         <label for="gA">Buts extérieur<input id="gA" type="number" min="0" max="15" value="1" style="width:80px"></label>
-        <label for="gDom">Physionomie<select id="gDom"><option value="0">Équilibré</option><option value="1">Domicile domine</option><option value="-1">Extérieur domine</option></select></label>
+        <label for="gDom">Physionomie<select id="gDom"><option value="0">Équilibré</option><option value="1" selected>Domicile domine</option><option value="-1">Extérieur domine</option></select></label>
       </div>
       <label for="gGoals" class="glabel">Buts connus (facultatif), un par ligne : minute, équipe, buteur
-        <textarea id="gGoals" rows="3" placeholder="55, exterieur, Ototala"></textarea></label>
+        <textarea id="gGoals" rows="3" placeholder="24, domicile, G. Likonza&#10;40, exterieur, E. Mpanzu&#10;67, domicile, F. Traore"></textarea></label>
       <div class="actions"><button id="gen" class="primary">Générer et rejouer</button></div>
     </div>
     <div class="names">
-      <label for="homeName">Équipe à domicile<input id="homeName" value="AS Fleuve"></label>
-      <label for="awayName">Équipe à l'extérieur<input id="awayName" value="FC Kivu"></label>
+      <label for="homeName">Équipe à domicile<input id="homeName" value="TP Mazembe"></label>
+      <label for="awayName">Équipe à l'extérieur<input id="awayName" value="AS Vita Club"></label>
       <label for="dur">Durée (min)<input id="dur" type="number" min="1" max="130" value="90" style="width:80px"></label>
     </div>
     <div class="tabs" role="tablist">
@@ -385,17 +935,21 @@ code{font-family:var(--mono);font-size:12px;background:var(--deep);padding:1px 5
 (function(){
 const L=105, W=68;
 const LOGO_SRC="data:image/jpeg;base64,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";
-const HOME=[1.0,0.54,0.12], AWAY=[0.50,0.52,0.56], GOLD=[1.0,0.97,0.86];
+const HOME=[1.0, 0.71, 0.17], AWAY=[0.89, 0.024, 0.075], GOLD=[1.0, 0.95, 0.65];
 const TYPES=["but","tir","corner","faute","carton","horsjeu","passe"];
 const ICON={but:"⚽ BUT",tir:"Tir",faute:"Faute",corner:"Corner",carton:"Carton",horsjeu:"Hors-jeu",passe:"Passe"};
 const WEIGHT={but:.9,tir:.45,corner:.3,faute:-.15,carton:-.2,horsjeu:.05,passe:.06};
 
-const SAMPLE={home:"AS Fleuve",away:"FC Kivu",dur:90,ev:[
- [4,1,"tir","Mbala",88,30],[9,-1,"faute","Ilunga",60,20],[12,-1,"tir","Kabeya",14,38],[13,-1,"but","Kabeya",8,33],
- [19,1,"corner","Tshala",105,0],[22,1,"tir","Mbala",92,36],[27,-1,"tir","Mukendi",18,24],[31,-1,"but","Mukendi",10,40],
- [36,1,"faute","Lokwa",40,50],[41,1,"tir","Kalonji",86,44],[44,1,"but","Kalonji",95,31],[52,-1,"carton","Banza",55,12],
- [57,1,"tir","Mbala",90,26],[61,1,"corner","Tshala",105,68],[63,1,"but","Mbala",97,36],[70,-1,"tir","Kabeya",20,30],
- [74,1,"faute","Lokwa",30,40],[78,1,"tir","Kalonji",84,22],[83,-1,"tir","Mukendi",16,42],[87,-1,"but","Kabeya",7,30],[90,1,"tir","Mbala",89,34]
+// Grand Classique Linafoot : TP Mazembe 2–1 AS Vita Club
+const SAMPLE={home:"TP Mazembe",away:"AS Vita Club",dur:90,ev:[
+  [6,1,"tir","P. Kinzumbi",88,24],[11,-1,"faute","P. Tchakei",60,20],[18,1,"corner","M. Ngimbi",105,0],
+  [21,1,"tir","G. Likonza",86,34],[24,1,"but","G. Likonza",95,33],
+  [31,-1,"tir","E. Mpanzu",18,36],[37,-1,"corner","N. Mwamba",0,68],
+  [40,-1,"but","E. Mpanzu",10,38],
+  [44,1,"faute","A. Oladapo",55,30],[51,1,"tir","F. Traore",89,40],[58,-1,"carton","P. Tchakei",48,15],
+  [64,1,"corner","M. Ngimbi",105,68],[67,1,"but","F. Traore",98,34],
+  [73,-1,"tir","E. Mpanzu",16,30],[79,1,"faute","K. Mundele",35,42],[84,1,"tir","C. Fofana",88,22],
+  [88,-1,"tir","J. Makusu",12,38],[92,1,"tir","P. Kinzumbi",90,28]
 ].map(([m,s,t,p,x,y])=>({m,s,t,p,x,y}))};
 
 // Match du mardi 20/10/2026, Linafoot Illicocash Ligue 1, J1 groupe B, stade Tata Raphaël (Kinshasa).
@@ -405,12 +959,12 @@ const SAMPLE={home:"AS Fleuve",away:"FC Kivu",dur:90,ev:[
 // contre-attaque manquée d'Abdallah Basitolo ; en fin de match, tir de Manu Bola repoussé par Mulenda Lutula.
 // Estimé : minutes et positions de ces occasions, corners et fautes (colonne est = 1).
 const REAL={home:"Les Aigles du Congo",away:"Étoile du Congo",dur:90,ev:[
- [5,1,"corner","",105,0,1],[11,1,"tir","",84,40,1],[16,-1,"faute","",70,30,1],[22,1,"corner","",105,68,1],
- [28,1,"tir","",86,24,1],[34,-1,"faute","",72,22,1],[39,1,"corner","",105,0,1],[43,1,"tir","",88,44,1],
- [49,-1,"faute","",60,34,1],[52,1,"tir","",85,36,1],
- [55,-1,"but","T. Ototala",27,30,0], // frappe lointaine : ~27 m, côté exact inconnu
- [60,1,"faute","",45,30,1],[64,-1,"tir","A. Basitolo (contre)",16,36,1],[69,1,"corner","",105,68,1],[73,1,"tir","",90,40,1],
- [78,-1,"faute","",75,40,1],[82,1,"tir","",92,28,1],[87,1,"tir","M. Bola (arrêt Lutula)",93,34,1],[90,1,"corner","",105,0,1]
+  [5,1,"corner","",105,0,1],[11,1,"tir","",84,40,1],[16,-1,"faute","",70,30,1],[22,1,"corner","",105,68,1],
+  [28,1,"tir","",86,24,1],[34,-1,"faute","",72,22,1],[39,1,"corner","",105,0,1],[43,1,"tir","",88,44,1],
+  [49,-1,"faute","",60,34,1],[52,1,"tir","",85,36,1],
+  [55,-1,"but","T. Ototala",27,30,0], // frappe lointaine : ~27 m, côté exact inconnu
+  [60,1,"faute","",45,30,1],[64,-1,"tir","A. Basitolo (contre)",16,36,1],[69,1,"corner","",105,68,1],[73,1,"tir","",90,40,1],
+  [78,-1,"faute","",75,40,1],[82,1,"tir","",92,28,1],[87,1,"tir","M. Bola (arrêt Lutula)",93,34,1],[90,1,"corner","",105,0,1]
 ].map(([m,s,t,p,x,y,est])=>({m,s,t,p,x,y,est:!!est}))};
 
 // ---------- État du match ----------
@@ -433,17 +987,17 @@ const stage=document.getElementById('stage');
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
 renderer.setPixelRatio(Math.min(devicePixelRatio,2));
 stage.prepend(renderer.domElement);
-const scene=new THREE.Scene();scene.fog=new THREE.Fog(0x0d1430,340,950);
-scene.background=(function(){ // ciel de nuit en dégradé (nécessaire avec le halo lumineux)
+const scene=new THREE.Scene();scene.fog=new THREE.Fog(0x072129,320,950);
+scene.background=(function(){ // ciel de nuit en dégradé plateforme stade
   const c=document.createElement('canvas');c.width=c.height=512;const g=c.getContext('2d');
-  const gr=g.createRadialGradient(256,230,20,256,256,360);gr.addColorStop(0,'#1d3a8a');gr.addColorStop(.55,'#0d1430');gr.addColorStop(1,'#070b1a');
+  const gr=g.createRadialGradient(256,230,20,256,256,360);gr.addColorStop(0,'#0f4c5c');gr.addColorStop(.55,'#072129');gr.addColorStop(1,'#051419');
   g.fillStyle=gr;g.fillRect(0,0,512,512);return new THREE.CanvasTexture(c);})();
 const cam=new THREE.PerspectiveCamera(40,1,1,1600);cam.position.set(-130,120,175);
 const ctl=new THREE.OrbitControls(cam,renderer.domElement);
 ctl.enableDamping=true;ctl.maxPolarAngle=1.42;ctl.minDistance=40;ctl.maxDistance=520;ctl.enablePan=false;
-scene.add(new THREE.HemisphereLight(0xbcd0ff,0x0a0f2a,.75));
-const sun=new THREE.DirectionalLight(0xffffff,.9);sun.position.set(-40,90,50);scene.add(sun);
-const rim=new THREE.DirectionalLight(0x6f8cff,.5);rim.position.set(60,30,-60);scene.add(rim);
+scene.add(new THREE.HemisphereLight(0xfff5dd,0x072129,.85));
+const sun=new THREE.DirectionalLight(0xffffff,.95);sun.position.set(-40,90,50);scene.add(sun);
+const rim=new THREE.DirectionalLight(0x12a8df,.55);rim.position.set(60,30,-60);scene.add(rim);
 
 function pitchTexture(){
   const c=document.createElement('canvas'),S=10;c.width=L*S;c.height=W*S;
@@ -756,16 +1310,16 @@ function drawMom(){
   if(mom.width!==Math.round(w*dpr)){mom.width=Math.round(w*dpr);mom.height=Math.round(h*dpr);}
   mg.setTransform(dpr,0,0,dpr,0,0);mg.clearRect(0,0,w,h);
   const mid=h/2,X=v=>v/DUR*w,Y=v=>mid-v*(h/2-6);
-  mg.strokeStyle='#24305f';mg.lineWidth=1;
+  mg.strokeStyle='rgba(255,255,255,0.14)';mg.lineWidth=1;
   for(let v=15;v<DUR;v+=15){mg.beginPath();mg.moveTo(X(v),4);mg.lineTo(X(v),h-4);mg.stroke();}
   mg.beginPath();mg.moveTo(0,mid);mg.lineTo(w,mid);mg.stroke();
   const area=(sign,color)=>{mg.beginPath();mg.moveTo(0,mid);
     for(let i=0;i<=DUR*4;i++){const v=MS[i];mg.lineTo(X(i/4),Y(sign>0?Math.max(0,v):Math.min(0,v)));}
     mg.lineTo(w,mid);mg.closePath();mg.fillStyle=color;mg.fill();};
-  area(1,'rgba(255,138,31,.85)');area(-1,'rgba(154,160,170,.8)');
-  EV.filter(e=>e.t==='but').forEach(e=>{mg.fillStyle='#ffd36b';mg.beginPath();mg.arc(X(e.m),e.s>0?8:h-8,3.5,0,7);mg.fill();});
-  mg.fillStyle='rgba(7,11,26,.45)';mg.fillRect(X(t),0,w-X(t),h);
-  mg.strokeStyle='#e8edff';mg.lineWidth=2;mg.beginPath();mg.moveTo(X(t),0);mg.lineTo(X(t),h);mg.stroke();
+  area(1,'rgba(255,181,43,0.85)');area(-1,'rgba(227,6,19,0.85)');
+  EV.filter(e=>e.t==='but').forEach(e=>{mg.fillStyle='#ffb52b';mg.beginPath();mg.arc(X(e.m),e.s>0?8:h-8,3.5,0,7);mg.fill();});
+  mg.fillStyle='rgba(5,20,25,0.65)';mg.fillRect(X(t),0,w-X(t),h);
+  mg.strokeStyle='#f7f8fa';mg.lineWidth=2;mg.beginPath();mg.moveTo(X(t),0);mg.lineTo(X(t),h);mg.stroke();
 }
 let drag=false;
 const seek=ev=>{const r=mom.getBoundingClientRect();t=Math.min(DUR,Math.max(0,(ev.clientX-r.left)/r.width*DUR));};
@@ -1223,9 +1777,20 @@ function load(d,label){
   document.getElementById('src').textContent='Minute de jeu · '+label;
   markClean('À jour');vreport.hidden=true;
 }
-document.getElementById('sample').onclick=()=>{load(SAMPLE,"match d'exemple");say("Match d'exemple rechargé.",'ok');};
-const REAL_LABEL="20/10/2026 · reconstitution d'après le compte rendu";
-document.getElementById('real').onclick=()=>{load(REAL,REAL_LABEL);say("Aigles du Congo 0–1 Étoile du Congo rechargé. Vérifié : but d'Ototala (55e, frappe lointaine), occasions de Basitolo et Bola. Minutes et positions des autres actions estimées.",'ok');};
+const CLASICO_LABEL="Grand Classique Linafoot · TP Mazembe vs AS Vita Club";
+const REAL_LABEL="20/10/2026 · Stade Tata Raphaël · J1 Groupe B";
+function loadClasico(){
+  load(SAMPLE, CLASICO_LABEL);
+  say("Grand Classique Linafoot rechargé : TP Mazembe 2–1 AS Vita Club (Likonza 24e, Mpanzu 40e, Traoré 67e).",'ok');
+}
+function loadAigles(){
+  load(REAL, REAL_LABEL);
+  say("Match Linafoot J1 rechargé : Les Aigles du Congo 0–1 Étoile du Congo (but d'Ototala 55e).",'ok');
+}
+const elSample=document.getElementById('sample');if(elSample)elSample.onclick=loadClasico;
+const elReal=document.getElementById('real');if(elReal)elReal.onclick=loadAigles;
+const elClasico=document.getElementById('btnClasico');if(elClasico)elClasico.onclick=loadClasico;
+const elBtnAigles=document.getElementById('btnAigles');if(elBtnAigles)elBtnAigles.onclick=loadAigles;
 
 // ---------- Génération à partir du score ----------
 function hashStr(s){let h=2166136261;for(const ch of s){h^=ch.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0;}
@@ -1525,18 +2090,18 @@ async function buildPdf(){
   const gH=EV.filter(e=>e.t==='but'&&e.s>0).length,gA=EV.filter(e=>e.t==='but'&&e.s<0).length;
   const src=document.getElementById('src').textContent.replace(/^Minute de jeu · /,'');
   const header=(title)=>{
-    doc.setFillColor(13,20,48);doc.rect(0,0,297,22,'F');
-    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(16);
+    doc.setFillColor(6,43,53);doc.rect(0,0,297,22,'F');
+    doc.setTextColor(255,255,255);doc.setFont('helvetica','bold');doc.setFontSize(15);
     doc.text(`${names.home}  ${gH} - ${gA}  ${names.away}`,12,10);
-    doc.setFont('helvetica','normal');doc.setFontSize(9.5);doc.setTextColor(200,208,235);
-    doc.text(`${title}  |  ${src}`,12,17);
+    doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(18,168,223);
+    doc.text(`Illicocash Ligue 1 RDC · ${title}  |  ${src}`,12,17);
   };
   const footer=()=>{doc.setFontSize(7.5);doc.setTextColor(110,110,120);
     doc.text("Terrain Vivant · Déplacements des joueurs, passes et cartes de chaleur simulés à partir des actions saisies (pas de données GPS). Actions marquées « estimé » : non vérifiées.",12,204);};
   const cv=document.createElement('canvas'),cx=cv.getContext('2d');
   // page 1 : carte complète du match + statistiques
   cv.width=1800;cv.height=Math.round(1800*(W+8)/(L+7));
-  drawPitch2D(cx,cv.width,cv.height,{t:DUR,win:DUR,all:true,team:'all',layers:{players:false,pass:true,long:true,shot:true,corner:true},bg:'#0d1430'});
+  drawPitch2D(cx,cv.width,cv.height,{t:DUR,win:DUR,all:true,team:'all',layers:{players:false,pass:true,long:true,shot:true,corner:true},bg:'#072129'});
   header('Rapport de match · carte des actions');
   const iw=190,ih=iw*cv.height/cv.width;doc.addImage(cv.toDataURL('image/jpeg',.9),'JPEG',10,27,iw,ih);
   const legend=[['Passes',143,227,168],['Longues passes',166,107,255],['Tirs',47,211,107],['Corners',94,200,255],['Buts',255,211,107]];
@@ -1558,7 +2123,7 @@ async function buildPdf(){
     const list=[{id:k,num:'',name:"Toute l'équipe",role:''},...PLAYERS.filter(p=>p.s===s)];
     const cw=900,ch=Math.round(cw*(W+8)/(L+7));cv.width=cw;cv.height=ch;
     list.forEach((p,i)=>{
-      drawPitch2D(cx,cw,ch,{t:DUR,win:0,all:false,team:'none',layers:{},heat:p.id,heatSide:s,bg:'#0d1430'});
+      drawPitch2D(cx,cw,ch,{t:DUR,win:0,all:false,team:'none',layers:{},heat:p.id,heatSide:s,bg:'#072129'});
       const col=i%4,row=Math.floor(i/4),w=68,h=w*ch/cw,x=10+col*70.5,yy=27+row*(h+9);
       doc.addImage(cv.toDataURL('image/jpeg',.88),'JPEG',x,yy,w,h);
       doc.setTextColor(30,30,40);doc.setFontSize(8.5);doc.setFont('helvetica','bold');
@@ -1915,9 +2480,9 @@ vaEl('vaReset').onclick=()=>{VA.idx=0;VA.batches=[];VA.raw=[];VA.recon=null;VA.r
   vaResults.hidden=true;vaRun.hidden=true;try{localStorage.removeItem('tv-video');}catch(_){}vaSetRunning(false);vaShowPlan();vaStatus.textContent='Analyse effacée.';};
 addEventListener('resize',()=>{if(VA.result)vaRender();});
 
-// démarrage : dernier match utilisé, sinon le match d'exemple
+// démarrage : dernier match utilisé, sinon le Classique Linafoot
 let saved=null;try{saved=JSON.parse(localStorage.getItem('tv-data-2')||'null');}catch(_){}
-if(saved&&Array.isArray(saved.ev)&&saved.ev.length)load(saved,'dernier match utilisé');else load(REAL,REAL_LABEL);
+if(saved&&Array.isArray(saved.ev)&&saved.ev.length)load(saved,'dernier match utilisé');else load(SAMPLE,CLASICO_LABEL);
 requestAnimationFrame(loop);
 })();
 </script>

@@ -505,6 +505,9 @@
               `).join('')}
             </nav>
             <div class="ml-auto flex items-center gap-1.5">
+              <a href="Terrain Vivant.html" class="hidden md:inline-flex items-center gap-1.5 rounded-xl border border-coral/35 bg-coral/10 px-3 py-2 text-xs font-bold text-coral transition hover:bg-coral hover:text-white dark:border-lime/35 dark:bg-lime/10 dark:text-lime dark:hover:bg-lime dark:hover:text-ink" title="Accéder au Match Center 3D interactif">
+                <span>🏟️ Match 3D</span>
+              </a>
               <button onclick="go('search')" class="rounded-xl p-2.5 text-base text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10" aria-label="Rechercher" title="Recherche globale">⌕</button>
               <button onclick="toggleTheme()" class="rounded-xl p-2.5 text-base text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10" aria-label="Changer de thème" title="${dark ? 'Mode clair' : 'Mode sombre'}">${dark ? '☀' : '◐'}</button>
               <button onclick="go('profile')" class="hidden sm:inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-3.5 py-2 text-xs font-bold shadow-sm transition hover:border-coral hover:text-coral dark:border-white/10 dark:bg-white/5 dark:text-white">
@@ -1511,6 +1514,10 @@
                 <span class="${sidebarCollapsed ? 'hidden' : 'block truncate'}">${label}</span>
               </button>
             `).join('')}
+            <a href="Terrain Vivant.html" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-extrabold transition-all ${sidebarCollapsed ? 'justify-center px-2' : ''} bg-gradient-to-r from-coral/15 to-lime/15 border border-coral/30 text-coral dark:text-lime hover:border-coral hover:shadow-md" title="Match Center 3D · Terrain Vivant">
+              <span class="w-5 shrink-0 text-center text-sm">🏟️</span>
+              <span class="${sidebarCollapsed ? 'hidden' : 'block truncate'}">Terrain Vivant 3D</span>
+            </a>
           </nav>
           <div class="mt-4 border-t border-slate-100 pt-3 dark:border-white/10">
             <button onclick="go('search')" class="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10 ${sidebarCollapsed ? 'justify-center' : ''}" title="Rechercher">
