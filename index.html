@@ -31,16 +31,49 @@
     .bg-emerald-700 { background-color: #e30613 !important; }
     .bg-emerald-100 { background-color: #ffe1e4 !important; }
     .text-emerald-600 { color: #c30510 !important; }
-    .ad-slot { position: relative; width: 100%; min-height: 190px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin: 3rem 0 4rem; border: 1px solid rgba(48,52,59,.1); border-radius: 1.25rem; background: linear-gradient(110deg, #eef1f4 0%, #fff 48%, #fff1d2 100%); color: #30343b; }
-    .ad-slot::before { content: ''; position: absolute; inset: 0; opacity: .32; background-image: radial-gradient(#ffb52b 1px, transparent 1px); background-size: 16px 16px; mask-image: linear-gradient(90deg, transparent, #000 35%, #000 70%, transparent); }
-    .ad-slot-label { position: absolute; left: 1rem; top: .8rem; color: #8b929c; font-size: .62rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
-    .ad-slot-copy { position: relative; display: flex; flex-direction: column; gap: .35rem; text-align: center; }
-    .ad-slot-kicker { color: #e30613; font-size: .65rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
-    .ad-slot-copy strong { font-family: Sora, Manrope, sans-serif; font-size: clamp(1.2rem, 2.4vw, 2rem); }
-    .ad-slot-copy small { color: #69727e; font-size: .75rem; }
-    .ad-slot-mark { position: absolute; right: 1rem; bottom: 1rem; color: #12a8df; font-size: .65rem; font-weight: 800; letter-spacing: .12em; }
-    .ad-slot-native { min-height: 118px; justify-content: flex-start; padding: 1.5rem 5rem 1.5rem 1.5rem; }
-    .ad-slot-native .ad-slot-copy { text-align: left; }
+    /* Ad Rotator Premium Card Styles - Adapted to 1.91:1 image proportions */
+    .ad-slot-rotator, .ad-slot { position: relative; width: 100%; margin: 2.25rem 0 3.25rem; border-radius: 1.25rem; overflow: hidden; background: #071217; box-shadow: 0 16px 45px rgba(0,0,0,0.12); border: 1px solid rgba(48,52,59,0.14); transition: transform .2s ease, box-shadow .2s ease; }
+    .ad-slot-rotator:hover, .ad-slot:hover { box-shadow: 0 22px 55px rgba(0,0,0,0.22); }
+    .dark .ad-slot-rotator, .dark .ad-slot { background: #060e12; border-color: rgba(255,255,255,0.12); box-shadow: 0 20px 50px rgba(0,0,0,0.45); }
+    .ad-rotator-frame { position: relative; width: 100%; aspect-ratio: 16 / 8.4; max-height: 420px; min-height: 185px; background: #060e12; overflow: hidden; }
+    .ad-slot-compact .ad-rotator-frame, .ad-slot-native .ad-rotator-frame { max-height: 310px; min-height: 160px; }
+    @media (max-width: 640px) {
+      .ad-slot-rotator, .ad-slot { margin: 1.5rem 0 2.25rem; border-radius: 1rem; }
+      .ad-rotator-frame { aspect-ratio: 16 / 8.4; min-height: 165px; }
+    }
+    .ad-slide-item { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity .45s ease-in-out, transform .5s ease-out; transform: scale(1.02); cursor: pointer; }
+    .ad-slide-item.active { opacity: 1; pointer-events: auto; transform: scale(1); }
+    .ad-slide-img { width: 100%; height: 100%; object-fit: cover; object-position: center; display: block; }
+    .ad-slide-gradient { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7,18,23,0.6) 0%, rgba(7,18,23,0) 22%, rgba(7,18,23,0.08) 55%, rgba(7,18,23,0.88) 100%); pointer-events: none; }
+    .ad-slide-overlay { position: absolute; inset-x: 0; bottom: 0; padding: 1.25rem 1.5rem 2.25rem; display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; color: #fff; z-index: 5; }
+    .ad-slide-text { display: flex; flex-direction: column; gap: 0.2rem; max-width: 75%; text-shadow: 0 2px 10px rgba(0,0,0,0.85); }
+    .ad-slide-kicker { font-size: 0.65rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #ffb52b; }
+    .ad-slide-title { font-family: Sora, Manrope, sans-serif; font-size: clamp(1rem, 2.1vw, 1.45rem); font-weight: 700; line-height: 1.25; color: #ffffff; }
+    .ad-slide-copy { font-size: 0.75rem; color: rgba(255,255,255,0.85); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+    .ad-slide-cta { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.55rem 1.05rem; border-radius: 0.65rem; background: #ffb52b; color: #30343b; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; box-shadow: 0 4px 15px rgba(255,181,43,0.35); transition: transform .15s ease, background .15s ease, box-shadow .15s ease; white-space: nowrap; flex-shrink: 0; }
+    .ad-slide-cta:hover { background: #ffffff; color: #062b35; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,255,255,0.4); }
+    @media (max-width: 640px) {
+      .ad-slide-overlay { padding: 0.75rem 0.85rem 1.75rem; }
+      .ad-slide-text { max-width: 70%; }
+      .ad-slide-copy { display: none; }
+      .ad-slide-cta { padding: 0.4rem 0.7rem; font-size: 0.65rem; }
+    }
+    .ad-rotator-topbar { position: absolute; top: 0.85rem; inset-x: 0.85rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; z-index: 10; pointer-events: none; }
+    .ad-brand-pill { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.35rem 0.75rem; border-radius: 9999px; background: rgba(6,43,53,0.78); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.18); color: #fff; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; box-shadow: 0 4px 16px rgba(0,0,0,0.3); pointer-events: auto; }
+    .ad-pulse-dot { width: 6px; height: 6px; border-radius: 9999px; background: #ffb52b; box-shadow: 0 0 8px #ffb52b; animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    .ad-controls-group { display: inline-flex; align-items: center; gap: 0.5rem; pointer-events: auto; }
+    .ad-counter-badge { padding: 0.35rem 0.65rem; border-radius: 9999px; background: rgba(0,0,0,0.65); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.18); color: #fff; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.08em; }
+    .ad-nav-arrows { display: inline-flex; gap: 0.35rem; }
+    .ad-arrow-btn { width: 32px; height: 32px; border-radius: 9999px; display: inline-flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.65); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.22); color: #fff; font-size: 1.15rem; font-weight: 700; line-height: 1; transition: all .15s ease; cursor: pointer; }
+    .ad-arrow-btn:hover { background: #ffb52b; color: #30343b; border-color: #ffb52b; transform: scale(1.08); }
+    .ad-rotator-bottombar { position: absolute; bottom: 0.45rem; inset-x: 0.85rem; display: flex; align-items: center; justify-content: space-between; z-index: 10; pointer-events: none; }
+    .ad-rotator-dots { display: inline-flex; align-items: center; gap: 0.45rem; pointer-events: auto; }
+    .ad-rotator-dot { width: 8px; height: 8px; border-radius: 9999px; background: rgba(255,255,255,0.45); border: none; padding: 0; transition: all .25s ease; cursor: pointer; }
+    .ad-rotator-dot:hover { background: rgba(255,255,255,0.95); transform: scale(1.2); }
+    .ad-rotator-dot.active { width: 24px; border-radius: 9999px; background: #ffb52b; box-shadow: 0 0 10px rgba(255,181,43,0.7); }
+    .ad-rotator-tag { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.65); text-shadow: 0 1px 4px rgba(0,0,0,0.85); }
+    .ad-progress-track { position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: rgba(255,255,255,0.14); z-index: 15; }
+    .ad-progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ffb52b, #e30613); }
     .photo-zone { display: block; width: 100%; height: 190px; object-fit: cover; }
     .photo-zone-small { display: block; width: 100%; height: 190px; object-fit: cover; }
     .standings-shell { background: #ffffff; border-color: #dfe4e8; }
@@ -74,9 +107,12 @@
     @media (max-width:640px) { .match-group-header { font-size: .78rem; } .match-group-header button { display: none; } .match-day { padding: .45rem; } }
     .magazine-cover { aspect-ratio: 3 / 4; object-fit: cover; }
     .magazine-viewer { min-height: 620px; background: #30343b; }
-    .magazine-paper { min-height: 620px; background: #fffdf8; color: #30343b; }
-    .magazine-paper h2 { font-family: Sora, Manrope, sans-serif; }
-    @media (max-width:640px) { .magazine-viewer, .magazine-paper { min-height: 500px; } }
+    .magazine-viewer-box { min-height: 700px; background: radial-gradient(circle at center, #1b2830 0%, #0a1114 100%); }
+    .magazine-viewer-box:fullscreen { min-height: 100vh; padding: 2rem; border-radius: 0; background: #070d10; }
+    .magazine-page-img { max-height: 78vh; width: auto; max-width: 100%; box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75); }
+    .magazine-viewer-box:fullscreen .magazine-page-img { max-height: 92vh; }
+    .mag-thumb-item { scroll-snap-align: start; }
+    @media (max-width:640px) { .magazine-viewer-box { min-height: 480px; padding: 1rem .5rem; } .magazine-page-img { max-height: 58vh; } }
     .club-hero-title { overflow-wrap: normal; word-break: normal; }
     .club-performance-head { min-width: 0; }
     .profile-hero-copy { min-width: 0; }
@@ -85,9 +121,79 @@
     @media (max-width:640px) { .profile-hero { padding: 1.25rem !important; } .profile-hero-main { align-items: flex-start; flex-direction: column; } .profile-hero-copy { width: 100%; } .profile-hero-title { font-size: 2rem !important; line-height: 1.1; } .profile-hero-action { align-self: flex-end; margin-top: -3.25rem; } }
     .standings-scroll { position: relative; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
     .standings-scroll::after { content: 'Glissez horizontalement pour voir les statistiques'; display: none; }
-    .dark .ad-slot { border-color: rgba(255,255,255,.1); background: linear-gradient(110deg, #202832 0%, #30343b 52%, #514024 100%); color: #fff; }
-    .dark .ad-slot-copy small { color: #c5cbd2; }
     @media (max-width: 640px) { .ad-slot { min-height: 150px; } .ad-slot-native { min-height: 110px; } .photo-zone, .photo-zone-small { height: 150px; } .standings-shell { padding: .5rem; border-radius: 1rem; } .standings-table { font-size: .75rem; } .standings-table th, .standings-table td { padding: .7rem .55rem; } .standings-table th:first-child, .standings-table td:first-child { position: sticky; left: 0; z-index: 3; background: #ffffff; } .standings-table th:nth-child(2), .standings-table td:nth-child(2) { position: sticky; left: 43px; z-index: 2; background: #ffffff; box-shadow: 8px 0 12px -12px rgba(48,52,59,.65); } .standings-head th:first-child, .standings-head th:nth-child(2) { background: #eef2f5; } html.dark .standings-table th:first-child, html.dark .standings-table td:first-child, html.dark .standings-table th:nth-child(2), html.dark .standings-table td:nth-child(2) { background: #071c24; } html.dark .standings-head th:first-child, html.dark .standings-head th:nth-child(2) { background: #062b35; } html.dark .standings-table th:nth-child(2), html.dark .standings-table td:nth-child(2) { box-shadow: 8px 0 12px -12px rgba(0,0,0,.9); } .standings-scroll::after { content: 'Glissez horizontalement pour voir les statistiques'; display: block; padding: .55rem .25rem .15rem; color: #69727e; font-size: .65rem; font-weight: 700; text-align: right; } html.dark .standings-scroll::after { color: #aebdc2; } main, main * { min-width: 0; max-width: 100%; } .mb-5.flex.items-end.justify-between { flex-wrap: wrap; row-gap: .7rem; } .mb-5.flex.items-end.justify-between > button { margin-left: auto; } }
+  
+    /* Premium UI/UX Polish */
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .badge-cat {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .badge-cat-club { background: #ffebee; color: #c62828; }
+    .badge-cat-portrait { background: #f3e5f5; color: #6a1b9a; }
+    .badge-cat-coulisses { background: #e8f5e9; color: #2e7d32; }
+    .badge-cat-analyse { background: #e1f5fe; color: #0277bd; }
+    .badge-cat-gouvernance { background: #fff8e1; color: #f57f17; }
+    .badge-cat-supporters { background: #fbe9e7; color: #d84315; }
+    .badge-cat-memoire { background: #efebe9; color: #4e342e; }
+    .badge-cat-sante { background: #e0f2f1; color: #00695c; }
+    .badge-cat-data { background: #ede7f6; color: #4527a0; }
+
+    .dark .badge-cat-club { background: rgba(227,6,19,0.22); color: #ff8a80; }
+    .dark .badge-cat-portrait { background: rgba(171,71,188,0.22); color: #e1bee7; }
+    .dark .badge-cat-coulisses { background: rgba(76,175,80,0.22); color: #a5d6a7; }
+    .dark .badge-cat-analyse { background: rgba(3,169,244,0.22); color: #81d4fa; }
+    .dark .badge-cat-gouvernance { background: rgba(255,193,7,0.22); color: #ffe082; }
+    .dark .badge-cat-supporters { background: rgba(255,87,34,0.22); color: #ffab91; }
+    .dark .badge-cat-memoire { background: rgba(141,110,99,0.22); color: #d7ccc8; }
+    .dark .badge-cat-sante { background: rgba(38,166,154,0.22); color: #80cbc4; }
+    .dark .badge-cat-data { background: rgba(126,87,194,0.22); color: #b39ddb; }
+
+    .article-card-hover {
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .article-card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 35px -8px rgba(0,0,0,0.08), 0 10px 15px -5px rgba(0,0,0,0.04);
+    }
+    .dark .article-card-hover:hover {
+      box-shadow: 0 20px 40px -8px rgba(0,0,0,0.45), 0 10px 15px -5px rgba(0,0,0,0.3);
+    }
+
+    .read-arrow {
+      transition: transform 0.2s ease;
+    }
+    .group:hover .read-arrow {
+      transform: translateX(4px);
+    }
+
+    .prose-custom p {
+      margin-bottom: 1.25rem;
+      line-height: 1.85;
+      font-size: 1.05rem;
+    }
+    .prose-custom h3 {
+      font-family: Sora, Manrope, sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .dark .prose-custom h3 {
+      border-bottom-color: rgba(255,255,255,0.08);
+    }
+
   </style>
   <style>
     #mobileMenu.menu-panel { display:block; max-height:0; opacity:0; overflow:hidden; transform:translateY(-10px); transition:max-height .28s ease, opacity .22s ease, transform .28s ease; }
@@ -100,10 +206,154 @@
     .hamburger-button.is-open span:nth-child(1) { transform:rotate(45deg); }
     .hamburger-button.is-open span:nth-child(2) { opacity:0; transform:scaleX(0); }
     .hamburger-button.is-open span:nth-child(3) { transform:rotate(-45deg); }
+  
+    /* Premium UI/UX Polish */
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .badge-cat {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .badge-cat-club { background: #ffebee; color: #c62828; }
+    .badge-cat-portrait { background: #f3e5f5; color: #6a1b9a; }
+    .badge-cat-coulisses { background: #e8f5e9; color: #2e7d32; }
+    .badge-cat-analyse { background: #e1f5fe; color: #0277bd; }
+    .badge-cat-gouvernance { background: #fff8e1; color: #f57f17; }
+    .badge-cat-supporters { background: #fbe9e7; color: #d84315; }
+    .badge-cat-memoire { background: #efebe9; color: #4e342e; }
+    .badge-cat-sante { background: #e0f2f1; color: #00695c; }
+    .badge-cat-data { background: #ede7f6; color: #4527a0; }
+
+    .dark .badge-cat-club { background: rgba(227,6,19,0.22); color: #ff8a80; }
+    .dark .badge-cat-portrait { background: rgba(171,71,188,0.22); color: #e1bee7; }
+    .dark .badge-cat-coulisses { background: rgba(76,175,80,0.22); color: #a5d6a7; }
+    .dark .badge-cat-analyse { background: rgba(3,169,244,0.22); color: #81d4fa; }
+    .dark .badge-cat-gouvernance { background: rgba(255,193,7,0.22); color: #ffe082; }
+    .dark .badge-cat-supporters { background: rgba(255,87,34,0.22); color: #ffab91; }
+    .dark .badge-cat-memoire { background: rgba(141,110,99,0.22); color: #d7ccc8; }
+    .dark .badge-cat-sante { background: rgba(38,166,154,0.22); color: #80cbc4; }
+    .dark .badge-cat-data { background: rgba(126,87,194,0.22); color: #b39ddb; }
+
+    .article-card-hover {
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .article-card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 35px -8px rgba(0,0,0,0.08), 0 10px 15px -5px rgba(0,0,0,0.04);
+    }
+    .dark .article-card-hover:hover {
+      box-shadow: 0 20px 40px -8px rgba(0,0,0,0.45), 0 10px 15px -5px rgba(0,0,0,0.3);
+    }
+
+    .read-arrow {
+      transition: transform 0.2s ease;
+    }
+    .group:hover .read-arrow {
+      transform: translateX(4px);
+    }
+
+    .prose-custom p {
+      margin-bottom: 1.25rem;
+      line-height: 1.85;
+      font-size: 1.05rem;
+    }
+    .prose-custom h3 {
+      font-family: Sora, Manrope, sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .dark .prose-custom h3 {
+      border-bottom-color: rgba(255,255,255,0.08);
+    }
+
   </style>
 <style>
   html, body { overflow-x: hidden; }
-</style>
+
+    /* Premium UI/UX Polish */
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .badge-cat {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .badge-cat-club { background: #ffebee; color: #c62828; }
+    .badge-cat-portrait { background: #f3e5f5; color: #6a1b9a; }
+    .badge-cat-coulisses { background: #e8f5e9; color: #2e7d32; }
+    .badge-cat-analyse { background: #e1f5fe; color: #0277bd; }
+    .badge-cat-gouvernance { background: #fff8e1; color: #f57f17; }
+    .badge-cat-supporters { background: #fbe9e7; color: #d84315; }
+    .badge-cat-memoire { background: #efebe9; color: #4e342e; }
+    .badge-cat-sante { background: #e0f2f1; color: #00695c; }
+    .badge-cat-data { background: #ede7f6; color: #4527a0; }
+
+    .dark .badge-cat-club { background: rgba(227,6,19,0.22); color: #ff8a80; }
+    .dark .badge-cat-portrait { background: rgba(171,71,188,0.22); color: #e1bee7; }
+    .dark .badge-cat-coulisses { background: rgba(76,175,80,0.22); color: #a5d6a7; }
+    .dark .badge-cat-analyse { background: rgba(3,169,244,0.22); color: #81d4fa; }
+    .dark .badge-cat-gouvernance { background: rgba(255,193,7,0.22); color: #ffe082; }
+    .dark .badge-cat-supporters { background: rgba(255,87,34,0.22); color: #ffab91; }
+    .dark .badge-cat-memoire { background: rgba(141,110,99,0.22); color: #d7ccc8; }
+    .dark .badge-cat-sante { background: rgba(38,166,154,0.22); color: #80cbc4; }
+    .dark .badge-cat-data { background: rgba(126,87,194,0.22); color: #b39ddb; }
+
+    .article-card-hover {
+      transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .article-card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 35px -8px rgba(0,0,0,0.08), 0 10px 15px -5px rgba(0,0,0,0.04);
+    }
+    .dark .article-card-hover:hover {
+      box-shadow: 0 20px 40px -8px rgba(0,0,0,0.45), 0 10px 15px -5px rgba(0,0,0,0.3);
+    }
+
+    .read-arrow {
+      transition: transform 0.2s ease;
+    }
+    .group:hover .read-arrow {
+      transform: translateX(4px);
+    }
+
+    .prose-custom p {
+      margin-bottom: 1.25rem;
+      line-height: 1.85;
+      font-size: 1.05rem;
+    }
+    .prose-custom h3 {
+      font-family: Sora, Manrope, sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 0.85rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+    .dark .prose-custom h3 {
+      border-bottom-color: rgba(255,255,255,0.08);
+    }
+
+  </style>
 </head>
 <body class="font-sans antialiased">
   <div id="app"></div>
@@ -125,6 +375,8 @@
     let selectedMatchSeason = localStorage.getItem('lcl-match-season') || '2025-2026';
     let selectedMatchGroup = 'Tous les groupes';
     let magazinePageIndex = 1;
+    let magazineZoom = 1;
+    let magazineShowThumbnails = false;
     const matchResultsBySeason = {
       '2025-2026': matches.map(m=>({...m, group:'Groupe Championnat', round:'Journée 6'})),
       '2024-2025': [
@@ -174,7 +426,7 @@
       { name:'Mercey Ngimbi', club:'lupopo', position:'Ailier', goals:5, assists:6, nationality:'RDC', initials:'MN' },
       { name:'Faveurdi Bongeli', club:'mazembe', position:'Milieu de terrain', goals:0, assists:0, nationality:'RDC', initials:'FB', age:19, birth:'21.03.2007', loanTo:'Luzern', loanUntil:'30.06.2027', youth:'RDC -20', nationalMatches:3, nationalGoals:0 }
     ];
-    const liveEditorialContent = window.LCL_SHARED_CONTENT.read();
+    let liveEditorialContent = window.LCL_SHARED_CONTENT.read();
     const articles = liveEditorialContent.articles;
     const tv = liveEditorialContent.tv;
     const seasons = ['2025-2026','2024-2025','2023-2024','2022-2023'];
@@ -211,6 +463,7 @@
     let dark = localStorage.getItem('lcl-theme') === 'dark';
     let sidebarCollapsed = localStorage.getItem('lcl-sidebar') === 'collapsed';
 
+    const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c]));
     const club = id => clubs.find(c => c.id === id) || clubs[0];
     const logo = (c, small=false) => `<span class="inline-flex ${small?'h-9 w-9 text-[10px]':'h-12 w-12 text-xs'} shrink-0 items-center justify-center rounded-xl font-extrabold" style="background:${c.color};color:${c.accent}">${c.logo}</span>`;
     const icon = (name) => { const paths = { home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z"/>', actualites:'<path d="M4 5h16M4 12h16M4 19h10"/>', direct:'<circle cx="12" cy="12" r="8"/><path d="m10 8 5 4-5 4V8Z"/>', matchs:'<path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/>', classement:'<path d="M5 20V10h4v10M10 20V4h4v16M15 20v-7h4v7"/>', clubs:'<circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/>', joueurs:'<circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/>', data:'<path d="M5 5h14v14H5z"/><path d="M9 9h2v2H9zM13 9h2v2h-2zM9 13h2v2H9zM13 13h2v2h-2z"/>', saisons:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>', tv:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3V9Z"/>', magazine:'<path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h6M8 16h8"/>', archives:'<path d="M4 7h16v13H4zM3 4h18v3H3z"/><path d="M9 12h6"/>', supporters:'<path d="M6 20v-8M12 20V5M18 20v-11"/><path d="M4 12h4M10 5h4M16 9h4"/>', carte:'<path d="M4 5l6-2 4 2 6-2v16l-6 2-4-2-6 2V5Z"/><path d="M10 3v16M14 5v16"/>', records:'<path d="m12 3 2.4 5 5.6.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.6-.8L12 3Z"/>', ranking:'<path d="M5 17 17 5M9 5h8v8"/>' }; return `<svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths[name] || '<circle cx="12" cy="12" r="8"/>'}</svg>`; };
@@ -220,19 +473,411 @@
     const formDots = form => form.map(x=>`<span class="inline-flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-extrabold ${x==='V'?'bg-emerald-100 text-emerald-700':x==='N'?'bg-amber-100 text-amber-700':'bg-rose-100 text-rose-700'}">${x}</span>`).join('');
 
     function shell(content) {
-      return `<div class="min-h-screen"><div class="bg-ink px-4 py-2 text-center text-[11px] font-bold uppercase tracking-[.12em] text-lime"><span class="mr-2 inline-block h-2 w-2 rounded-full bg-coral"></span> Fil direct · Mazembe 2–1 Vita Club · Match terminé <button onclick="go('direct')" class="ml-2 underline underline-offset-4">Voir le centre de match</button></div><header class="sticky top-0 z-30 border-b border-slate-200/80 bg-paper/90 backdrop-blur-xl dark:border-white/10 dark:bg-[#111916]/90"><div class="mx-auto flex max-w-[1440px] items-center gap-4 px-4 py-4 lg:px-8"><button onclick="toggleMenu()" class="rounded-lg p-2 text-xl lg:hidden" aria-label="Menu">☰</button><a href="#home" onclick="go('home')" class="flex items-center gap-2"><img src="illico.png" alt="illico" class="h-12 w-44 object-contain object-left"></a><nav class="hidden flex-1 items-center justify-center gap-1 xl:flex">${nav.map(([label,id])=>`<button onclick="go('${id}')" class="rounded-lg px-2.5 py-2 text-xs font-bold ${current===id?'bg-ink text-white dark:bg-lime dark:text-ink':'text-slate-600 hover:bg-white dark:text-slate-300 dark:hover:bg-white/10'}">${label}</button>`).join('')}</nav><div class="ml-auto flex items-center gap-1"><button onclick="go('search')" class="rounded-lg p-2 text-lg hover:bg-white dark:hover:bg-white/10" aria-label="Rechercher">⌕</button><button onclick="toggleTheme()" class="rounded-lg p-2 text-lg hover:bg-white dark:hover:bg-white/10" aria-label="Changer de thème">${dark?'☀':'◐'}</button><button onclick="go('profile')" class="hidden rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold sm:block dark:border-white/10">Mon espace</button></div></div><div id="mobileMenu" class="hidden border-t border-slate-200 px-4 pb-4 dark:border-white/10 lg:hidden"><div class="grid grid-cols-2 gap-1 pt-3">${[...nav,...moreNav].map(([label,id])=>`<button onclick="go('${id}')" class="rounded-lg px-3 py-2 text-left text-sm font-bold hover:bg-white dark:hover:bg-white/10">${icon(id)} <span class="ml-2">${label}</span></button>`).join('')}</div></div></header><main class="mx-auto max-w-[1440px] px-4 py-8 lg:px-8 lg:py-12">${content}</main><footer class="mt-12 border-t border-slate-200 bg-white dark:border-white/10 dark:bg-[#17221e]"><div class="mx-auto grid max-w-[1440px] gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4 lg:px-8"><div><div class="mb-4 flex items-center gap-2"><img src="illico.png" alt="illico" class="h-16 w-56 object-contain object-left"></div><p class="max-w-xs text-sm leading-6 text-slate-500 dark:text-slate-400">Le championnat. Au-delà du score. Le média et la mémoire numérique du football congolais.</p></div><div><b class="text-xs uppercase tracking-widest">Compétition</b><div class="mt-4 grid gap-2 text-sm text-slate-500 dark:text-slate-400"><button onclick="go('matchs')" class="text-left hover:text-emerald-700">Matchs</button><button onclick="go('classement')" class="text-left hover:text-emerald-700">Classement</button><button onclick="go('clubs')" class="text-left hover:text-emerald-700">Clubs & joueurs</button></div></div><div><b class="text-xs uppercase tracking-widest">Explorer</b><div class="mt-4 grid gap-2 text-sm text-slate-500 dark:text-slate-400"><button onclick="go('data')" class="text-left hover:text-emerald-700">Data Center</button><button onclick="go('archives')" class="text-left hover:text-emerald-700">Archives</button><button onclick="go('carte')" class="text-left hover:text-emerald-700">Carte de la Ligue</button></div></div><div><b class="text-xs uppercase tracking-widest">La newsletter</b><p class="mt-4 text-sm text-slate-500 dark:text-slate-400">Les essentiels de la semaine dans votre boîte mail.</p><div class="mt-3 flex"><input class="min-w-0 flex-1 rounded-l-lg border border-slate-200 bg-paper px-3 py-2 text-sm outline-none dark:border-white/10 dark:bg-black/20" placeholder="votre@email.com"><button class="rounded-r-lg bg-ink px-3 text-xs font-bold text-white dark:bg-lime dark:text-ink">OK</button></div></div></div><div class="border-t border-slate-200 px-4 py-5 text-center text-xs text-slate-500 dark:border-white/10">© 2025 Les Coulisses de la Ligue 1 RDC · Données éditoriales de démonstration</div></footer><div id="toast" class="fixed bottom-5 left-1/2 z-50 hidden -translate-x-1/2 rounded-full bg-ink px-5 py-3 text-xs font-bold text-white shadow-xl dark:bg-lime dark:text-ink"></div></div>`;
+      return `<div class="min-h-screen bg-paper dark:bg-[#111916]">
+        <!-- Ticker de match en direct moderne -->
+        <div class="border-b border-white/5 bg-gradient-to-r from-[#0a181b] via-[#102428] to-[#0a181b] px-4 py-2 text-center text-[11px] font-bold text-slate-300">
+          <div class="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+              <span class="inline-flex items-center gap-1.5 rounded-full border border-coral/40 bg-coral/15 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-coral">
+                <span class="inline-block h-1.5 w-1.5 rounded-full bg-coral animate-ping"></span> DIRECT
+              </span>
+              <span class="font-display font-semibold text-white">TP Mazembe 2–1 AS Vita Club</span>
+              <span class="text-xs text-slate-400 hidden sm:inline">· Kamalondo · Match terminé</span>
+            </div>
+            <button onclick="go('direct')" class="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-[10px] font-extrabold text-lime transition hover:bg-white/20">
+              Voir le centre de match en direct ↗
+            </button>
+          </div>
+        </div>
+
+        <!-- Header sticky avec glassmorphism -->
+        <header class="sticky top-0 z-30 border-b border-slate-200/80 bg-paper/90 backdrop-blur-xl dark:border-white/10 dark:bg-[#111916]/90 transition-colors">
+          <div class="mx-auto flex max-w-[1440px] items-center gap-4 px-4 py-3.5 lg:px-8">
+            <button onclick="toggleMenu()" class="rounded-xl p-2 text-xl hover:bg-slate-100 lg:hidden dark:hover:bg-white/10" aria-label="Menu">☰</button>
+            <a href="#home" onclick="go('home')" class="flex items-center gap-2">
+              <img src="illico.png" alt="illico" class="h-10 w-40 object-contain object-left transition hover:opacity-90">
+            </a>
+            <nav class="hidden flex-1 items-center justify-center gap-1 xl:flex">
+              ${nav.map(([label,id])=>`
+                <button onclick="go('${id}')" class="relative rounded-xl px-3 py-2 text-xs font-bold transition ${current===id ? 'bg-ink text-white shadow-sm dark:bg-lime dark:text-ink' : 'text-slate-600 hover:bg-slate-100 hover:text-ink dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white'}">
+                  ${label}
+                </button>
+              `).join('')}
+            </nav>
+            <div class="ml-auto flex items-center gap-1.5">
+              <button onclick="go('search')" class="rounded-xl p-2.5 text-base text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10" aria-label="Rechercher" title="Recherche globale">⌕</button>
+              <button onclick="toggleTheme()" class="rounded-xl p-2.5 text-base text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10" aria-label="Changer de thème" title="${dark ? 'Mode clair' : 'Mode sombre'}">${dark ? '☀' : '◐'}</button>
+              <button onclick="go('profile')" class="hidden sm:inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-3.5 py-2 text-xs font-bold shadow-sm transition hover:border-coral hover:text-coral dark:border-white/10 dark:bg-white/5 dark:text-white">
+                <span class="flex h-5 w-5 items-center justify-center rounded-full bg-lime text-[10px] font-black text-ink">AM</span>
+                <span>Mon espace</span>
+              </button>
+            </div>
+          </div>
+          <div id="mobileMenu" class="hidden border-t border-slate-200 px-4 pb-4 dark:border-white/10 lg:hidden bg-paper dark:bg-[#111916]">
+            <div class="grid grid-cols-2 gap-1.5 pt-3">
+              ${[...nav,...moreNav].map(([label,id])=>`
+                <button onclick="go('${id}')" class="flex items-center gap-2 rounded-xl px-3 py-2.5 text-left text-xs font-bold hover:bg-slate-100 dark:hover:bg-white/10 ${current===id?'bg-ink text-white dark:bg-lime dark:text-ink':''}">
+                  <span class="w-4">${icon(id)}</span>
+                  <span>${label}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </header>
+
+        <!-- Contenu principal fluide -->
+        <main class="mx-auto max-w-[1440px] px-4 py-6 lg:px-8 lg:py-8">
+          ${content}
+        </main>
+
+        <!-- Footer d'élite -->
+        <footer class="mt-16 border-t border-slate-200 bg-white dark:border-white/10 dark:bg-[#0c1514]">
+          <div class="mx-auto grid max-w-[1440px] gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4 lg:px-8">
+            <div>
+              <div class="mb-4 flex items-center gap-2">
+                <img src="illico.png" alt="illico" class="h-12 w-48 object-contain object-left">
+              </div>
+              <p class="max-w-xs text-xs leading-6 text-slate-500 dark:text-slate-400">
+                Le média officiel et la mémoire numérique du football d'élite en RD Congo. Analyses, enquêtes, données fiables et archives de la Ligue 1.
+              </p>
+              <div class="mt-4 flex items-center gap-2">
+                <span class="rounded-full bg-lime/20 border border-lime/40 px-2.5 py-0.5 text-[9px] font-extrabold text-lime uppercase">Partenaire Officiel</span>
+              </div>
+            </div>
+            <div>
+              <b class="text-xs font-black uppercase tracking-widest text-ink dark:text-white">Compétition</b>
+              <div class="mt-4 grid gap-2.5 text-xs font-bold text-slate-500 dark:text-slate-400">
+                <button onclick="go('matchs')" class="text-left hover:text-coral transition">Matchs & Calendrier</button>
+                <button onclick="go('classement')" class="text-left hover:text-coral transition">Tableau du Classement</button>
+                <button onclick="go('clubs')" class="text-left hover:text-coral transition">Les 18 Clubs officiels</button>
+                <button onclick="go('joueurs')" class="text-left hover:text-coral transition">Player Center</button>
+              </div>
+            </div>
+            <div>
+              <b class="text-xs font-black uppercase tracking-widest text-ink dark:text-white">Médias & Éditions</b>
+              <div class="mt-4 grid gap-2.5 text-xs font-bold text-slate-500 dark:text-slate-400">
+                <button onclick="go('actualites')" class="text-left hover:text-coral transition">Actualités & Enquêtes (49)</button>
+                <button onclick="go('magazine')" class="text-left hover:text-coral transition">Liseuse HD Magazine</button>
+                <button onclick="go('tv')" class="text-left hover:text-coral transition">Coulisses TV Vidéo</button>
+                <button onclick="go('data')" class="text-left hover:text-coral transition">Data Center & Statistiques</button>
+                <button onclick="go('archives')" class="text-left hover:text-coral transition">Musée du Patrimoine</button>
+              </div>
+            </div>
+            <div>
+              <b class="text-xs font-black uppercase tracking-widest text-ink dark:text-white">La Lettre de la Ligue</b>
+              <p class="mt-4 text-xs leading-5 text-slate-500 dark:text-slate-400">Recevez l'essentiel des résultats, analyses tactiques et parutions officielles.</p>
+              <div class="mt-3 flex">
+                <input class="min-w-0 flex-1 rounded-l-xl border border-slate-200 bg-paper px-3 py-2.5 text-xs font-bold outline-none focus:border-coral dark:border-white/10 dark:bg-black/20 dark:text-white" placeholder="votre@email.com">
+                <button onclick="toast('Inscription enregistrée !')" class="rounded-r-xl bg-ink px-4 text-xs font-extrabold text-white transition hover:bg-emerald-700 dark:bg-lime dark:text-ink">OK</button>
+              </div>
+            </div>
+          </div>
+          <div class="border-t border-slate-100 px-4 py-4 text-center text-[11px] text-slate-400 dark:border-white/5">
+            © 2026 Les Coulisses de la Ligue 1 RDC · illicocash by Rawbank · Tous droits réservés
+          </div>
+        </footer>
+        <div id="toast" class="fixed bottom-6 left-1/2 z-50 hidden -translate-x-1/2 rounded-2xl bg-ink/95 px-6 py-3 text-xs font-bold text-white shadow-2xl backdrop-blur-md dark:bg-lime dark:text-ink border border-white/10"></div>
+      </div>`;
     }
 
-    function home() { const lead=articles[0]; return `<section class="grid items-end gap-8 lg:grid-cols-[1.35fr_.65fr]"><div class="relative min-h-[430px] overflow-hidden rounded-3xl bg-ink p-6 text-white shadow-soft sm:p-10"><img src="${lead.image}" class="absolute inset-0 h-full w-full object-cover opacity-55" alt="Match de football"><div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent"></div><div class="relative flex h-full min-h-[370px] max-w-2xl flex-col justify-end"><span class="mb-4 w-fit rounded-full bg-lime px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-ink">À la une · ${lead.cat}</span><h1 class="font-display text-3xl font-semibold leading-tight sm:text-5xl">${lead.title}</h1><p class="mt-4 max-w-xl text-sm leading-6 text-white/75">${lead.excerpt}</p><button onclick="go('article')" class="mt-6 w-fit rounded-lg bg-white px-4 py-3 text-xs font-extrabold text-ink">Lire l’analyse →</button></div></div><div class="noise rounded-3xl bg-lime p-6 text-ink sm:p-8"><p class="text-xs font-extrabold uppercase tracking-widest">La Ligue en chiffres</p><div class="mt-8 grid grid-cols-2 gap-6"><div><b class="font-display text-4xl">18</b><p class="mt-1 text-xs font-bold uppercase">Clubs actifs</p></div><div><b class="font-display text-4xl">245</b><p class="mt-1 text-xs font-bold uppercase">Matchs cette saison</p></div><div><b class="font-display text-4xl">632</b><p class="mt-1 text-xs font-bold uppercase">Buts inscrits</p></div><div><b class="font-display text-4xl">12</b><p class="mt-1 text-xs font-bold uppercase">Stades référencés</p></div></div><button onclick="go('data')" class="mt-8 rounded-lg bg-ink px-4 py-3 text-xs font-bold text-white">Explorer les données ↗</button></div></section><section class="mt-14 grid gap-10 lg:grid-cols-[1.5fr_.8fr]"><div>${sectionHead('Actualités récentes','Tout ce qui fait vibrer la Ligue 1','actualites') }<div class="grid gap-5 sm:grid-cols-2">${articles.slice(1).map((a,i)=>`<article class="group overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-[#19241f]"><img src="${a.image}" class="photo-zone transition duration-500 group-hover:scale-105" alt="${a.title}"><div class="p-5"><p class="text-[10px] font-extrabold uppercase tracking-widest text-coral">${a.cat}</p><h3 class="mt-2 font-display text-base font-semibold leading-snug">${a.title}</h3><p class="mt-3 text-xs leading-5 text-slate-500 dark:text-slate-400">${a.date} · ${a.read} de lecture</p></div></article>`).join('')}</div></div><div>${sectionHead('En direct','Les rendez-vous du jour','matchs')}${card(matches.slice(0,2).map(matchRow).join(''))}</div></section><section class="mt-14">${sectionHead('Classement','La course au titre','classement')} ${card(`<div class="grid gap-1">${clubs.slice(0,5).map(c=>`<div class="flex items-center gap-3 border-b border-slate-100 py-3 last:border-0 dark:border-white/10"><b class="w-5 text-xs text-slate-400">${c.rank}</b>${logo(c,true)}<span class="flex-1 text-sm font-bold">${c.name}</span><div class="hidden gap-1 sm:flex">${formDots(c.form)}</div><b class="font-display">${c.pts}</b><span class="text-[10px] text-slate-400">PTS</span></div>`).join('')}</div>`)}</section><section class="mt-14">${sectionHead('Coulisses TV','Les histoires derrière le terrain','tv')}<div class="grid gap-5 md:grid-cols-3">${tv.map(v=>`<article class="group relative overflow-hidden rounded-2xl bg-ink"><img src="${v.image}" class="h-56 w-full object-cover opacity-75 transition duration-500 group-hover:scale-105" alt="${v.title}"><div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink p-5 pt-16 text-white"><p class="text-[10px] font-bold uppercase tracking-widest text-lime">${v.meta}</p><h3 class="mt-2 font-display font-semibold">${v.title}</h3></div><span class="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-lime text-ink">▶</span></article>`).join('')}</div></section>`; }
+    function home() {
+      const lead = articles[0];
+      const recent = articles.slice(1, 5);
+      return `
+        <!-- Hero section avec article phare et panneau Data Center d'élite -->
+        <section class="grid items-stretch gap-6 lg:grid-cols-[1.45fr_.85fr]">
+          <div class="relative min-h-[460px] overflow-hidden rounded-3xl bg-slate-900 p-6 text-white shadow-soft sm:p-10 flex flex-col justify-end group">
+            <img src="${lead.image}" class="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-55" alt="${lead.title}">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/10"></div>
+            <div class="relative z-10 max-w-2xl">
+              <div class="mb-4 flex flex-wrap items-center gap-2">
+                <span class="rounded-full bg-lime px-3 py-1 text-[10px] font-black uppercase tracking-widest text-ink shadow">À la une · ${lead.cat}</span>
+                ${lead.code ? `<span class="rounded-full bg-coral px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-white shadow">★ Magazine N°1</span>` : ''}
+                <span class="text-xs text-white/70 font-medium">· ${lead.read} de lecture</span>
+              </div>
+              <h1 class="font-display text-2xl font-bold leading-tight sm:text-4xl lg:text-5xl text-white drop-shadow-sm">${lead.title}</h1>
+              <p class="mt-4 text-xs sm:text-sm leading-6 text-slate-200 line-clamp-3">${lead.excerpt}</p>
+              <div class="mt-6 flex flex-wrap items-center gap-3">
+                <button onclick="go('article-${lead.id}')" class="rounded-xl bg-white px-5 py-3 text-xs font-black text-ink shadow-lg transition hover:bg-lime hover:scale-105 active:scale-95">Lire l’enquête complète →</button>
+                <button onclick="go('actualites')" class="rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-xs font-bold text-white backdrop-blur hover:bg-white/20 transition">Tous les 49 articles</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panneau Chiffres clés / Data Center (remplaçant le bloc jaune) -->
+          <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0c232a] via-[#13333b] to-[#0a1b20] p-6 text-white shadow-soft border border-white/10 sm:p-8 flex flex-col justify-between">
+            <div class="absolute -right-12 -top-12 h-44 w-44 rounded-full bg-lime/10 blur-3xl pointer-events-none"></div>
+            <div>
+              <div class="flex items-center justify-between">
+                <p class="text-[10px] font-extrabold uppercase tracking-[.2em] text-lime">Indicateurs Officiels</p>
+                <span class="rounded-full bg-white/10 px-2.5 py-0.5 text-[9px] font-bold text-slate-300">Saison 2025-2026</span>
+              </div>
+              <h2 class="mt-2 font-display text-xl sm:text-2xl font-bold">La Ligue en chiffres</h2>
+              <div class="mt-6 grid grid-cols-2 gap-3.5">
+                <div class="rounded-2xl bg-white/5 p-4 border border-white/5 backdrop-blur-sm transition hover:bg-white/10">
+                  <b class="font-display text-3xl font-bold text-white">18</b>
+                  <p class="mt-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Clubs actifs</p>
+                </div>
+                <div class="rounded-2xl bg-white/5 p-4 border border-white/5 backdrop-blur-sm transition hover:bg-white/10">
+                  <b class="font-display text-3xl font-bold text-white">245</b>
+                  <p class="mt-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Matchs joués</p>
+                </div>
+                <div class="rounded-2xl bg-white/5 p-4 border border-white/5 backdrop-blur-sm transition hover:bg-white/10">
+                  <b class="font-display text-3xl font-bold text-lime">632</b>
+                  <p class="mt-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Buts inscrits</p>
+                </div>
+                <div class="rounded-2xl bg-white/5 p-4 border border-white/5 backdrop-blur-sm transition hover:bg-white/10">
+                  <b class="font-display text-3xl font-bold text-orange-300">49</b>
+                  <p class="mt-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Articles & Enquêtes</p>
+                </div>
+              </div>
+            </div>
+            <button onclick="go('data')" class="mt-6 w-full rounded-xl bg-lime py-3 text-center text-xs font-black uppercase tracking-wider text-ink shadow-lg transition hover:bg-white hover:scale-[1.02] active:scale-[0.98]">
+              Explorer les statistiques officielles ↗
+            </button>
+          </div>
+        </section>
+
+        <!-- Section Actualités récentes & En direct côte à côte -->
+        <section class="mt-14 grid gap-8 lg:grid-cols-[1.5fr_.9fr]">
+          <div>
+            ${sectionHead('Actualités & Enquêtes récentes', 'Tout ce qui fait vibrer la Ligue 1', 'actualites')}
+            <div class="grid gap-5 sm:grid-cols-2">
+              ${recent.map(a => `
+                <article class="article-card-hover group flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+                  <div>
+                    <div class="relative aspect-[16/10] overflow-hidden bg-slate-900">
+                      <img src="${a.image}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt="${a.title}" loading="lazy">
+                      <div class="absolute left-3 top-3">
+                        ${getCategoryBadge(a.cat)}
+                      </div>
+                      ${a.code ? `<span class="absolute right-3 top-3 rounded-full bg-black/85 backdrop-blur px-2 py-0.5 text-[9px] font-black text-lime">MAGAZINE</span>` : ''}
+                    </div>
+                    <div class="p-5">
+                      <div class="flex items-center justify-between text-[11px] text-slate-400 font-bold">
+                        <span>⏱ ${a.read}</span>
+                        <span>${a.date}</span>
+                      </div>
+                      <h3 class="mt-2.5 font-display text-base font-bold leading-snug group-hover:text-coral transition-colors line-clamp-2">${a.title}</h3>
+                      <p class="mt-2.5 text-xs leading-5 text-slate-500 dark:text-slate-400 line-clamp-3">${a.excerpt}</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between border-t border-slate-100 p-5 pt-3 text-xs dark:border-white/10">
+                    <span class="text-[10px] font-bold text-slate-400">${a.cat}</span>
+                    <button onclick="go('article-${a.id}')" class="font-extrabold text-coral inline-flex items-center gap-1 hover:underline">
+                      Lire l’article <span class="read-arrow">→</span>
+                    </button>
+                  </div>
+                </article>
+              `).join('')}
+            </div>
+            <div class="mt-6 text-center">
+              <button onclick="go('actualites')" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3 text-xs font-bold text-slate-700 shadow-sm transition hover:border-coral hover:text-coral dark:border-white/10 dark:bg-[#19241f] dark:text-white">
+                Découvrir l'ensemble des 49 articles d'investigation →
+              </button>
+            </div>
+          </div>
+          <div>
+            ${sectionHead('En direct', 'Affiches & résultats', 'matchs')}
+            <div class="overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-2 shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+              ${matches.slice(0, 3).map(resultRow).join('')}
+              <div class="p-3 text-center border-t border-slate-100 dark:border-white/5">
+                <button onclick="go('matchs')" class="text-xs font-extrabold text-coral hover:underline">Voir tous les résultats de la saison →</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Classement condensé et Coulisses TV -->
+        <section class="mt-14">
+          ${sectionHead('Classement', 'La course au sacre national', 'classement')}
+          ${card(`
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead>
+                  <tr class="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:border-white/10">
+                    <th class="py-3 px-2"># Club</th>
+                    <th class="py-3 px-2">Points</th>
+                    <th class="py-3 px-2 hidden sm:table-cell">Forme récente</th>
+                    <th class="py-3 px-2 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-white/5">
+                  ${clubs.slice(0,5).map((c,i)=>`
+                    <tr class="transition hover:bg-slate-50 dark:hover:bg-white/5">
+                      <td class="py-3 px-2 flex items-center gap-3">
+                        <span class="w-5 text-xs font-bold ${i===0?'text-coral font-black':'text-slate-400'}">${c.rank}.</span>
+                        ${logo(c,true)}
+                        <span class="font-bold text-ink dark:text-white">${c.name}</span>
+                      </td>
+                      <td class="py-3 px-2 font-display text-base font-bold text-ink dark:text-white">${c.pts} <span class="text-[10px] font-normal text-slate-400">pts</span></td>
+                      <td class="py-3 px-2 hidden sm:table-cell"><div class="flex gap-1">${formDots(c.form)}</div></td>
+                      <td class="py-3 px-2 text-right">
+                        <button onclick="go('club-${c.id}')" class="rounded-lg px-2.5 py-1 text-xs font-bold text-coral hover:bg-coral/10 transition">Fiche →</button>
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `)}
+        </section>
+
+        <section class="mt-14">
+          ${sectionHead('Coulisses TV', 'Les formats vidéo exclusifs', 'tv')}
+          <div class="grid gap-5 md:grid-cols-3">
+            ${tv.map(v=>`
+              <article class="group relative overflow-hidden rounded-3xl bg-slate-900 shadow-soft">
+                <img src="${v.image}" class="h-60 w-full object-cover opacity-75 transition duration-500 group-hover:scale-105" alt="${v.title}">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent p-5 flex flex-col justify-end text-white">
+                  <p class="text-[10px] font-extrabold uppercase tracking-widest text-lime">${v.meta}</p>
+                  <h3 class="mt-1.5 font-display font-semibold leading-snug">${v.title}</h3>
+                </div>
+                <span class="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-lime text-ink shadow-md transition group-hover:scale-110">▶</span>
+              </article>
+            `).join('')}
+          </div>
+        </section>
+      `;
+    }
     const sectionHead=(eyebrow,title,link)=>`<div class="mb-5 flex items-end justify-between gap-4"><div><p class="text-[10px] font-extrabold uppercase tracking-[.22em] text-emerald-700 dark:text-lime">${eyebrow}</p><h2 class="mt-2 font-display text-2xl font-semibold">${title}</h2></div>${link?`<button onclick="go('${link}')" class="text-xs font-extrabold text-emerald-700 dark:text-lime">Tout voir ↗</button>`:''}</div>`;
 
-    function resultRow(m){ const homeName=club(m.home).id===m.home?club(m.home).name:m.home; const awayName=club(m.away).id===m.away?club(m.away).name:m.away; const score=m.status==='Forfait'?'Forfait':m.hs===null?'À venir':`${m.hs} - ${m.as}`; return `<div class="flex flex-wrap items-center gap-3 border-b border-slate-200 py-4 last:border-0 dark:border-white/10"><div class="w-24 text-xs font-bold text-slate-500">${m.date}<br><span class="text-ink dark:text-white">${m.round}</span></div><div class="min-w-[130px] flex-1 text-right text-sm font-bold">${homeName}</div><div class="min-w-[58px] rounded-lg bg-slate-100 px-2 py-2 text-center font-display text-lg font-bold text-ink dark:bg-white/10 dark:text-white">${score}</div><div class="min-w-[130px] flex-1 text-sm font-bold">${awayName}</div><span class="w-full rounded-full bg-slate-100 px-3 py-1 text-center text-[10px] font-extrabold uppercase tracking-widest text-slate-500 sm:ml-auto sm:w-auto dark:bg-white/10">${m.group}</span></div>`; }
-    function groupedResults(rows){ const groups=[]; rows.forEach(match=>{ let group=groups.find(x=>x.name===match.group); if(!group){ group={name:match.group,days:[]}; groups.push(group); } let day=group.days.find(x=>x.name===match.round); if(!day){ day={name:match.round,matches:[]}; group.days.push(day); } day.matches.push(match); }); return groups.map(group=>`<section class="match-group"><header class="match-group-header"><span class="match-flag">🇨🇩</span><strong>RD CONGO : Ligue 1 · ${group.name}</strong><span class="match-pin">⌖</span><button class="ml-auto text-xs font-bold underline">Classement</button></header>${group.days.map(day=>`<div class="match-day"><h2>${day.name}</h2><div class="match-day-list">${day.matches.map(resultRow).join('')}</div></div>`).join('')}</section>`).join(''); }
+    function resultRow(m){
+      const h = typeof m.home === 'string' ? clubMeta(m.home) : m.home;
+      const a = typeof m.away === 'string' ? clubMeta(m.away) : m.away;
+      const isLive = m.status === 'En direct';
+      const isDone = m.status === 'Terminé';
+      const scoreFormatted = m.status === 'Forfait'
+        ? '<span class="text-xs font-bold text-rose-500 uppercase">Forfait</span>'
+        : m.hs === null
+          ? '<span class="text-xs font-extrabold text-slate-400">À VENIR</span>'
+          : `<span class="font-display text-base font-bold text-ink dark:text-white">${m.hs} <span class="text-slate-400 text-xs">-</span> ${m.as}</span>`;
+      return `
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-3.5 transition-colors hover:bg-slate-50/70 dark:border-white/5 dark:hover:bg-white/5 last:border-0 rounded-2xl">
+          <div class="w-24 text-xs font-bold text-slate-400">
+            <span>${m.date}</span>
+            <p class="text-[10px] font-extrabold text-coral dark:text-lime">${m.round}</p>
+          </div>
+          <div class="flex flex-1 items-center justify-end gap-2 text-right">
+            <span class="text-xs font-bold text-ink dark:text-white truncate max-w-[130px] sm:max-w-none">${h.name}</span>
+            ${logo(h, true)}
+          </div>
+          <div class="min-w-[70px] rounded-xl border border-slate-200/80 bg-slate-100 px-3 py-1.5 text-center shadow-sm dark:border-white/10 dark:bg-black/30">
+            ${scoreFormatted}
+          </div>
+          <div class="flex flex-1 items-center gap-2 text-left">
+            ${logo(a, true)}
+            <span class="text-xs font-bold text-ink dark:text-white truncate max-w-[130px] sm:max-w-none">${a.name}</span>
+          </div>
+          <div class="w-24 text-right">
+            <span class="inline-flex rounded-full px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${isLive ? 'bg-red-100 text-red-700 animate-pulse' : isDone ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300'}">
+              ${m.status}
+            </span>
+          </div>
+        </div>
+      `;
+    }
+    function groupedResults(rows){
+      const groups = [];
+      rows.forEach(match => {
+        let group = groups.find(x => x.name === match.group);
+        if(!group){ group = { name: match.group, days: [] }; groups.push(group); }
+        let day = group.days.find(x => x.name === match.round);
+        if(!day){ day = { name: match.round, matches: [] }; group.days.push(day); }
+        day.matches.push(match);
+      });
+      return groups.map(group => `
+        <section class="mb-8 overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+          <header class="flex items-center justify-between border-b border-slate-100 bg-slate-50/80 px-5 py-4 dark:border-white/5 dark:bg-black/20">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl">🇨🇩</span>
+              <strong class="font-display text-sm font-bold tracking-tight text-ink dark:text-white">Ligue 1 RDC · ${group.name}</strong>
+            </div>
+            <button onclick="go('classement')" class="inline-flex items-center gap-1 text-xs font-bold text-coral hover:underline">
+              Voir le classement officiel →
+            </button>
+          </header>
+          ${group.days.map(day => `
+            <div class="p-3 sm:p-5">
+              <div class="mb-2 px-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                ${day.name}
+              </div>
+              <div class="divide-y divide-slate-100 dark:divide-white/5">
+                ${day.matches.map(resultRow).join('')}
+              </div>
+            </div>
+          `).join('')}
+        </section>
+      `).join('');
+    }
     function matchesPage(){ const all=matchResultsBySeason[selectedMatchSeason]||[]; const rows=selectedMatchGroup==='Tous les groupes'?all:all.filter(m=>m.group===selectedMatchGroup); return pageTitle('Compétition · résultats','Matchs & résultats',`Résultats de la saison ${selectedMatchSeason}, avec séparation entre Groupe Championnat et Groupe Relégation.`)+`<div class="mb-8 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft dark:border-white/10 dark:bg-[#19241f]"><label class="text-xs font-extrabold uppercase tracking-widest text-slate-500">Saison<select onchange="changeMatchSeason(this.value)" class="ml-3 rounded-lg border border-slate-200 bg-paper px-4 py-3 text-sm font-bold normal-case tracking-normal text-ink dark:border-white/10 dark:bg-black/20 dark:text-white">${seasons.slice(0,3).map(s=>`<option ${selectedMatchSeason===s?'selected':''}>${s}</option>`).join('')}</select></label><div class="flex flex-wrap gap-2">${['Tous les groupes','Groupe Championnat','Groupe Relégation'].map(g=>`<button onclick="changeMatchGroup('${g}')" class="rounded-lg px-3 py-2 text-xs font-bold ${selectedMatchGroup===g?'bg-coral text-white':'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300'}">${g}</button>`).join('')}</div></div><div class="mb-5 flex items-center justify-between"><p class="text-xs font-bold text-slate-500">${rows.length} résultat(s) affiché(s)</p><span class="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-800">${selectedMatchSeason==='2023-2024'?'Source : Flashscore.fr':'Base éditoriale Les Coulisses'}</span></div>${rows.length?groupedResults(rows):card('<div class="py-12 text-center text-sm text-slate-500">Aucun résultat disponible pour ce filtre.</div>')}`; }
     function changeMatchSeason(season){ selectedMatchSeason=season; selectedMatchGroup='Tous les groupes'; localStorage.setItem('lcl-match-season',season); render(); }
     function changeMatchGroup(group){ selectedMatchGroup=group; render(); }
     function standingsForm(form, retired=false){ return retired ? '<span class="text-xs font-bold text-slate-500">Retiré du tournoi</span>' : form.map(x=>`<span class="inline-flex h-7 w-7 items-center justify-center rounded-md text-xs font-extrabold ${x==='V'?'bg-emerald-600 text-white':x==='N'?'bg-amber-500 text-white':'bg-red-600 text-white'}">${x}</span>`).join(''); }
-    function standingsTable(group, rows){ return `<div class="standings-scroll overflow-x-auto rounded-2xl border standings-shell p-3 shadow-soft"><table class="standings-table w-full min-w-[850px] border-collapse text-left text-sm"><thead><tr class="standings-head text-[10px] uppercase tracking-widest"><th colspan="2" class="rounded-tl-lg px-3 py-4"># · <span class="ml-3">Groupe ${group}</span></th><th class="px-3 py-4">MJ</th><th class="px-3 py-4">V</th><th class="px-3 py-4">N</th><th class="px-3 py-4">D</th><th class="px-3 py-4">B</th><th class="px-3 py-4">Diff</th><th class="px-3 py-4">Pts</th><th class="rounded-tr-lg px-3 py-4">État de forme</th></tr></thead><tbody>${rows.map((r,i)=>`<tr class="standings-row border-b last:border-0 ${r[9]?'opacity-60':''}"><td class="w-12 px-3 py-3"><span class="inline-flex h-7 w-7 items-center justify-center rounded-md ${i<4&&!r[9]?'standings-qualifier':'bg-transparent'} font-bold">${i+1}.</span></td><td class="standings-name min-w-[210px] px-3 py-3 font-semibold">${r[0]}${r[9]?'<small class="ml-2 text-xs text-slate-400">(Retiré)</small>':''}</td><td class="px-3 py-3">${r[1]}</td><td class="px-3 py-3">${r[2]}</td><td class="px-3 py-3">${r[3]}</td><td class="px-3 py-3">${r[4]}</td><td class="px-3 py-3">${r[5]}</td><td class="px-3 py-3">${r[6]}</td><td class="px-3 py-3 font-extrabold">${r[7]}</td><td class="px-3 py-3"><div class="flex gap-1">${standingsForm(r[8],r[9])}</div></td></tr>`).join('')}</tbody></table></div>`; }
+    function standingsTable(group, rows){
+      return `
+        <div class="mb-10 overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+          <div class="flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-5 py-4 dark:border-white/5 dark:bg-black/20">
+            <div class="flex items-center gap-2">
+              <span class="rounded-lg bg-lime px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-ink">Groupe ${group}</span>
+              <span class="text-xs font-bold text-slate-500">${rows.length} clubs</span>
+            </div>
+            <span class="text-[11px] text-slate-400 font-bold hidden sm:inline">Top 4 qualifiés pour les Play-offs</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[780px] border-collapse text-left text-xs">
+              <thead>
+                <tr class="border-b border-slate-200/80 bg-slate-100/50 text-[10px] font-black uppercase tracking-wider text-slate-500 dark:border-white/10 dark:bg-white/5">
+                  <th class="py-3.5 px-4 w-12 text-center">#</th>
+                  <th class="py-3.5 px-4 min-w-[200px]">Club</th>
+                  <th class="py-3.5 px-3 text-center">MJ</th>
+                  <th class="py-3.5 px-3 text-center">V</th>
+                  <th class="py-3.5 px-3 text-center">N</th>
+                  <th class="py-3.5 px-3 text-center">D</th>
+                  <th class="py-3.5 px-3 text-center">Buts</th>
+                  <th class="py-3.5 px-3 text-center">Diff</th>
+                  <th class="py-3.5 px-4 text-center font-black">Pts</th>
+                  <th class="py-3.5 px-4 text-center">Forme (5 derniers)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-white/5">
+                ${rows.map((r, i) => {
+                  const isTop4 = i < 4 && !r[9];
+                  const isBottom2 = i >= rows.length - 2 && !r[9];
+                  const c = clubMeta(r[0]);
+                  return `
+                    <tr class="transition hover:bg-slate-50/80 dark:hover:bg-white/5 ${r[9] ? 'opacity-50' : ''}">
+                      <td class="py-3.5 px-4 text-center font-bold">
+                        <span class="inline-flex h-6 w-6 items-center justify-center rounded-lg text-xs font-bold ${isTop4 ? 'bg-sky/20 text-sky font-black' : isBottom2 ? 'bg-red-100 text-red-700' : 'text-slate-400'}">
+                          ${i+1}
+                        </span>
+                      </td>
+                      <td class="py-3.5 px-4 font-semibold">
+                        <div class="flex items-center gap-3">
+                          ${logo(c, true)}
+                          <div>
+                            <span class="font-bold text-ink dark:text-white">${r[0]}</span>
+                            ${r[9] ? '<span class="ml-2 text-[10px] text-slate-400">(Retiré)</span>' : ''}
+                          </div>
+                        </div>
+                      </td>
+                      <td class="py-3.5 px-3 text-center font-bold">${r[1]}</td>
+                      <td class="py-3.5 px-3 text-center text-slate-600 dark:text-slate-400">${r[2]}</td>
+                      <td class="py-3.5 px-3 text-center text-slate-600 dark:text-slate-400">${r[3]}</td>
+                      <td class="py-3.5 px-3 text-center text-slate-600 dark:text-slate-400">${r[4]}</td>
+                      <td class="py-3.5 px-3 text-center font-mono text-[11px] text-slate-500">${r[5]}</td>
+                      <td class="py-3.5 px-3 text-center font-bold ${r[6]>0 ? 'text-emerald-600' : r[6]<0 ? 'text-rose-600' : 'text-slate-400'}">${r[6]>0 ? `+${r[6]}` : r[6]}</td>
+                      <td class="py-3.5 px-4 text-center font-display text-base font-bold text-ink dark:text-white">${r[7]}</td>
+                      <td class="py-3.5 px-4 text-center"><div class="flex justify-center gap-1">${standingsForm(r[8], r[9])}</div></td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
     function standingsPage(){ const data=selectedSeason==='2025-2026'?standings2025:(archivedStandings[selectedSeason]||{A:[],B:[]}); const archive=selectedSeason!=='2025-2026'; const hasData=data.A.length>0||data.B.length>0; return pageTitle('Compétition · officiel','Classement Ligue 1 RDC',`Groupes A et B · Saison ${selectedSeason}`)+`<div class="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft dark:border-white/10 dark:bg-[#19241f]"><label class="text-xs font-extrabold uppercase tracking-widest text-slate-500">Saison<select onchange="changeRankingSeason(this.value)" class="ml-3 rounded-lg border border-slate-200 bg-paper px-4 py-3 text-sm font-bold normal-case tracking-normal text-ink outline-none dark:border-white/10 dark:bg-black/20 dark:text-white">${seasons.slice(0,3).map(s=>`<option ${selectedSeason===s?'selected':''}>${s}</option>`).join('')}</select></label><span class="rounded-full ${archive?'bg-amber-100 text-amber-800':'bg-red-100 text-red-700'} px-3 py-2 text-xs font-bold">${!hasData?'Données à intégrer':archive?'Archives en cours de consolidation':'Données transcrites depuis les tableaux fournis'}</span></div>${standingsTable('A',data.A)}<div class="my-8 flex items-center gap-5 text-xs font-bold text-slate-500"><span><i class="mr-2 inline-block h-3 w-3 rounded bg-sky"></i>Qualification · Ligue 1 (Groupe Championnat)</span><span><i class="mr-2 inline-block h-3 w-3 rounded bg-red-600"></i>Relégation</span></div>${standingsTable('B',data.B)}<div class="mt-4 flex items-center justify-between text-xs text-slate-500"><span>Les formes V / N / D sont affichées selon la source visuelle.</span><span>Dernière mise à jour : saison ${selectedSeason}</span></div>`; }
     function changeRankingSeason(season){ selectedSeason=season; localStorage.setItem('lcl-ranking-season',season); render(); }
     function clubSlug(name){ return `club-${name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}`; }
@@ -253,22 +898,506 @@
     function searchPlayers(query){ playerQuery=query; renderPlayers(); }
     function filterPlayers(position){ playerPosition=position; renderPlayers(); }
     function playerExplorerPage(slug){ const p=players.find(x=>playerSlug(x.name)===slug)||players[0]; const c=clubMeta(club(p.club).name); return `<div class="mb-6 text-xs font-bold text-slate-500">Joueurs <span class="mx-2">›</span> ${p.name}</div><section class="club-hero overflow-hidden rounded-3xl bg-[#062b35] p-6 text-white shadow-soft sm:p-8"><div class="club-hero-main flex flex-wrap items-center gap-5"><span class="club-hero-logo flex h-28 w-28 items-center justify-center rounded-3xl bg-white text-2xl font-extrabold text-ink">${p.initials}</span><div class="club-hero-copy flex-1"><p class="text-xs font-extrabold uppercase tracking-[.2em] text-orange-300">🇨🇩 RDC · ${p.position}</p><h1 class="club-hero-title mt-2 font-display text-3xl font-semibold sm:text-5xl">${p.name}</h1><p class="mt-2 text-sm text-white/80">${p.age?`Âge : ${p.age} ans (${p.birth}) · `:''}${p.loanTo?`Prêt de : ${c.name} jusqu’au ${p.loanUntil}`:`${c.name}`}</p></div><button onclick="toast('Joueur ajouté aux favoris')" class="club-hero-actions rounded-lg border border-white/20 px-4 py-3 text-sm font-bold">☆ Favori</button></div><nav class="club-hero-tabs mt-8 flex flex-wrap gap-2 border-t border-white/10 pt-5">${['Résumé','Actualités','Transferts','Historique blessures'].map((x,i)=>`<button class="rounded-lg px-3 py-2 text-xs font-bold ${i===0?'bg-coral text-white':'text-white/70 hover:bg-white/10'}">${x}</button>`).join('')}</nav></section><div class="mt-8 grid gap-8 lg:grid-cols-[1.2fr_.8fr]"><div class="space-y-8">${card('<h2 class="font-display text-2xl font-semibold">Derniers matchs</h2><p class="mt-3 text-sm leading-6 text-slate-500">Les performances du joueur seront reliées aux feuilles de match et aux compétitions dès la publication des données détaillées.</p><div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">'+[['Matchs',p.goals+p.assists||0],['Buts',p.goals],['Passes',p.assists],['Sélections',p.nationalMatches||0]].map(x=>`<div class="rounded-xl bg-slate-50 p-4 dark:bg-white/5"><b class="font-display text-2xl">${x[1]}</b><p class="mt-1 text-[10px] uppercase text-slate-400">${x[0]}</p></div>`).join('')+'</div>')}${card('<div class="flex items-center justify-between"><h2 class="font-display text-xl font-semibold">Parcours récent</h2><button onclick="go(\'clubs\')" class="text-xs font-bold text-coral">Voir le club →</button></div><div class="mt-5 flex items-center gap-4 rounded-xl bg-slate-50 p-4 dark:bg-white/5"><span class="flex h-12 w-12 items-center justify-center rounded-lg bg-[#062b35] text-xs font-bold text-white">'+c.logo+'</span><div><b>'+c.name+'</b><p class="mt-1 text-xs text-slate-500">'+(p.loanTo?`Prêté à ${p.loanTo} · jusqu’au ${p.loanUntil}`:'Club actuel')+'</p></div></div>')}</div><aside class="space-y-5">${card('<p class="text-xs font-extrabold uppercase tracking-widest text-coral">Profil joueur</p><div class="mt-5 space-y-4 text-sm"><div class="flex justify-between"><span class="text-slate-500">Nationalité</span><b>RDC</b></div><div class="flex justify-between"><span class="text-slate-500">Poste</span><b>'+p.position+'</b></div><div class="flex justify-between"><span class="text-slate-500">Équipe</span><b>'+c.name+'</b></div><div class="flex justify-between"><span class="text-slate-500">U20 RDC</span><b>'+(p.nationalMatches||0)+' sélection(s)</b></div></div>')}${card('<p class="text-xs font-extrabold uppercase tracking-widest text-coral">À explorer</p><div class="mt-5 grid gap-2 text-sm font-bold"><button onclick="go(\'data\')" class="rounded-lg bg-slate-100 px-3 py-3 text-left dark:bg-white/10">Statistiques avancées →</button><button onclick="go(\'actualites\')" class="rounded-lg bg-slate-100 px-3 py-3 text-left dark:bg-white/10">Actualités liées →</button></div>')}</aside></div>`; }
-    function magazineEditorialSections(m){ return ['Édito','Dossier','Analyses','Portraits','Data','Interview','Coulisses','Records','Rétrospective','Impact partenaire'].map((x,i)=>`<article class="border-b border-slate-200/80 py-5 last:border-0 dark:border-white/10"><p class="text-[10px] font-extrabold uppercase tracking-widest text-coral">0${i+1} · ${x}</p><h3 class="mt-2 font-display text-lg font-semibold">${i===0?m.intro:`${x} · les histoires fortes de la saison`}</h3><p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">Une sélection éditoriale pensée pour raconter le championnat au-delà du score, avec des faits, des visages et des archives vérifiables.</p></article>`).join(''); }
-    function magazinePage(){ return pageTitle('Média premium · Magazine digital','Les éditions de la Ligue','Chaque numéro sélectionne au maximum 25 contenus majeurs parmi les archives des trois saisons.')+`<div class="mb-8 flex flex-wrap gap-2">${['Toutes les saisons',...seasons.slice(0,3)].map(s=>`<button onclick="filterMagazines('${s}')" class="mag-filter rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold dark:border-white/10 dark:bg-[#19241f]">${s}</button>`).join('')}</div><div id="magazineGrid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">${magazineCards(magazines)}</div>`; }
-    function magazineCards(list){ return list.map(m=>`<article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-[#19241f]"><div class="relative"><img src="${m.cover}" class="magazine-cover w-full" alt="Couverture ${m.number} - ${m.title}"><span class="absolute left-4 top-4 rounded-full bg-coral px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-white">${m.number}</span></div><div class="p-5"><p class="text-[10px] font-extrabold uppercase tracking-widest text-coral">${m.season} · ${m.contents} contenus</p><h2 class="mt-2 font-display text-xl font-semibold">${m.title}</h2><p class="mt-3 text-sm leading-6 text-slate-500">${m.intro}</p><p class="mt-4 text-xs font-bold text-slate-400">${m.theme} · ${m.date}</p><button onclick="go('magazine-${m.id}')" class="mt-5 rounded-lg bg-ink px-4 py-3 text-xs font-bold text-white dark:bg-lime dark:text-ink">Voir le numéro →</button></div></article>`).join(''); }
-    function filterMagazines(season){ document.querySelectorAll('.mag-filter').forEach(b=>b.classList.toggle('bg-coral',b.innerText===season)); document.getElementById('magazineGrid').innerHTML=magazineCards(season==='Toutes les saisons'?magazines:magazines.filter(m=>m.season===season)); }
-    function downloadMagazine(id){ const m=magazines.find(x=>x.id===id); const html=`<!doctype html><html lang="fr"><meta charset="utf-8"><title>${m.number} · ${m.title}</title><style>body{font-family:Arial;color:#30343b;max-width:760px;margin:40px auto;line-height:1.6}h1{font-size:38px}h2{border-top:2px solid #e30613;padding-top:18px;margin-top:32px}small{color:#e30613;text-transform:uppercase;letter-spacing:.15em}</style><small>Les Coulisses · Ligue 1 RDC</small><h1>${m.number} — ${m.title}</h1><p>${m.intro}</p>${magazineEditorialSections(m).replace(/<[^>]+>/g,' ').replace(/\s+/g,' ')}</html>`; const blob=new Blob([html],{type:'text/html'}); const link=document.createElement('a'); link.href=URL.createObjectURL(blob); link.download=`${m.id}.html`; link.click(); URL.revokeObjectURL(link.href); toast('Édition téléchargée · imprimable en PDF'); }
-    function magazineDetailPage(id){ const m=magazines.find(x=>x.id===id)||magazines[0]; return `<div class="mb-6 text-xs font-bold text-slate-500">Magazine <span class="mx-2">›</span> ${m.number}</div><div class="grid gap-8 lg:grid-cols-[300px_1fr]"><aside>${card(`<img src="${m.cover}" class="magazine-cover w-full rounded-xl" alt="${m.title}"><p class="mt-5 text-[10px] font-extrabold uppercase tracking-widest text-coral">${m.season} · ${m.date}</p><h1 class="mt-2 font-display text-2xl font-semibold">${m.title}</h1><p class="mt-3 text-sm leading-6 text-slate-500">${m.contents} contenus sélectionnés pour cette édition.</p><div class="mt-5 grid gap-2"><button onclick="downloadMagazine('${m.id}')" class="rounded-lg bg-coral px-4 py-3 text-xs font-bold text-white">Télécharger l’édition</button><button onclick="window.print()" class="rounded-lg border border-slate-200 px-4 py-3 text-xs font-bold dark:border-white/10">Imprimer / PDF</button></div>`)}</aside><section>${card(`<div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-5 dark:border-white/10"><div><p class="text-xs font-extrabold uppercase tracking-widest text-coral">Lecteur intégré · aperçu digital</p><h2 class="mt-2 font-display text-2xl font-semibold">${m.number} — ${m.title}</h2></div><span class="rounded-full bg-orange-100 px-3 py-2 text-xs font-bold text-orange-800">${m.contents}/25 contenus</span></div><div class="magazine-viewer mt-6 overflow-auto rounded-xl p-4 sm:p-8"><div class="magazine-paper mx-auto max-w-2xl p-6 shadow-2xl sm:p-12"><p class="text-xs font-extrabold uppercase tracking-[.2em] text-coral">Les Coulisses · Magazine digital</p><h2 class="mt-5 text-4xl font-semibold">${m.title}</h2><p class="mt-4 text-base leading-7">${m.intro}</p><div class="mt-8">${magazineEditorialSections(m)}</div><div class="mt-8 border-t border-slate-300 pt-5 text-xs text-slate-500">CTA · Lire la suite sur la plateforme</div></div></div>`)}</section></div>`; }
-    function magazineReaderPage(m){ const total=4; const titles=['Sommaire','Le grand rendez-vous','Data & records','La suite sur la plateforme']; const title=titles[magazinePageIndex-1]; return `<div class="magazine-paper mx-auto max-w-2xl p-6 shadow-2xl sm:p-12"><div class="flex items-center justify-between border-b border-slate-300 pb-4 text-xs font-bold text-slate-500"><span>${m.number} · ${m.season}</span><span>Page ${magazinePageIndex} / ${total}</span></div><p class="mt-8 text-xs font-extrabold uppercase tracking-[.2em] text-coral">Les Coulisses · Magazine digital</p><h2 class="mt-5 text-4xl font-semibold">${magazinePageIndex===1?m.title:title}</h2><p class="mt-4 text-base leading-7">${magazinePageIndex===1?m.intro:`${title} · une lecture documentée de la saison ${m.season}.`}</p>${magazinePageIndex===1?`<div class="mt-8 grid gap-3">${['Édito','Dossier','Analyses','Portraits','Data','Interview','Coulisses','Records','Rétrospective','Impact partenaire'].slice(0,6).map((x,i)=>`<div class="flex justify-between border-b border-slate-300 py-3 text-sm"><span>${String(i+1).padStart(2,'0')} · ${x}</span><span class="text-slate-400">${i+2}</span></div>`).join('')}</div>`:`<div class="mt-8 space-y-5"><p class="text-sm leading-7">Cette page propose un aperçu de l’édition, relié aux clubs, joueurs, matchs et statistiques de la plateforme.</p><div class="rounded-xl bg-[#fff1d2] p-5"><b class="text-xs uppercase tracking-widest text-coral">À retenir</b><p class="mt-2 font-display text-xl">Les chiffres racontent aussi une histoire.</p></div><p class="text-sm leading-7">Retrouvez les contenus complets et les données sources dans les rubriques Actualités, Classement, Clubs et Data.</p></div>`}<div class="mt-12 border-t border-slate-300 pt-5 text-xs text-slate-500">CTA · Lire la suite sur la plateforme</div></div>`; }
-    function changeMagazinePage(direction){ magazinePageIndex=Math.max(1,Math.min(4,magazinePageIndex+direction)); const m=magazines.find(x=>location.hash.includes(x.id))||magazines[0]; const reader=document.getElementById('magazineReader'); if(reader) reader.innerHTML=magazineReaderPage(m); const indicator=document.getElementById('magazinePageIndicator'); if(indicator) indicator.textContent=`Page ${magazinePageIndex} / 4`; }
-    function articlePage(){ const a=articles[0]; return pageTitle('Actualités · analyse','Le grand rendez-vous de Lubumbashi tient toutes ses promesses','Une lecture complète du choc entre les deux géants historiques du football congolais.')+`<div class="grid gap-8 lg:grid-cols-[1fr_320px]"><article>${card(`<div class="flex flex-wrap items-center gap-3 text-xs text-slate-500"><span class="rounded-full bg-orange-100 px-3 py-1 font-bold text-orange-800">${a.cat}</span><span>Par La rédaction</span><span>${a.date}</span><span>${a.read} de lecture</span></div><h2 class="mt-6 font-display text-3xl font-semibold leading-tight sm:text-5xl">${a.title}</h2><p class="mt-5 text-base leading-8 text-slate-600 dark:text-slate-300">${a.excerpt}</p><img src="${a.image}" class="mt-8 h-72 w-full rounded-xl object-cover sm:h-[430px]" alt="${a.title}"><div class="mt-8 max-w-2xl space-y-5 text-base leading-8 text-slate-600 dark:text-slate-300"><p>Dans un Kamalondo vibrant, le TP Mazembe s’est imposé au terme d’une rencontre qui a changé de visage après la pause. Le pressing des locaux et l’activité du milieu ont progressivement déplacé le centre de gravité du match.</p><h3 class="font-display text-2xl font-semibold text-ink dark:text-white">Un match en deux actes</h3><p>Vita Club avait pourtant parfaitement démarré. Mais la maîtrise territoriale des Corbeaux a fait la différence dans les vingt dernières minutes.</p></div><div class="mt-8 rounded-xl bg-[#fff1d2] p-5 text-ink"><b class="text-xs uppercase tracking-widest text-coral">La donnée clé</b><p class="mt-2 font-display text-2xl font-semibold">7 tirs cadrés à 3 en seconde période</p></div><div class="mt-8 flex flex-wrap gap-2"><button onclick="toast('Lien copié')" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold dark:border-white/10">Partager l’article</button><button onclick="go('clubs')" class="rounded-lg bg-ink px-3 py-2 text-xs font-bold text-white dark:bg-lime dark:text-ink">TP Mazembe</button><button onclick="go('data')" class="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold dark:border-white/10">Voir les données</button></div>`)} </article><aside class="space-y-5">${card('<p class="text-xs font-extrabold uppercase tracking-widest text-coral">Dans cet article</p><div class="mt-5 grid gap-3 text-sm font-bold"><button onclick="go(\'club-mazembe\')" class="rounded-lg bg-slate-100 px-3 py-3 text-left dark:bg-white/10">TP Mazembe →</button><button onclick="go(\'player-glody-likonza\')" class="rounded-lg bg-slate-100 px-3 py-3 text-left dark:bg-white/10">Glody Likonza →</button><button onclick="go(\'matchs\')" class="rounded-lg bg-slate-100 px-3 py-3 text-left dark:bg-white/10">Match Center →</button></div>')}${card('<p class="text-xs font-extrabold uppercase tracking-widest text-coral">À lire ensuite</p><p class="mt-4 text-sm font-bold">Glody Likonza, le métronome qui donne le tempo</p><button onclick="go(\'actualites\')" class="mt-4 text-xs font-bold text-coral">Toutes les actualités →</button>')}</aside></div>`; }
-    function tvDetailPage(){ const v=tv[0]; return pageTitle('Coulisses TV · épisode','Le vestiaire après le choc','Un format exclusif au plus près des joueurs, des entraîneurs et des tribunes.')+`<div class="grid gap-8 lg:grid-cols-[1fr_320px]"><article>${card(`<div class="relative overflow-hidden rounded-xl bg-ink"><img src="${v.image}" class="h-64 w-full object-cover opacity-75 sm:h-[430px]" alt="${v.title}"><button onclick="toast('Lecture vidéo bientôt disponible')" class="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-lime text-xl text-ink">▶</button></div><div class="mt-6 flex flex-wrap items-center gap-3 text-xs font-bold text-slate-500"><span class="rounded-full bg-orange-100 px-3 py-1 text-orange-800">${v.meta}</span><span>Publié le 22 août 2025</span><span>Les Coulisses TV</span></div><h2 class="mt-5 font-display text-3xl font-semibold">${v.title}</h2><p class="mt-4 text-base leading-8 text-slate-600 dark:text-slate-300">Après le coup de sifflet final, retrouvez les réactions, les images du vestiaire et l’analyse des moments forts de la rencontre.</p><div class="mt-8 rounded-xl bg-slate-50 p-5 dark:bg-white/5"><b class="text-xs uppercase tracking-widest text-coral">Sujets abordés</b><div class="mt-4 flex flex-wrap gap-2">${['TP Mazembe','Vita Club','Match Center','Analyse','Vestiaire'].map(x=>`<span class="rounded-full border border-slate-200 px-3 py-2 text-xs font-bold dark:border-white/10">${x}</span>`).join('')}</div></div>`)} </article><aside class="space-y-5">${card('<p class="text-xs font-extrabold uppercase tracking-widest text-coral">Fiche épisode</p><div class="mt-5 space-y-4 text-sm"><div class="flex justify-between"><span class="text-slate-500">Format</span><b>Émission</b></div><div class="flex justify-between"><span class="text-slate-500">Durée</span><b>18 min</b></div><div class="flex justify-between"><span class="text-slate-500">Présentateur</span><b>La rédaction</b></div><div class="flex justify-between"><span class="text-slate-500">Sous-titres</span><b class="text-emerald-600">Disponibles</b></div></div>')}${card('<p class="text-xs font-extrabold uppercase tracking-widest text-coral">Explorer</p><div class="mt-5 grid gap-2 text-sm font-bold"><button onclick="go(\'matchs\')" class="rounded-lg bg-slate-100 px-3 py-3 text-left dark:bg-white/10">Voir le match lié →</button><button onclick="go(\'tv\')" class="rounded-lg bg-slate-100 px-3 py-3 text-left dark:bg-white/10">Tous les épisodes →</button></div>')}</aside></div>`; }
-    function actualitesPage(){ return pageTitle('Média · Actualités','L’actualité de la Ligue 1 RDC','Des articles structurés comme un vrai média : auteur, date, temps de lecture, rubrique et entités liées.')+`<div class="mb-6 flex flex-wrap gap-2">${['Toutes','Matchs','Analyses','Coulisses','Interviews','Data'].map(x=>`<button class="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold dark:border-white/10 dark:bg-[#19241f]">${x}</button>`).join('')}</div><div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">${articles.concat(articles.slice(0,2)).map((a,i)=>`<article class="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-[#19241f]"><img src="${a.image}" class="photo-zone" alt="${a.title}"><div class="p-5"><div class="flex items-center justify-between"><p class="text-[10px] font-extrabold uppercase tracking-widest text-coral">${a.cat}</p><span class="text-[10px] font-bold text-slate-400">${a.read}</span></div><h3 class="mt-2 font-display text-lg font-semibold">${a.title}</h3><p class="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">${a.excerpt}</p><div class="mt-5 flex items-center justify-between text-xs text-slate-400"><span>La rédaction · ${a.date}</span><button onclick="go('${i===0?'article':'article'}')" class="font-extrabold text-coral">Lire →</button></div></div></article>`).join('')}</div>`; }
+    function getActiveMagazine(){
+      const hash = location.hash.slice(1);
+      if(hash.startsWith('magazine-')){
+        const id = hash.slice(9);
+        return magazines.find(x => x.id === id) || magazines[0];
+      }
+      return magazines[0];
+    }
+    function preloadAdjacentPages(m, currentIdx){
+      if(!m) return;
+      const total = m.totalPages || m.contents || 40;
+      if(currentIdx < total){
+        const nextImg = new Image();
+        nextImg.src = `magazines_data/${m.id}/p_${String(currentIdx + 1).padStart(3, '0')}.webp`;
+      }
+      if(currentIdx > 1){
+        const prevImg = new Image();
+        prevImg.src = `magazines_data/${m.id}/p_${String(currentIdx - 1).padStart(3, '0')}.webp`;
+      }
+    }
+    function setMagazinePage(page, m){
+      if(!m) m = getActiveMagazine();
+      const total = m.totalPages || m.contents || 40;
+      magazinePageIndex = Math.max(1, Math.min(total, page));
+      const img = document.getElementById('magActivePageImg');
+      const pageInput = document.getElementById('magPageInput');
+      const indicator = document.getElementById('magazinePageIndicator');
+      const progressBar = document.getElementById('magProgressBar');
+      const pageSrc = `magazines_data/${m.id}/p_${String(magazinePageIndex).padStart(3, '0')}.webp`;
+      if(img){
+        img.style.opacity = '0.35';
+        img.onload = () => { img.style.opacity = '1'; };
+        img.src = pageSrc;
+        img.alt = `Page ${magazinePageIndex} sur ${total} · ${m.title}`;
+      }
+      if(pageInput) pageInput.value = magazinePageIndex;
+      if(indicator) indicator.textContent = `Page ${magazinePageIndex} / ${total}`;
+      if(progressBar) progressBar.style.width = `${(magazinePageIndex / total) * 100}%`;
+      document.querySelectorAll('.mag-thumb-item').forEach((el, idx) => {
+        const active = (idx + 1) === magazinePageIndex;
+        el.classList.toggle('ring-2', active);
+        el.classList.toggle('ring-coral', active);
+        el.classList.toggle('opacity-100', active);
+        el.classList.toggle('opacity-50', !active);
+      });
+      preloadAdjacentPages(m, magazinePageIndex);
+    }
+    function changeMagazinePage(direction){
+      const m = getActiveMagazine();
+      if(!m) return;
+      setMagazinePage(magazinePageIndex + direction, m);
+    }
+    function jumpToMagazinePage(val, magId){
+      const m = magazines.find(x => x.id === magId) || getActiveMagazine();
+      let p = parseInt(val, 10);
+      if(isNaN(p)) p = 1;
+      setMagazinePage(p, m);
+    }
+    function zoomMagazine(delta){
+      magazineZoom = Math.min(2.5, Math.max(0.7, Math.round((magazineZoom + delta) * 100) / 100));
+      applyMagazineZoom();
+    }
+    function resetMagazineZoom(){
+      magazineZoom = 1;
+      applyMagazineZoom();
+    }
+    function applyMagazineZoom(){
+      const wrapper = document.getElementById('magPageWrapper');
+      const valEl = document.getElementById('magZoomValue');
+      if(wrapper) wrapper.style.transform = `scale(${magazineZoom})`;
+      if(valEl) valEl.textContent = `${Math.round(magazineZoom * 100)}%`;
+    }
+    function toggleMagazineThumbnails(magId){
+      magazineShowThumbnails = !magazineShowThumbnails;
+      const drawer = document.getElementById('magThumbnailsDrawer');
+      if(drawer) drawer.classList.toggle('hidden', !magazineShowThumbnails);
+    }
+    function toggleMagazineFullscreen(){
+      const box = document.getElementById('magazineViewerBox');
+      if(!box) return;
+      if(!document.fullscreenElement){
+        if(box.requestFullscreen) box.requestFullscreen().catch(()=>{});
+      } else {
+        if(document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+      }
+    }
+    function renderMagazineThumbnails(m){
+      const total = m.totalPages || m.contents || 40;
+      return Array.from({length: total}, (_, i) => {
+        const pageNum = i + 1;
+        const pageSrc = `magazines_data/${m.id}/p_${String(pageNum).padStart(3, '0')}.webp`;
+        const isActive = pageNum === magazinePageIndex;
+        return `<button type="button" onclick="setMagazinePage(${pageNum}, magazines.find(x=>x.id==='${m.id}'))" class="mag-thumb-item shrink-0 flex flex-col items-center gap-1 p-1 rounded-lg transition ${isActive ? 'ring-2 ring-coral opacity-100' : 'opacity-50 hover:opacity-100'}" title="Aller à la page ${pageNum}"><img src="${pageSrc}" class="h-20 w-14 object-cover rounded shadow border border-slate-300 dark:border-white/10" alt="P.${pageNum}" draggable="false" loading="lazy"><span class="text-[10px] font-bold text-slate-500">${pageNum}</span></button>`;
+      }).join('');
+    }
+    function magazinePage(){
+      return pageTitle('Média premium · Magazine officiel','Les éditions de la Ligue','Consultez les magazines officiels Illicocash Les Coulisses de la Ligue 1 RDC en haute définition directement sur la plateforme.')+`<div class="mb-8 flex flex-wrap gap-2">${['Toutes les saisons',...seasons.slice(0,3)].map(s=>`<button onclick="filterMagazines('${s}')" class="mag-filter rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold transition hover:border-coral dark:border-white/10 dark:bg-[#19241f]">${s}</button>`).join('')}</div><div id="magazineGrid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">${magazineCards(magazines)}</div>`;
+    }
+    function magazineCards(list){
+      return list.map(m=>`<article class="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft transition hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-[#19241f]"><div class="relative overflow-hidden bg-slate-900"><img src="${m.cover}" class="magazine-cover w-full transition duration-300 group-hover:scale-105" alt="Couverture ${m.number} - ${m.title}"><span class="absolute left-4 top-4 rounded-full bg-coral px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-white shadow">${m.number}</span><span class="absolute right-4 top-4 rounded-full bg-black/75 backdrop-blur px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-lime">HD · ${m.totalPages||m.contents} pages</span><div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-4 text-white"><span class="text-[10px] font-bold uppercase tracking-wider text-orange-300">🔒 Consultation exclusive</span></div></div><div class="p-5 flex flex-col justify-between"><p class="text-[10px] font-extrabold uppercase tracking-widest text-coral">${m.season} · ${m.totalPages||m.contents} pages réelles</p><h2 class="mt-2 font-display text-xl font-semibold leading-snug">${m.title}</h2><p class="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400 line-clamp-3">${m.intro}</p><div class="mt-4 flex items-center justify-between text-xs font-bold text-slate-400"><span>${m.theme}</span><span>${m.date}</span></div><button onclick="go('magazine-${m.id}')" class="mt-5 w-full rounded-xl bg-ink py-3 text-center text-xs font-bold text-white transition hover:bg-emerald-700 dark:bg-lime dark:text-ink dark:hover:bg-white">Consulter le magazine →</button></div></article>`).join('');
+    }
+    function filterMagazines(season){
+      document.querySelectorAll('.mag-filter').forEach(b => b.classList.toggle('bg-coral', b.innerText === season));
+      document.getElementById('magazineGrid').innerHTML = magazineCards(season === 'Toutes les saisons' ? magazines : magazines.filter(m => m.season === season));
+    }
+    function magazineDetailPageV2(id){
+      const m = magazines.find(x => x.id === id) || magazines[0];
+      magazinePageIndex = 1;
+      magazineZoom = 1;
+      magazineShowThumbnails = false;
+      const total = m.totalPages || m.contents || 40;
+      setTimeout(() => { preloadAdjacentPages(m, 1); }, 200);
+      return `<div class="mb-6 flex items-center gap-2 text-xs font-bold text-slate-500"><button onclick="go('magazine')" class="hover:text-coral">Magazine</button><span class="mx-1">›</span><span>${m.number}</span><span class="mx-1">›</span><span class="text-ink dark:text-white truncate max-w-md">${m.title}</span></div><div class="grid gap-8 lg:grid-cols-[320px_1fr]"><aside class="space-y-6">${card(`<div class="relative overflow-hidden rounded-xl bg-slate-900 shadow-md"><img src="${m.cover}" class="magazine-cover w-full" alt="${m.title}"><span class="absolute left-3 top-3 rounded-full bg-coral px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-white">${m.number}</span><span class="absolute right-3 top-3 rounded-full bg-black/75 backdrop-blur px-2.5 py-1 text-[10px] font-extrabold text-lime">${total} pages</span></div><p class="mt-5 text-[10px] font-extrabold uppercase tracking-widest text-coral">${m.season} · ${m.date}</p><h1 class="mt-2 font-display text-2xl font-semibold leading-tight">${m.title}</h1><p class="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">${m.intro}</p><div class="mt-5 rounded-xl border border-amber-200/80 bg-amber-50/70 p-4 text-xs dark:border-amber-500/20 dark:bg-amber-500/10"><div class="flex items-center gap-2 font-bold text-amber-900 dark:text-amber-300"><svg class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg><span>Consultation exclusive</span></div><p class="mt-1.5 text-slate-600 dark:text-slate-300 leading-5">Pour protéger les droits exclusifs Illicocash et de la Ligue 1 RDC, le téléchargement et l’export sont désactivés.</p></div><div class="mt-5 space-y-2"><button onclick="toggleMagazineFullscreen()" class="w-full flex items-center justify-center gap-2 rounded-xl bg-ink px-4 py-3 text-xs font-bold text-white transition hover:bg-emerald-700 dark:bg-lime dark:text-ink">⛶ Mode Plein écran</button><button onclick="toggleMagazineThumbnails('${m.id}')" class="w-full flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-3 text-xs font-bold hover:bg-slate-100 dark:border-white/10 dark:hover:bg-white/5">📑 Vignettes (${total} pages)</button><button onclick="go('magazine')" class="w-full py-2 text-center text-xs font-bold text-slate-400 hover:text-coral">← Retour aux magazines</button></div>`)}</aside><section>${card(`<div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4 dark:border-white/10"><div><p class="text-xs font-extrabold uppercase tracking-widest text-coral">Liseuse Numérique Haute Définition</p><h2 class="mt-1 font-display text-2xl font-semibold">${m.number} — ${m.title}</h2></div><div class="flex items-center gap-2"><span id="magazinePageIndicator" class="rounded-full bg-orange-100 px-3.5 py-1.5 text-xs font-black text-orange-900 dark:bg-orange-900/40 dark:text-orange-200">Page 1 / ${total}</span></div></div><div class="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl bg-slate-100 p-3 dark:bg-white/5"><div class="flex items-center gap-2"><button onclick="changeMagazinePage(-1)" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold shadow-sm hover:bg-slate-50 dark:border-white/10 dark:bg-[#19241f]" title="Page précédente">◀ Précédente</button><div class="flex items-center gap-1.5 text-xs font-bold"><label for="magPageInput" class="text-slate-500">Page</label><input type="number" id="magPageInput" min="1" max="${total}" value="1" onchange="jumpToMagazinePage(this.value, '${m.id}')" class="w-14 rounded border border-slate-300 bg-white px-1.5 py-1 text-center font-bold dark:border-white/20 dark:bg-black/40"><span class="text-slate-400">/ ${total}</span></div><button onclick="changeMagazinePage(1)" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold shadow-sm hover:bg-slate-50 dark:border-white/10 dark:bg-[#19241f]" title="Page suivante">Suivante ▶</button></div><div class="flex items-center gap-2"><div class="flex items-center rounded-lg border border-slate-200 bg-white dark:border-white/10 dark:bg-[#19241f]"><button onclick="zoomMagazine(-0.15)" class="px-2.5 py-1.5 text-xs font-bold hover:bg-slate-100 dark:hover:bg-white/10" title="Zoom -">－</button><button onclick="resetMagazineZoom()" id="magZoomValue" class="px-2.5 py-1.5 text-xs font-bold border-x border-slate-200 dark:border-white/10" title="Réinitialiser zoom">100%</button><button onclick="zoomMagazine(0.15)" class="px-2.5 py-1.5 text-xs font-bold hover:bg-slate-100 dark:hover:bg-white/10" title="Zoom +">＋</button></div><button onclick="toggleMagazineThumbnails('${m.id}')" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold hover:bg-slate-50 dark:border-white/10 dark:bg-[#19241f]" title="Afficher les miniatures">📑 Vignettes</button><button onclick="toggleMagazineFullscreen()" class="rounded-lg bg-ink px-3 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 dark:bg-lime dark:text-ink" title="Plein écran">⛶ Plein écran</button></div></div><div class="mt-2 w-full bg-slate-200 h-1 rounded-full overflow-hidden dark:bg-white/10"><div id="magProgressBar" class="h-full bg-coral transition-all duration-200" style="width: ${(1/total)*100}%"></div></div><div id="magThumbnailsDrawer" class="hidden my-3 p-3 rounded-xl bg-slate-100/90 dark:bg-black/40 border border-slate-200 dark:border-white/10 overflow-x-auto"><div class="flex gap-2.5 pb-2">${renderMagazineThumbnails(m)}</div></div><div id="magazineViewerBox" class="magazine-viewer-box relative select-none overflow-auto rounded-2xl p-4 sm:p-8 flex items-center justify-center my-4 border border-slate-800" oncontextmenu="event.preventDefault(); toast('Consultation exclusive en ligne · Téléchargement désactivé'); return false;"><div class="pointer-events-none absolute bottom-3 right-4 z-10 flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1 text-[10px] font-bold tracking-wider text-white/70 backdrop-blur">🔒 Illicocash · Les Coulisses de la Ligue 1 RDC — Consultation exclusive</div><div id="magPageWrapper" class="relative inline-block transition-transform duration-150 origin-top shadow-2xl"><img id="magActivePageImg" src="magazines_data/${m.id}/p_001.webp" alt="Page 1 sur ${total} · ${m.title}" class="magazine-page-img rounded-lg shadow-2xl transition-opacity duration-200" draggable="false" oncontextmenu="return false;" style="pointer-events: none;"></div></div><div class="flex items-center justify-between pt-2"><button onclick="changeMagazinePage(-1)" class="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold hover:bg-slate-100 dark:border-white/10 dark:hover:bg-white/5">← Page précédente</button><p class="text-xs text-slate-400 font-bold hidden sm:block">Utilisez les touches ← et → du clavier pour naviguer</p><button onclick="changeMagazinePage(1)" class="rounded-xl bg-ink px-5 py-2.5 text-xs font-bold text-white hover:bg-emerald-700 dark:bg-lime dark:text-ink">Page suivante →</button></div>`)}</section></div>`;
+    }
+    let selectedArticleCat = 'Toutes';
+    let selectedArticleSource = 'Toutes';
+    let articleSearchQuery = '';
+    let articleCurrentPage = 1;
+    const ARTICLES_PER_PAGE = 9;
+
+    function getFilteredArticles() {
+      return articles.filter(a => {
+        const matchesCat = selectedArticleCat === 'Toutes' || a.cat.toLowerCase() === selectedArticleCat.toLowerCase();
+        const matchesSource = selectedArticleSource === 'Toutes' || (selectedArticleSource === 'Magazine' ? Boolean(a.code) : !a.code);
+        const q = articleSearchQuery.trim().toLowerCase();
+        const matchesSearch = !q || (
+          (a.title && a.title.toLowerCase().includes(q)) ||
+          (a.excerpt && a.excerpt.toLowerCase().includes(q)) ||
+          (a.cat && a.cat.toLowerCase().includes(q)) ||
+          (a.code && a.code.toLowerCase().includes(q)) ||
+          (a.body && a.body.toLowerCase().includes(q))
+        );
+        return matchesCat && matchesSource && matchesSearch;
+      });
+    }
+
+    function setArticleCategory(cat) {
+      selectedArticleCat = cat;
+      articleCurrentPage = 1;
+      renderArticlesList();
+    }
+
+    function setArticleSource(src) {
+      selectedArticleSource = src;
+      articleCurrentPage = 1;
+      renderArticlesList();
+    }
+
+    function setArticleSearch(query) {
+      articleSearchQuery = query;
+      articleCurrentPage = 1;
+      renderArticlesList();
+    }
+
+    function jumpArticlePage(p) {
+      articleCurrentPage = p;
+      renderArticlesList();
+      window.scrollTo({ top: 350, behavior: 'smooth' });
+    }
+
+    function renderArticlesList() {
+      const grid = document.getElementById('articlesGrid');
+      const counter = document.getElementById('articlesCountText');
+      const paginationEl = document.getElementById('articlesPagination');
+      if (!grid) return;
+
+      const filtered = getFilteredArticles();
+      const total = filtered.length;
+      const totalPages = Math.max(1, Math.ceil(total / ARTICLES_PER_PAGE));
+      if (articleCurrentPage > totalPages) articleCurrentPage = totalPages;
+
+      if (counter) {
+        counter.textContent = `${total} article${total > 1 ? 's' : ''} trouvé${total > 1 ? 's' : ''}`;
+      }
+
+      document.querySelectorAll('.art-cat-btn').forEach(btn => {
+        const isActive = btn.dataset.cat === selectedArticleCat;
+        btn.className = `art-cat-btn rounded-full px-4 py-2 text-xs font-bold transition ${isActive ? 'bg-coral text-white shadow' : 'border border-slate-200 bg-white text-slate-700 hover:border-coral dark:border-white/10 dark:bg-[#19241f] dark:text-slate-200'}`;
+      });
+
+      document.querySelectorAll('.art-src-btn').forEach(btn => {
+        const isActive = btn.dataset.src === selectedArticleSource;
+        btn.className = `art-src-btn rounded-lg px-3 py-1.5 text-xs font-bold transition ${isActive ? 'bg-ink text-white dark:bg-lime dark:text-ink' : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:bg-[#19241f] dark:text-slate-300'}`;
+      });
+
+      if (total === 0) {
+        grid.innerHTML = `<div class="col-span-full rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+          <p class="text-4xl">🔍</p>
+          <h3 class="mt-3 font-display text-lg font-bold">Aucun article ne correspond à votre recherche</h3>
+          <p class="mt-2 text-xs text-slate-500">Essayez de réinitialiser vos filtres ou de modifier votre terme de recherche.</p>
+          <button onclick="setArticleCategory('Toutes'); setArticleSource('Toutes'); setArticleSearch(''); const inp = document.getElementById('articleSearchInput'); if (inp) inp.value='';" class="mt-5 rounded-lg bg-coral px-4 py-2 text-xs font-bold text-white">Réinitialiser les filtres</button>
+        </div>`;
+        if (paginationEl) paginationEl.innerHTML = '';
+        return;
+      }
+
+      const startIndex = (articleCurrentPage - 1) * ARTICLES_PER_PAGE;
+      const pageSlice = filtered.slice(startIndex, startIndex + ARTICLES_PER_PAGE);
+
+      grid.innerHTML = pageSlice.map(a => `
+        <article class="article-card-hover group flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+          <div>
+            <div class="relative aspect-[16/10] overflow-hidden bg-slate-900">
+              <img src="${a.image}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt="${a.title}" loading="lazy">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div class="absolute left-3.5 top-3.5 flex items-center gap-2">
+                ${getCategoryBadge(a.cat)}
+              </div>
+              ${a.code ? `<span class="absolute right-3.5 top-3.5 rounded-full bg-black/85 backdrop-blur px-2.5 py-1 text-[9px] font-black tracking-wider text-lime border border-lime/30">★ MAGAZINE N°1</span>` : ''}
+            </div>
+            <div class="p-6">
+              <div class="flex items-center justify-between text-[11px] text-slate-400 font-bold">
+                <span class="inline-flex items-center gap-1">⏱ ${a.read}</span>
+                ${a.code ? `<span class="font-mono text-[9px] bg-slate-100 dark:bg-white/10 px-2 py-0.5 rounded text-slate-500">${a.code.split('-').pop()}</span>` : ''}
+              </div>
+              <h3 class="mt-3 font-display text-lg font-bold leading-snug group-hover:text-coral transition-colors line-clamp-2">${a.title}</h3>
+              <p class="mt-3 text-xs leading-6 text-slate-500 dark:text-slate-400 line-clamp-3">${a.excerpt}</p>
+            </div>
+          </div>
+          <div class="flex items-center justify-between border-t border-slate-100 p-6 pt-3 text-xs dark:border-white/10">
+            <span class="text-slate-400 font-medium text-[11px]">${a.date}</span>
+            <button onclick="go('article-${a.id}')" class="font-extrabold text-coral group-hover:text-ink dark:group-hover:text-lime inline-flex items-center gap-1.5 transition">
+              <span>Lire l’article</span>
+              <span class="read-arrow font-bold text-sm">→</span>
+            </button>
+          </div>
+        </article>
+      `).join('');
+
+      if (paginationEl) {
+        if (totalPages <= 1) {
+          paginationEl.innerHTML = '';
+        } else {
+          let buttons = '';
+          buttons += `<button onclick="jumpArticlePage(${Math.max(1, articleCurrentPage - 1)})" ${articleCurrentPage === 1 ? 'disabled class="opacity-40 cursor-not-allowed px-3 py-2 text-xs font-bold rounded-lg border border-slate-200 dark:border-white/10"' : 'class="px-3 py-2 text-xs font-bold rounded-lg border border-slate-200 bg-white hover:bg-slate-50 dark:border-white/10 dark:bg-[#19241f]"'}>◀ Précédent</button>`;
+          for (let p = 1; p <= totalPages; p++) {
+            const isCurrent = p === articleCurrentPage;
+            buttons += `<button onclick="jumpArticlePage(${p})" class="h-9 w-9 text-xs font-bold rounded-lg ${isCurrent ? 'bg-coral text-white font-black shadow' : 'border border-slate-200 bg-white text-slate-600 hover:border-coral dark:border-white/10 dark:bg-[#19241f] dark:text-slate-300'}">${p}</button>`;
+          }
+          buttons += `<button onclick="jumpArticlePage(${Math.min(totalPages, articleCurrentPage + 1)})" ${articleCurrentPage === totalPages ? 'disabled class="opacity-40 cursor-not-allowed px-3 py-2 text-xs font-bold rounded-lg border border-slate-200 dark:border-white/10"' : 'class="px-3 py-2 text-xs font-bold rounded-lg border border-slate-200 bg-white hover:bg-slate-50 dark:border-white/10 dark:bg-[#19241f]"'}>Suivant ▶</button>`;
+          paginationEl.innerHTML = buttons;
+        }
+      }
+    }
+
+    
+    function getCategoryBadge(cat) {
+      const slug = (cat || 'Analyse').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+      return `<span class="badge-cat badge-cat-${slug}">${cat}</span>`;
+    }
+
+    function actualitesPage(){
+      const categoryCounts = {};
+      articles.forEach(a => {
+        const c = a.cat || 'Autres';
+        categoryCounts[c] = (categoryCounts[c] || 0) + 1;
+      });
+      const categories = ['Toutes', 'Club', 'Portrait', 'Coulisses', 'Analyse', 'Gouvernance', 'Supporters', 'Mémoire', 'Santé', 'Data'];
+
+      setTimeout(() => { renderArticlesList(); }, 30);
+      return pageTitle('Média officiel · Actualités & Enquêtes', 'L’actualité & les récits de la Ligue 1 RDC', 'Une rédaction complète au cœur du football congolais : 49 articles, enquêtes tactiques, portraits de figures historiques et coulisses exclusives.') + `
+        <!-- Filtres et recherche interactive -->
+        <div class="mb-8 space-y-4 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-[#19241f] sm:p-6">
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="relative flex-1 min-w-[270px]">
+              <input id="articleSearchInput" type="text" value="${esc(articleSearchQuery)}" oninput="setArticleSearch(this.value)" placeholder="Rechercher par titre, joueur, club (Sanga Balende, Mazembe...), thème ou code officiel..." class="w-full rounded-2xl border border-slate-200 bg-paper px-4 py-3.5 pl-11 text-xs font-bold outline-none transition focus:border-coral focus:ring-2 focus:ring-coral/20 dark:border-white/10 dark:bg-black/20 dark:text-white">
+              <span class="absolute left-4 top-4 text-xs text-slate-400">🔍</span>
+              ${articleSearchQuery ? `<button onclick="setArticleSearch(''); const inp = document.getElementById('articleSearchInput'); if (inp) inp.value='';" class="absolute right-3.5 top-3.5 text-xs text-slate-400 hover:text-coral font-bold">✕</button>` : ''}
+            </div>
+            <div class="flex items-center gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-1.5 dark:border-white/5 dark:bg-black/20">
+              <span class="px-2 text-[11px] font-extrabold uppercase tracking-wider text-slate-400">Origine :</span>
+              <button data-src="Toutes" onclick="setArticleSource('Toutes')" class="art-src-btn rounded-xl px-3 py-1.5 text-xs font-bold transition">Toutes (49)</button>
+              <button data-src="Magazine" onclick="setArticleSource('Magazine')" class="art-src-btn rounded-xl px-3 py-1.5 text-xs font-bold transition">Magazine Officiel (45)</button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 dark:border-white/10">
+            <div class="flex flex-wrap gap-2">
+              ${categories.map(cat => {
+                const count = cat === 'Toutes' ? articles.length : (categoryCounts[cat] || 0);
+                return `<button data-cat="${cat}" onclick="setArticleCategory('${cat}')" class="art-cat-btn rounded-full px-4 py-2 text-xs font-bold transition border border-slate-200 dark:border-white/10 inline-flex items-center gap-1.5">
+                  <span>${cat}</span>
+                  <span class="rounded-full bg-slate-100 dark:bg-white/10 px-1.5 py-0.2 text-[10px] font-extrabold opacity-80">${count}</span>
+                </button>`;
+              }).join('')}
+            </div>
+            <span id="articlesCountText" class="text-xs font-extrabold text-coral">${articles.length} articles disponibles</span>
+          </div>
+        </div>
+
+        <!-- Bannière Prestige Magazine N°1 -->
+        <div class="mb-10 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0c242b] via-[#113840] to-[#07171c] p-6 text-white shadow-soft relative border border-white/10 sm:p-8">
+          <div class="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-lime/10 blur-3xl pointer-events-none"></div>
+          <div class="relative z-10 flex flex-wrap items-center justify-between gap-6">
+            <div class="flex items-center gap-5 max-w-2xl">
+              <div class="relative shrink-0 overflow-hidden rounded-xl shadow-2xl border border-white/20 w-16 h-22 sm:w-20 sm:h-28 bg-slate-800">
+                <img src="magazines_data/covers/numero-01_cover.webp" alt="Magazine N°1" class="h-full w-full object-cover">
+                <span class="absolute bottom-1 right-1 rounded bg-black/80 px-1 text-[8px] font-black text-lime">HD</span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="rounded-full bg-lime px-2.5 py-0.5 text-[9px] font-black uppercase tracking-wider text-ink">Publication Officielle</span>
+                  <span class="text-xs text-orange-200 font-bold">Saison 1 & 2 · Numéro 1</span>
+                </div>
+                <h3 class="mt-2 font-display text-xl sm:text-2xl font-bold leading-tight text-white">Magazine Illicocash — Les Coulisses de la Ligue</h3>
+                <p class="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">Les 45 grands articles, enquêtes de fond et portraits de figures historiques extraits du magazine officiel sont tous transcrits et consultables ci-dessous et dans la liseuse HD.</p>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row items-center gap-3">
+              <button onclick="go('magazine-numero-01')" class="w-full sm:w-auto rounded-xl bg-lime px-5 py-3 text-xs font-black text-ink shadow-lg transition hover:bg-white hover:scale-105 active:scale-95">
+                Feuilleter le magazine HD (40 pages) →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grille des articles -->
+        <div id="articlesGrid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
+
+        <!-- Pagination -->
+        <div id="articlesPagination" class="mt-12 flex flex-wrap items-center justify-center gap-2"></div>
+      `;
+    }
+
+    function articleDetailPage(targetId){
+      const a = articles.find(x => String(x.id) === String(targetId)) || articles[0];
+      const related = articles.filter(x => x.id !== a.id && (x.cat === a.cat || (a.code && x.code))).slice(0, 3);
+      const isFromMagazine = Boolean(a.code);
+
+      // Previous and next article
+      const currentIndex = articles.findIndex(x => x.id === a.id);
+      const prevArticle = currentIndex > 0 ? articles[currentIndex - 1] : null;
+      const nextArticle = currentIndex < articles.length - 1 ? articles[currentIndex + 1] : null;
+
+      return `
+        <!-- Fil d'ariane -->
+        <div class="mb-6 flex flex-wrap items-center gap-2 text-xs font-bold text-slate-500">
+          <button onclick="go('home')" class="hover:text-coral">Accueil</button>
+          <span class="text-slate-300 dark:text-white/20">›</span>
+          <button onclick="go('actualites')" class="hover:text-coral">Actualités</button>
+          <span class="text-slate-300 dark:text-white/20">›</span>
+          <button onclick="setArticleCategory('${a.cat}'); go('actualites')" class="text-coral hover:underline">${a.cat}</button>
+          <span class="text-slate-300 dark:text-white/20">›</span>
+          <span class="truncate max-w-md text-ink dark:text-white">${a.title}</span>
+        </div>
+
+        <div class="grid gap-8 lg:grid-cols-[1fr_340px]">
+          <!-- Article Principal -->
+          <article>
+            ${card(`
+              <!-- Badges et métadonnées -->
+              <div class="flex flex-wrap items-center gap-2 text-xs">
+                <span class="rounded-full bg-orange-100 px-3 py-1 font-extrabold text-orange-800 dark:bg-orange-950/60 dark:text-orange-300">${a.cat}</span>
+                ${isFromMagazine ? `<span class="rounded-full bg-black/80 px-3 py-1 font-bold text-lime">★ Magazine Officiel N°1</span>` : ''}
+                <span class="text-slate-400">·</span>
+                <span class="text-slate-500 font-bold">Par La rédaction</span>
+                <span class="text-slate-400">·</span>
+                <span class="text-slate-500">${a.date}</span>
+                <span class="text-slate-400">·</span>
+                <span class="text-slate-500">${a.read} de lecture</span>
+              </div>
+
+              <!-- Grand Titre -->
+              <h1 class="mt-6 font-display text-2xl font-bold leading-tight sm:text-4xl text-ink dark:text-white">${a.title}</h1>
+
+              <!-- Chapeau / Excerpt -->
+              <div class="mt-6 border-l-4 border-coral bg-slate-50 p-4 rounded-r-xl dark:bg-white/5">
+                <p class="text-base font-medium leading-7 text-slate-700 dark:text-slate-200 italic sm:text-lg">${a.excerpt}</p>
+              </div>
+
+              <!-- Image de couverture -->
+              <div class="relative mt-7 overflow-hidden rounded-2xl bg-slate-900 shadow-md">
+                <img src="${a.image}" class="h-72 w-full object-cover sm:h-[440px]" alt="${a.title}">
+                <div class="absolute bottom-3 right-4 rounded-full bg-black/70 backdrop-blur px-3 py-1 text-[10px] font-bold text-white/80">
+                  © Les Coulisses de la Ligue 1 RDC
+                </div>
+              </div>
+
+              <!-- Corps de l'article -->
+              <div class="prose mt-8 max-w-none space-y-5 text-base leading-8 text-slate-700 dark:text-slate-300 [&>h3]:mt-7 [&>h3]:mb-3 [&>h3]:font-display [&>h3]:text-xl [&>h3]:font-bold [&>h3]:text-ink dark:[&>h3]:text-white [&>p]:mb-4">
+                ${a.body || `
+                  <p>Dans un contexte de forte intensité sportive, cette rencontre a démontré la vitalité et l’engagement des acteurs du football congolais.</p>
+                  <h3 class="font-display text-2xl font-semibold text-ink dark:text-white">Une dynamique confirmée</h3>
+                  <p>L’organisation, le respect des consignes tactiques et la détermination sur chaque ballon constituent des éléments clés de cette analyse.</p>
+                `}
+              </div>
+
+              <!-- Encadré Source Officielle si extrait du Magazine -->
+              ${isFromMagazine ? `
+                <div class="mt-8 rounded-2xl border border-amber-200/90 bg-amber-50/80 p-5 text-xs text-amber-950 dark:border-amber-500/20 dark:bg-amber-950/20 dark:text-amber-200">
+                  <div class="flex items-center gap-2 font-black text-amber-900 dark:text-amber-300">
+                    <span class="text-base">📌</span>
+                    <span>ARCHIVE & PUBLICATION OFFICIELLE</span>
+                  </div>
+                  <div class="mt-2 space-y-1">
+                    <p><b>Code article :</b> <span class="font-mono">${a.code}</span></p>
+                    <p><b>Source de base :</b> ${a.source || 'Magazine Illicocash les coulisses de la ligue — Numéro 1 / Saison 1&2'}</p>
+                  </div>
+                  <button onclick="go('magazine')" class="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-ink px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-700 dark:bg-lime dark:text-ink">
+                    Feuilleter l'édition complète dans la liseuse HD →
+                  </button>
+                </div>
+              ` : ''}
+
+              <!-- Boutons de partage et actions -->
+              <div class="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-6 dark:border-white/10">
+                <div class="flex flex-wrap gap-2">
+                  <button onclick="navigator.clipboard.writeText(location.href); toast('Lien de l’article copié !');" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold hover:bg-slate-50 dark:border-white/10 dark:hover:bg-white/5">
+                    🔗 Copier le lien
+                  </button>
+                  <button onclick="go('actualites')" class="rounded-xl border border-slate-200 px-4 py-2.5 text-xs font-bold hover:bg-slate-50 dark:border-white/10 dark:hover:bg-white/5">
+                    ← Toutes les actualités
+                  </button>
+                </div>
+                <div class="flex items-center gap-2">
+                  ${prevArticle ? `<button onclick="go('article-${prevArticle.id}')" class="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold hover:border-coral" title="${prevArticle.title}">← Précédent</button>` : ''}
+                  ${nextArticle ? `<button onclick="go('article-${nextArticle.id}')" class="rounded-xl bg-ink px-3 py-2 text-xs font-bold text-white hover:bg-emerald-700 dark:bg-lime dark:text-ink" title="${nextArticle.title}">Suivant →</button>` : ''}
+                </div>
+              </div>
+            `)}
+          </article>
+
+          <!-- Aside / Sidebar latérale -->
+          <aside class="space-y-6">
+            ${card(`
+              <p class="text-[10px] font-extrabold uppercase tracking-widest text-coral">Fiche d'identification</p>
+              <div class="mt-4 space-y-3 text-xs">
+                <div class="flex justify-between border-b border-slate-100 pb-2 dark:border-white/10">
+                  <span class="text-slate-400">Rubrique</span>
+                  <b class="text-ink dark:text-white">${a.cat}</b>
+                </div>
+                <div class="flex justify-between border-b border-slate-100 pb-2 dark:border-white/10">
+                  <span class="text-slate-400">Date parution</span>
+                  <b>${a.date}</b>
+                </div>
+                <div class="flex justify-between border-b border-slate-100 pb-2 dark:border-white/10">
+                  <span class="text-slate-400">Temps lecture</span>
+                  <b>${a.read}</b>
+                </div>
+                ${a.code ? `
+                  <div class="flex justify-between border-b border-slate-100 pb-2 dark:border-white/10">
+                    <span class="text-slate-400">Référence</span>
+                    <b class="font-mono text-[10px]">${a.code.split('-').pop()}</b>
+                  </div>
+                ` : ''}
+                <div class="flex justify-between">
+                  <span class="text-slate-400">Statut</span>
+                  <b class="text-emerald-600">Publié officiel</b>
+                </div>
+              </div>
+            `)}
+
+            ${isFromMagazine ? card(`
+              <p class="text-[10px] font-extrabold uppercase tracking-widest text-coral">Magazine officiel</p>
+              <h3 class="mt-2 font-display text-sm font-bold">Illicocash Les Coulisses de la Ligue N°1</h3>
+              <p class="mt-1 text-xs text-slate-500">Consultez l'intégralité des 40 pages du magazine en haute résolution directement dans notre liseuse sécurisée.</p>
+              <button onclick="go('magazine-numero-01')" class="mt-4 w-full rounded-xl bg-coral py-2.5 text-center text-xs font-bold text-white shadow transition hover:bg-emerald-700">
+                Ouvrir la liseuse HD →
+              </button>
+            `) : ''}
+
+            ${card(`
+              <p class="text-[10px] font-extrabold uppercase tracking-widest text-coral">Dans la même thématique</p>
+              <div class="mt-4 space-y-3">
+                ${related.map(r => `
+                  <button onclick="go('article-${r.id}')" class="flex items-start gap-3 text-left group w-full border-b border-slate-100 pb-3 last:border-0 dark:border-white/10">
+                    <img src="${r.image}" class="h-14 w-14 rounded-lg object-cover shrink-0" alt="">
+                    <div class="min-w-0">
+                      <p class="text-[10px] font-bold text-coral uppercase">${r.cat}</p>
+                      <h4 class="text-xs font-bold group-hover:text-coral transition-colors line-clamp-2">${r.title}</h4>
+                      <span class="text-[10px] text-slate-400">${r.date}</span>
+                    </div>
+                  </button>
+                `).join('')}
+              </div>
+              <button onclick="setArticleCategory('${a.cat}'); go('actualites')" class="mt-3 text-xs font-bold text-coral hover:underline">
+                Voir tous les articles ${a.cat} →
+              </button>
+            `)}
+
+            ${card(`
+              <p class="text-[10px] font-extrabold uppercase tracking-widest text-coral">Explorer la Ligue</p>
+              <div class="mt-4 grid gap-2 text-xs font-bold">
+                <button onclick="go('classement')" class="rounded-lg bg-slate-100 p-2.5 text-left hover:bg-slate-200 dark:bg-white/10">Classement officiel Ligue 1 →</button>
+                <button onclick="go('matchs')" class="rounded-lg bg-slate-100 p-2.5 text-left hover:bg-slate-200 dark:bg-white/10">Match Center & Calendrier →</button>
+                <button onclick="go('clubs')" class="rounded-lg bg-slate-100 p-2.5 text-left hover:bg-slate-200 dark:bg-white/10">Explorer les 18 clubs →</button>
+                <button onclick="go('tv')" class="rounded-lg bg-slate-100 p-2.5 text-left hover:bg-slate-200 dark:bg-white/10">Coulisses TV Vidéo →</button>
+              </div>
+            `)}
+          </aside>
+        </div>
+      `;
+    }
+    function articlePage(){ return articleDetailPage(); }
+
     function tvPage(){ return pageTitle('Média · vidéo','Coulisses TV','Interviews, reportages, débats et portraits, avec une fiche complète pour chaque épisode.')+`<div class="mb-6 flex flex-wrap gap-2">${['Toutes','Émissions','Interviews','Reportages','Débats','Portraits'].map(x=>`<button class="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold dark:border-white/10 dark:bg-[#19241f]">${x}</button>`).join('')}</div><div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">${tv.concat(tv).map(v=>`<article class="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-[#19241f]"><div class="relative"><img src="${v.image}" class="photo-zone" alt="${v.title}"><span class="absolute bottom-3 left-3 rounded-lg bg-lime px-2 py-1 text-[10px] font-bold text-ink">▶ REGARDER</span></div><div class="p-5"><p class="text-[10px] font-bold uppercase tracking-widest text-coral">${v.meta}</p><h3 class="mt-2 font-display font-semibold">${v.title}</h3><p class="mt-3 text-sm text-slate-500">Invités, résumé, sujets et entités associées.</p><button onclick="go('tv-episode')" class="mt-5 text-xs font-extrabold text-coral">Voir la fiche épisode →</button></div></article>`).join('')}</div>`; }
-    function magazineDetailPageV2(id){ const m=magazines.find(x=>x.id===id)||magazines[0]; magazinePageIndex=1; return `<div class="mb-6 text-xs font-bold text-slate-500">Magazine <span class="mx-2">›</span> ${m.number}</div><div class="grid gap-8 lg:grid-cols-[300px_1fr]"><aside>${card(`<img src="${m.cover}" class="magazine-cover w-full rounded-xl" alt="${m.title}"><p class="mt-5 text-[10px] font-extrabold uppercase tracking-widest text-coral">${m.season} · ${m.date}</p><h1 class="mt-2 font-display text-2xl font-semibold">${m.title}</h1><p class="mt-3 text-sm leading-6 text-slate-500">${m.contents} contenus sélectionnés pour cette édition.</p><div class="mt-5 grid gap-2"><button onclick="downloadMagazine('${m.id}')" class="rounded-lg bg-coral px-4 py-3 text-xs font-bold text-white">Télécharger l’édition</button><button onclick="window.print()" class="rounded-lg border border-slate-200 px-4 py-3 text-xs font-bold dark:border-white/10">Imprimer / PDF</button></div>`)}</aside><section>${card(`<div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-5 dark:border-white/10"><div><p class="text-xs font-extrabold uppercase tracking-widest text-coral">Lecteur intégré · page par page</p><h2 class="mt-2 font-display text-2xl font-semibold">${m.number} — ${m.title}</h2></div><span id="magazinePageIndicator" class="rounded-full bg-orange-100 px-3 py-2 text-xs font-bold text-orange-800">Page 1 / 4</span></div><div id="magazineReader" class="magazine-viewer mt-6 overflow-auto rounded-xl p-4 sm:p-8">${magazineReaderPage(m)}</div><div class="mt-5 flex items-center justify-between"><button onclick="changeMagazinePage(-1)" class="rounded-lg border border-slate-200 px-4 py-3 text-xs font-bold dark:border-white/10">← Page précédente</button><button onclick="changeMagazinePage(1)" class="rounded-lg bg-ink px-4 py-3 text-xs font-bold text-white dark:bg-lime dark:text-ink">Page suivante →</button></div>`)}</section></div>`; }
+
     function profilePagePro(){ const favorite=club('mazembe'); const player=players.find(p=>p.name==='Glody Likonza'); return pageTitle('Espace personnel','Mon espace','Votre tableau de bord pour suivre la Ligue, retrouver vos contenus et gérer vos alertes.')+`<section class="profile-hero mb-8 overflow-hidden rounded-3xl bg-[#062b35] p-6 text-white shadow-soft sm:p-8"><div class="profile-hero-main flex flex-wrap items-center gap-5"><span class="flex h-16 w-16 items-center justify-center rounded-2xl bg-lime text-xl font-black text-ink">AM</span><div class="profile-hero-copy flex-1"><p class="text-xs font-extrabold uppercase tracking-widest text-orange-300">Bonjour, Ami de la Ligue</p><h1 class="profile-hero-title mt-2 font-display text-3xl font-semibold">Votre Ligue 1, en un coup d’œil</h1><p class="mt-2 text-sm text-white/70">Vos préférences sont enregistrées localement sur cet appareil.</p></div><button onclick="toast('Profil enregistré')" class="profile-hero-action rounded-lg border border-white/20 px-4 py-3 text-xs font-bold">Modifier le profil</button></div></section><div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">${[['3','Contenus lus'],['2','Favoris actifs'],['4','Alertes reçues'],['1','Vote en cours']].map(x=>card(`<b class="font-display text-3xl">${x[0]}</b><p class="mt-2 text-xs font-bold uppercase tracking-widest text-slate-500">${x[1]}</p>`)).join('')}</div><div class="mt-10 grid gap-8 lg:grid-cols-[1.2fr_.8fr]"><div class="space-y-8">${card(`<div class="flex items-center justify-between"><div><p class="text-xs font-extrabold uppercase tracking-widest text-coral">Mon club favori</p><h2 class="mt-2 font-display text-2xl font-semibold">${favorite.name}</h2></div><button onclick="go('club-mazembe')" class="text-xs font-bold text-coral">Explorer le club →</button></div><div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4"><div><b class="font-display text-2xl">${favorite.rank}</b><p class="text-[10px] uppercase text-slate-400">Rang</p></div><div><b class="font-display text-2xl">${favorite.pts}</b><p class="text-[10px] uppercase text-slate-400">Points</p></div><div><b class="font-display text-2xl">+12</b><p class="text-[10px] uppercase text-slate-400">Différence</p></div><div><div class="flex gap-1">${formDots(favorite.form)}</div><p class="mt-1 text-[10px] uppercase text-slate-400">Forme</p></div></div>`)}${card(`<div class="flex items-center justify-between"><div><p class="text-xs font-extrabold uppercase tracking-widest text-coral">Joueur suivi</p><h2 class="mt-2 font-display text-xl font-semibold">${player.name}</h2><p class="mt-1 text-sm text-slate-500">${player.position} · ${player.goals} buts · ${player.assists} passes</p></div><button onclick="go('player-glody-likonza')" class="text-xs font-bold text-coral">Voir le profil →</button></div>`)}${card(`<div class="flex items-center justify-between"><h2 class="font-display text-xl font-semibold">Historique de lecture</h2><button onclick="go('actualites')" class="text-xs font-bold text-coral">Tout voir →</button></div><div class="mt-4 space-y-3">${articles.slice(0,3).map(a=>`<div class="flex items-center gap-3 border-b border-slate-100 pb-3 last:border-0 dark:border-white/10"><img src="${a.image}" class="h-12 w-16 rounded-lg object-cover" alt=""><div class="min-w-0"><p class="truncate text-sm font-bold">${a.title}</p><small class="text-xs text-slate-400">${a.cat} · ${a.read}</small></div></div>`).join('')}</div>`)}</div><aside class="space-y-5">${card(`<div class="flex items-center justify-between"><h2 class="font-display text-xl font-semibold">Mes alertes</h2><span class="rounded-full bg-red-100 px-2 py-1 text-[10px] font-bold text-red-700">4 nouvelles</span></div><div class="mt-5 space-y-4 text-sm"><label class="flex items-center justify-between gap-3"><span>Résultats de ${favorite.name}</span><input type="checkbox" checked class="h-4 w-4 accent-red-600"></label><label class="flex items-center justify-between gap-3"><span>Nouveaux articles</span><input type="checkbox" checked class="h-4 w-4 accent-red-600"></label><label class="flex items-center justify-between gap-3"><span>Matchs en direct</span><input type="checkbox" class="h-4 w-4 accent-red-600"></label></div>`)}${card(`<p class="text-xs font-extrabold uppercase tracking-widest text-coral">Prochain rendez-vous</p><h2 class="mt-3 font-display text-xl font-semibold">Maniema Union — FC Saint-Éloi Lupopo</h2><p class="mt-2 text-sm text-slate-500">Aujourd’hui · 18:30 · Groupe Championnat</p><button onclick="go('matchs')" class="mt-5 w-full rounded-lg bg-ink py-3 text-xs font-bold text-white dark:bg-lime dark:text-ink">Voir les matchs →</button>`)}${card(`<p class="text-xs font-extrabold uppercase tracking-widest text-coral">Sondage</p><h2 class="mt-3 font-display text-xl font-semibold">Le joueur du mois</h2><p class="mt-2 text-sm text-slate-500">Votre vote nourrit la conversation de la Ligue.</p><button onclick="toast('Vote enregistré')" class="mt-5 w-full rounded-lg bg-coral py-3 text-xs font-bold text-white">Voter maintenant</button>`)}</aside></div>`; }
     function page(id) {
-      if(id==='article') return articlePage();
+      if(id==='article') return articleDetailPage();
+      if(id.startsWith('article-')) return articleDetailPage(id.slice(8));
       if(id==='tv-episode') return tvDetailPage();
       if(id==='profile') return profilePagePro();
       if(id==='actualites') return actualitesPage();
@@ -281,7 +1410,6 @@
       if(id==='joueurs') return playersPage();
       if(id.startsWith('player-')) return playerExplorerPage(id);
       if(id==='magazine') return magazinePage();
-      if(id.startsWith('magazine-')) return magazineDetailPage(id.slice(9));
       if(id==='home') return home();
       if(id==='actualites') return pageTitle('Média · Actualités','L’actualité de la Ligue 1 RDC','Des analyses, portraits et reportages pour comprendre ce qui se joue sur et autour des terrains.') + `<div class="mb-6 flex flex-wrap gap-2">${['Toutes','Matchs','Analyses','Coulisses','Interviews','Data'].map(x=>`<button class="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold dark:border-white/10 dark:bg-[#19241f]">${x}</button>`).join('')}</div><div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">${articles.concat(articles.slice(0,2)).map(a=>`<article class="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-[#19241f]"><img src="${a.image}" class="photo-zone" alt="${a.title}"><div class="p-5"><p class="text-[10px] font-extrabold uppercase tracking-widest text-coral">${a.cat}</p><h3 class="mt-2 font-display text-lg font-semibold">${a.title}</h3><p class="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">${a.excerpt}</p><p class="mt-5 text-xs font-bold text-slate-400">${a.date} · ${a.read}</p></div></article>`).join('')}</div>`;
       if(id==='article') return pageTitle('Analyse · 22 août 2025','Le grand rendez-vous de Lubumbashi tient toutes ses promesses','Une lecture complète du choc entre les deux géants historiques du football congolais.') + `<div class="grid gap-8 lg:grid-cols-[1fr_320px]"><article>${card(`<img src="${articles[0].image}" class="mb-7 h-72 w-full rounded-xl object-cover sm:h-[430px]" alt="Match"><p class="max-w-2xl text-base leading-8 text-slate-600 dark:text-slate-300">Dans un Kamalondo vibrant, le TP Mazembe s’est imposé au terme d’une rencontre qui a changé de visage après la pause. Le pressing des locaux a finalement fait la différence dans les vingt dernières minutes.</p><h2 class="mt-8 font-display text-2xl font-semibold">Un match en deux actes</h2><p class="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">Vita Club avait pourtant parfaitement démarré. Mais la maîtrise territoriale des Corbeaux et l’activité de Glody Likonza ont progressivement déplacé le centre de gravité du match.</p><div class="mt-8 rounded-xl bg-lime p-5 text-ink"><b class="text-xs uppercase tracking-widest">La donnée clé</b><p class="mt-2 font-display text-2xl font-semibold">7 tirs cadrés à 3 en seconde période</p></div>`)}<div class="mt-4 flex flex-wrap gap-2"><button onclick="go('clubs')" class="rounded-full bg-ink px-3 py-2 text-xs font-bold text-white dark:bg-lime dark:text-ink">TP Mazembe</button><button onclick="go('joueurs')" class="rounded-full border border-slate-200 px-3 py-2 text-xs font-bold dark:border-white/10">Glody Likonza</button><button onclick="go('data')" class="rounded-full border border-slate-200 px-3 py-2 text-xs font-bold dark:border-white/10">Voir les stats</button></div></article><aside>${card('<p class="text-xs font-extrabold uppercase tracking-widest text-emerald-700 dark:text-lime">À retenir</p><ul class="mt-5 space-y-4 text-sm"><li>⚽ 23’ · Ouverture du score</li><li>🟨 67’ · Carton au milieu</li><li>⚡ 78’ · Égalisation</li><li>🏟 14 820 · Affluence</li></ul>')}</aside></div>`;
@@ -301,10 +1429,271 @@
       return pageTitle('Explorer la Ligue 1','Une encyclopédie vivante du football congolais','Choisissez une porte d’entrée pour explorer les personnes, les lieux, les chiffres et les histoires.') + `<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">${[['Saisons','Les chapitres de la compétition','saisons'],['Clubs','Les identités et territoires','clubs'],['Joueurs','Les profils à suivre','joueurs'],['Stades','Les lieux du football','carte'],['Data Center','Les chiffres vérifiables','data'],['Records','Les performances historiques','records'],['Archives','Le patrimoine de la Ligue','archives'],['Matchs','Les affiches et résultats','matchs']].map(x=>card(`<span class="text-3xl text-emerald-700 dark:text-lime">${icon(x[2])}</span><h3 class="mt-5 font-display text-lg font-semibold">${x[0]}</h3><p class="mt-2 text-sm text-slate-500">${x[1]}</p><button onclick="go('${x[2]}')" class="mt-5 text-xs font-extrabold text-emerald-700 dark:text-lime">Explorer →</button>`)).join('')}</div>`;
     }
     function dataPage(id){ const title=id==='records'?'Record Watch':id==='ranking'?'Power Ranking':'Data Center'; const desc=id==='ranking'?'Un classement éditorial produit par Les Coulisses de la Ligue 1.': 'Des indicateurs lisibles, sourcés et reliés aux entités de la compétition.'; return pageTitle('Data · exploration',title,desc)+`<div class="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">${[['632','Buts'],['245','Matchs'],['14 820','Affluence record'],['18','Clubs']].map(x=>card(`<p class="font-display text-3xl">${x[0]}</p><p class="mt-2 text-xs font-bold uppercase tracking-widest text-slate-500">${x[1]}</p>`)).join('')}</div><div class="grid gap-8 lg:grid-cols-[1fr_320px]"><div class="space-y-5">${card(`<div class="flex items-center justify-between"><div><p class="text-xs font-extrabold uppercase tracking-widest text-emerald-700 dark:text-lime">${id==='records'?'Record de buts':'Buts par journée'}</p><h2 class="mt-2 font-display text-xl font-semibold">${id==='records'?'Glody Likonza · 8 buts':'La dynamique offensive de la saison'}</h2></div><span class="rounded-lg bg-lime px-3 py-2 text-xs font-bold text-ink">2025-26</span></div><div class="mt-8 flex h-48 items-end gap-3 border-b border-l border-slate-200 px-4 dark:border-white/10">${[42,60,48,75,68,92,80,100,76,88].map((h,i)=>`<div class="bar flex-1 rounded-t-md bg-emerald-700/80 dark:bg-lime" style="height:${h}%" title="Journée ${i+1}"></div>`).join('')}</div><div class="mt-3 flex justify-between text-[10px] text-slate-400"><span>J1</span><span>J5</span><span>J10</span></div>`)}${card(`<p class="text-xs font-extrabold uppercase tracking-widest text-emerald-700 dark:text-lime">${id==='ranking'?'Forme du moment':'Traçabilité'}</p><div class="mt-5 space-y-4 text-sm"><div class="flex justify-between"><span>Valeur</span><b>${id==='records'?'8 buts':'632 buts'}</b></div><div class="flex justify-between"><span>Saison</span><b>2025-2026</b></div><div class="flex justify-between"><span>Source</span><b>Base LCL RDC</b></div><div class="flex justify-between"><span>Fiabilité</span><b class="text-emerald-600">Vérifiée</b></div></div>`)}</div><aside>${card('<p class="text-xs font-extrabold uppercase tracking-widest">Filtres</p><div class="mt-5 space-y-3"><select class="w-full rounded-lg border border-slate-200 bg-paper p-3 text-sm dark:border-white/10 dark:bg-black/20"><option>Saison 2025-2026</option></select><select class="w-full rounded-lg border border-slate-200 bg-paper p-3 text-sm dark:border-white/10 dark:bg-black/20"><option>Tous les clubs</option></select><select class="w-full rounded-lg border border-slate-200 bg-paper p-3 text-sm dark:border-white/10 dark:bg-black/20"><option>Tous les indicateurs</option></select><button onclick="toast(\'Filtres appliqués\')" class="w-full rounded-lg bg-ink py-3 text-xs font-bold text-white dark:bg-lime dark:text-ink">Appliquer</button></div>')}</aside></div>`; }
-    function searchResults(q){ const list=[...clubs.map(c=>({type:'Club',name:c.name,detail:c.city,id:'clubs'})),...players.map(p=>({type:'Joueur',name:p.name,detail:club(p.club).name,id:'joueurs'})),...articles.map(a=>({type:'Article',name:a.title,detail:a.cat,id:'article'}))].filter(x=>!q||x.name.toLowerCase().includes(q.toLowerCase())); return `<div class="grid gap-3">${list.map(x=>`<button onclick="go('${x.id}')" class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 text-left hover:border-emerald-500 dark:border-white/10 dark:bg-[#19241f]"><span class="flex h-10 w-10 items-center justify-center rounded-lg bg-lime font-bold text-ink">${x.type[0]}</span><span class="flex-1"><b class="block text-sm">${x.name}</b><small class="text-xs text-slate-500">${x.type} · ${x.detail}</small></span><span>→</span></button>`).join('')}</div>`; }
-    function desktopSidebar(){ const items=[['home','Accueil'],['matchs','Matchs'],['classement','Classement'],['clubs','Clubs'],['joueurs','Joueurs'],['data','Data Center'],['records','Records'],['ranking','Power Ranking'],['saisons','Saisons'],['archives','Archives'],['actualites','Actualités'],['tv','Coulisses TV'],['magazine','Magazine'],['supporters','12e Homme'],['carte','Carte de la Ligue']]; const width=sidebarCollapsed?'w-[76px]':'w-[236px]'; return `<aside class="fixed left-4 top-28 bottom-6 z-20 hidden ${width} overflow-y-auto lg:block"><div class="rounded-2xl border border-slate-200/80 bg-white p-3 shadow-soft dark:border-white/10 dark:bg-[#19241f]"><div class="mb-3 flex items-center ${sidebarCollapsed?'justify-center':'justify-between'}"><p class="px-2 text-[10px] font-extrabold uppercase tracking-[.2em] text-slate-400 ${sidebarCollapsed?'sr-only':''}">Explorer la Ligue</p><button onclick="toggleSidebar()" class="rounded-lg p-2 text-sm font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10" aria-label="${sidebarCollapsed?'Agrandir':'Réduire'} la sidebar">${sidebarCollapsed?'→':'←'}</button></div><div class="space-y-1">${items.map(([id,label])=>`<button onclick="go('${id}')" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-bold ${sidebarCollapsed?'justify-center':''} ${current===id?'bg-lime text-ink':'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10'}" title="${label}"><span class="w-5 shrink-0 text-center text-base">${icon(id)}</span><span class="${sidebarCollapsed?'hidden':''}">${label}</span></button>`).join('')}</div><div class="mt-5 border-t border-slate-100 pt-4 dark:border-white/10"><button onclick="go('search')" class="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-bold text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 ${sidebarCollapsed?'justify-center':''}" title="Recherche"><span class="w-5 text-center">⌕</span><span class="${sidebarCollapsed?'hidden':''}">Recherche</span></button></div></div></aside>`; }
-    function adSlot(type='leaderboard'){ const compact=type==='native'; const activeAds=(liveEditorialContent.ads||[]).filter(item=>item.status==='Active'); const ad=activeAds[activeAds.length-1]||liveEditorialContent.ads?.[0]; const title=ad?.title||(compact?'Un regard différent sur le football congolais':'Votre marque au cœur de la Ligue 1 RDC'); const copy=ad?.copy||(compact?'Contenu sponsorisé · à découvrir':'Espace publicitaire · format responsive'); const kicker=ad?.kicker||'Les Coulisses · partenaire'; const image=ad?.image?` style="background-image:linear-gradient(110deg,#eef1f4dd,#ffffffcc),url('${ad.image}');background-size:cover;background-position:center"`:''; return `<section class="ad-slot ${compact?'ad-slot-native':''}" aria-label="Publicité"${image}><div class="ad-slot-label">Publicité</div><div class="ad-slot-copy"><span class="ad-slot-kicker">${kicker}</span><strong>${title}</strong><small>${copy}</small></div><span class="ad-slot-mark">${compact?'→':'PUBLICITÉ'}</span></section>`; }
-    function render(){ document.documentElement.classList.toggle('dark',dark); document.getElementById('app').innerHTML=shell(page(current)); const space=sidebarCollapsed?'116px':'276px'; const main=document.querySelector('main'); main.style.setProperty('--sidebar-space',space); main.classList.add('layout-with-sidebar'); const footer=document.querySelector('footer'); footer.style.setProperty('--sidebar-space',space); footer.classList.add('footer-with-sidebar'); main.insertAdjacentHTML('afterbegin',desktopSidebar()); const sidebar=main.querySelector('aside'); const contentRoot=document.createElement('div'); contentRoot.className='min-w-0'; [...main.children].filter(child=>child!==sidebar).forEach(child=>contentRoot.appendChild(child)); if(current==='home'){ [...contentRoot.children].filter(child=>child.tagName==='SECTION').forEach((section,index)=>section.insertAdjacentHTML('afterend',adSlot(index===0?'leaderboard':'native'))); } else { contentRoot.insertAdjacentHTML('beforeend',adSlot('native')); } main.appendChild(contentRoot); window.scrollTo({top:0,behavior:'smooth'}); }
+    function searchResults(q){ const list=[...clubs.map(c=>({type:'Club',name:c.name,detail:c.city,id:'clubs'})),...players.map(p=>({type:'Joueur',name:p.name,detail:club(p.club).name,id:'joueurs'})),...articles.map(a=>({type:'Article',name:a.title,detail:a.cat+' · '+a.date,id:`article-${a.id}`}))].filter(x=>!q||x.name.toLowerCase().includes(q.toLowerCase())); return `<div class="grid gap-3">${list.map(x=>`<button onclick="go('${x.id}')" class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 text-left hover:border-emerald-500 dark:border-white/10 dark:bg-[#19241f]"><span class="flex h-10 w-10 items-center justify-center rounded-lg bg-lime font-bold text-ink">${x.type[0]}</span><span class="flex-1"><b class="block text-sm">${x.name}</b><small class="text-xs text-slate-500">${x.type} · ${x.detail}</small></span><span>→</span></button>`).join('')}</div>`; }
+    function desktopSidebar(){
+      const items=[
+        ['home','Accueil','home'],
+        ['actualites','Actualités','actualites'],
+        ['matchs','Matchs','matchs'],
+        ['classement','Classement','classement'],
+        ['clubs','Clubs','clubs'],
+        ['joueurs','Joueurs','joueurs'],
+        ['magazine','Magazine Officiel','magazine'],
+        ['tv','Coulisses TV','tv'],
+        ['data','Data Center','data'],
+        ['records','Records','records'],
+        ['ranking','Power Ranking','ranking'],
+        ['saisons','Saisons','saisons'],
+        ['archives','Archives','archives'],
+        ['supporters','12e Homme','supporters'],
+        ['carte','Carte de la Ligue','carte']
+      ];
+      const width = sidebarCollapsed ? 'w-[74px]' : 'w-[240px]';
+      return `<aside class="shrink-0 hidden lg:block sticky top-24 self-start ${width} transition-all duration-300 z-20">
+        <div class="rounded-2xl border border-slate-200/90 bg-white/95 p-3 shadow-soft backdrop-blur-md dark:border-white/10 dark:bg-[#19241f]/95 hide-scrollbar max-h-[calc(100vh-7.5rem)] overflow-y-auto">
+          <div class="mb-3 flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'} px-1">
+            <span class="text-[10px] font-extrabold uppercase tracking-[.18em] text-slate-400 ${sidebarCollapsed ? 'hidden' : 'block'}">Navigation</span>
+            <button onclick="toggleSidebar()" class="rounded-lg p-1.5 text-xs font-bold text-slate-400 hover:bg-slate-100 hover:text-ink dark:hover:bg-white/10 dark:hover:text-white transition" title="${sidebarCollapsed ? 'Agrandir le menu' : 'Réduire le menu'}">
+              ${sidebarCollapsed ? '▶' : '◀'}
+            </button>
+          </div>
+          <nav class="space-y-1">
+            ${items.map(([id, label, ic]) => `
+              <button onclick="go('${id}')" class="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-bold transition-all ${sidebarCollapsed ? 'justify-center px-2' : ''} ${current === id ? 'bg-ink text-white shadow-md dark:bg-lime dark:text-ink' : 'text-slate-600 hover:bg-slate-100 hover:text-ink dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white'}" title="${label}">
+                <span class="w-5 shrink-0 text-center text-sm ${current === id ? (sidebarCollapsed ? 'scale-110' : '') : 'text-coral dark:text-lime'}">${icon(ic)}</span>
+                <span class="${sidebarCollapsed ? 'hidden' : 'block truncate'}">${label}</span>
+              </button>
+            `).join('')}
+          </nav>
+          <div class="mt-4 border-t border-slate-100 pt-3 dark:border-white/10">
+            <button onclick="go('search')" class="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10 ${sidebarCollapsed ? 'justify-center' : ''}" title="Rechercher">
+              <span class="w-5 text-center text-sm">⌕</span>
+              <span class="${sidebarCollapsed ? 'hidden' : 'block'}">Recherche</span>
+            </button>
+          </div>
+        </div>
+      </aside>`;
+    }
+    window.LCL_ADS = {
+      slots: {},
+      initSlot(slotId, total, intervalMs = 5500) {
+        if (!this.slots[slotId]) {
+          this.slots[slotId] = { index: 0, total, intervalMs, paused: false, timer: null };
+        } else {
+          this.slots[slotId].total = total;
+          this.slots[slotId].index = 0;
+          this.slots[slotId].paused = false;
+        }
+        const card = document.getElementById(slotId);
+        if (card && !card.dataset.touchAttached) {
+          card.dataset.touchAttached = 'true';
+          let touchStartX = 0;
+          card.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+          card.addEventListener('touchend', e => {
+            const diff = e.changedTouches[0].screenX - touchStartX;
+            if (Math.abs(diff) > 40) {
+              if (diff < 0) window.LCL_ADS.next(slotId);
+              else window.LCL_ADS.prev(slotId);
+            }
+          }, { passive: true });
+        }
+        this.startTimer(slotId);
+      },
+      startTimer(slotId) {
+        const s = this.slots[slotId];
+        if (!s) return;
+        this.stopTimer(slotId);
+        const bar = document.getElementById(`${slotId}-prog`);
+        if (bar) {
+          bar.style.transition = 'none';
+          bar.style.width = '0%';
+          setTimeout(() => {
+            if (s && !s.paused && bar) {
+              bar.style.transition = `width ${s.intervalMs}ms linear`;
+              bar.style.width = '100%';
+            }
+          }, 35);
+        }
+        s.timer = setInterval(() => {
+          if (!s.paused) {
+            this.next(slotId);
+          }
+        }, s.intervalMs);
+      },
+      stopTimer(slotId) {
+        const s = this.slots[slotId];
+        if (s && s.timer) {
+          clearInterval(s.timer);
+          s.timer = null;
+        }
+      },
+      pause(slotId) {
+        const s = this.slots[slotId];
+        if (s) {
+          s.paused = true;
+          this.stopTimer(slotId);
+          const bar = document.getElementById(`${slotId}-prog`);
+          if (bar) bar.style.transition = 'none';
+        }
+      },
+      resume(slotId) {
+        const s = this.slots[slotId];
+        if (s) {
+          s.paused = false;
+          this.startTimer(slotId);
+        }
+      },
+      goTo(slotId, targetIndex) {
+        const s = this.slots[slotId];
+        if (!s) return;
+        const nextIdx = (targetIndex + s.total) % s.total;
+        s.index = nextIdx;
+        const card = document.getElementById(slotId);
+        if (!card) return;
+        const slides = card.querySelectorAll('.ad-slide-item');
+        slides.forEach((sl, idx) => {
+          sl.classList.toggle('active', idx === nextIdx);
+        });
+        const counter = document.getElementById(`${slotId}-count`);
+        if (counter) counter.textContent = `${nextIdx + 1} / ${s.total}`;
+        const dots = document.getElementById(`${slotId}-dots`);
+        if (dots) {
+          [...dots.children].forEach((d, idx) => {
+            d.classList.toggle('active', idx === nextIdx);
+          });
+        }
+        if (!s.paused) this.startTimer(slotId);
+      },
+      next(slotId) {
+        const s = this.slots[slotId];
+        if (s) this.goTo(slotId, s.index + 1);
+      },
+      prev(slotId) {
+        const s = this.slots[slotId];
+        if (s) this.goTo(slotId, s.index - 1);
+      },
+      initAll() {
+        document.querySelectorAll('[data-ad-slot="true"]').forEach(el => {
+          const slotId = el.id;
+          const count = parseInt(el.getAttribute('data-ad-count') || '3', 10);
+          this.initSlot(slotId, count);
+        });
+      },
+      clearAll() {
+        Object.keys(this.slots).forEach(slotId => this.stopTimer(slotId));
+        this.slots = {};
+      }
+    };
+
+    let adSlotInstanceCounter = 0;
+    function adSlot(type = 'leaderboard', customId = null, offset = null, count = 3) {
+      adSlotInstanceCounter++;
+      const isCompact = type === 'native';
+      const pool = (liveEditorialContent.ads && liveEditorialContent.ads.length >= 3)
+        ? liveEditorialContent.ads.filter(a => a.status === 'Active')
+        : (window.LCL_SHARED_CONTENT.ads || []);
+      
+      const allAds = pool.length >= 3 ? pool : window.LCL_SHARED_CONTENT.ads;
+      const slotId = customId || `ad-rotator-${adSlotInstanceCounter}`;
+      const actualCount = Math.max(3, Math.min(count, allAds.length));
+      const start = (offset !== null) ? (offset % allAds.length) : ((adSlotInstanceCounter * 3) % allAds.length);
+      
+      const slotAds = [];
+      for (let i = 0; i < actualCount; i++) {
+        slotAds.push(allAds[(start + i) % allAds.length]);
+      }
+      
+      const slidesHtml = slotAds.map((ad, idx) => {
+        const imgUrl = encodeURI(ad.image || 'PUB SITE/1.jfif');
+        return `
+          <div class="ad-slide-item ${idx === 0 ? 'active' : ''}" data-index="${idx}" onclick="window.open('${ad.link || 'https://illicocash.com/'}', '_blank')" title="${ad.title} · Ouvrir le site partenaire illicocash">
+            <img src="${imgUrl}" alt="${ad.title}" class="ad-slide-img" loading="lazy">
+            <div class="ad-slide-gradient"></div>
+            <div class="ad-slide-overlay">
+              <div class="ad-slide-text">
+                <span class="ad-slide-kicker">${ad.kicker || 'Partenaire Officiel'}</span>
+                <strong class="ad-slide-title">${ad.title}</strong>
+                <span class="ad-slide-copy">${ad.copy || ''}</span>
+              </div>
+              <a href="${ad.link || 'https://illicocash.com/'}" target="_blank" rel="noopener noreferrer" class="ad-slide-cta" onclick="event.stopPropagation()">
+                Découvrir ↗
+              </a>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      const dotsHtml = slotAds.map((_, idx) => `
+        <button type="button" class="ad-rotator-dot ${idx === 0 ? 'active' : ''}" onclick="window.LCL_ADS.goTo('${slotId}', ${idx})" aria-label="Afficher publicité ${idx + 1} sur ${actualCount}"></button>
+      `).join('');
+      
+      return `
+        <section class="ad-slot-rotator ${isCompact ? 'ad-slot-compact' : ''}" id="${slotId}" data-ad-slot="true" data-ad-count="${actualCount}" onmouseenter="window.LCL_ADS.pause('${slotId}')" onmouseleave="window.LCL_ADS.resume('${slotId}')" aria-label="Espace Publicitaire Partenaire">
+          <div class="ad-rotator-frame">
+            ${slidesHtml}
+            <div class="ad-rotator-topbar">
+              <div class="ad-brand-pill">
+                <span class="ad-pulse-dot"></span>
+                <span class="ad-brand-label">PUBLICITÉ · PARTENAIRE OFFICIEL</span>
+              </div>
+              <div class="ad-controls-group">
+                <span class="ad-counter-badge" id="${slotId}-count">1 / ${actualCount}</span>
+                <div class="ad-nav-arrows">
+                  <button type="button" class="ad-arrow-btn" onclick="window.LCL_ADS.prev('${slotId}')" aria-label="Publicité précédente">‹</button>
+                  <button type="button" class="ad-arrow-btn" onclick="window.LCL_ADS.next('${slotId}')" aria-label="Publicité suivante">›</button>
+                </div>
+              </div>
+            </div>
+            <div class="ad-rotator-bottombar">
+              <div class="ad-rotator-dots" id="${slotId}-dots">
+                ${dotsHtml}
+              </div>
+              <span class="ad-rotator-tag">illicocash by Rawbank</span>
+            </div>
+            <div class="ad-progress-track">
+              <div class="ad-progress-bar" id="${slotId}-prog"></div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function render(){
+      if(window.LCL_ADS && window.LCL_ADS.clearAll) window.LCL_ADS.clearAll();
+      adSlotInstanceCounter = 0;
+      liveEditorialContent = window.LCL_SHARED_CONTENT ? window.LCL_SHARED_CONTENT.read() : { articles:[], tv:[], magazines:[], ads:[] };
+      document.documentElement.classList.toggle('dark', dark);
+
+      // Render page with flex layout
+      const pageHtml = page(current);
+      const appRoot = document.getElementById('app');
+      appRoot.innerHTML = shell(`
+        <div class="flex items-start gap-6 lg:gap-8">
+          ${desktopSidebar()}
+          <div id="pageContentRoot" class="flex-1 min-w-0">
+            ${pageHtml}
+          </div>
+        </div>
+      `);
+
+      const contentRoot = document.getElementById('pageContentRoot');
+      if (current === 'home') {
+        const sections = contentRoot.querySelectorAll('section');
+        if (sections.length > 0) {
+          sections[0].insertAdjacentHTML('afterend', adSlot('leaderboard', 'ad-home-0', 0));
+        }
+        if (sections.length > 1) {
+          sections[1].insertAdjacentHTML('afterend', adSlot('native', 'ad-home-1', 3));
+        }
+      } else {
+        if (!contentRoot.querySelector('[data-ad-slot="true"]')) {
+          contentRoot.insertAdjacentHTML('beforeend', adSlot('leaderboard', `ad-bottom-${current}`, Math.floor(Math.random() * 15)));
+        }
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.LCL_ADS && window.LCL_ADS.initAll) window.LCL_ADS.initAll();
+    }
     function go(id){ current=id; location.hash=id; render(); }
     function toggleTheme(){ dark=!dark; localStorage.setItem('lcl-theme',dark?'dark':'light'); render(); }
     function toggleSidebar(){ sidebarCollapsed=!sidebarCollapsed; localStorage.setItem('lcl-sidebar',sidebarCollapsed?'collapsed':'expanded'); render(); }
@@ -312,6 +1701,16 @@
     function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),2200); }
     function searchList(q){ document.getElementById('searchResults').innerHTML=searchResults(q); }
     window.addEventListener('hashchange',()=>{ current=location.hash.slice(1)||'home'; render(); });
+    document.addEventListener('keydown',(e)=>{
+      if(!location.hash.startsWith('#magazine-')) return;
+      if((e.ctrlKey||e.metaKey)&&['s','p','u'].includes(e.key.toLowerCase())){
+        e.preventDefault();
+        toast('Consultation exclusive en ligne · Téléchargement et impression désactivés');
+        return false;
+      }
+      if(e.key==='ArrowLeft'){ changeMagazinePage(-1); }
+      else if(e.key==='ArrowRight'){ changeMagazinePage(1); }
+    });
     render();
   </script>
 <script>
