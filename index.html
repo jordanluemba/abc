@@ -466,7 +466,7 @@
     const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c]));
     const club = id => clubs.find(c => c.id === id) || clubs[0];
     const logo = (c, small=false) => `<span class="inline-flex ${small?'h-9 w-9 text-[10px]':'h-12 w-12 text-xs'} shrink-0 items-center justify-center rounded-xl font-extrabold" style="background:${c.color};color:${c.accent}">${c.logo}</span>`;
-    const icon = (name) => { const paths = { home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z"/>', actualites:'<path d="M4 5h16M4 12h16M4 19h10"/>', direct:'<circle cx="12" cy="12" r="8"/><path d="m10 8 5 4-5 4V8Z"/>', matchs:'<path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/>', classement:'<path d="M5 20V10h4v10M10 20V4h4v16M15 20v-7h4v7"/>', clubs:'<circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/>', joueurs:'<circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/>', data:'<path d="M5 5h14v14H5z"/><path d="M9 9h2v2H9zM13 9h2v2h-2zM9 13h2v2H9zM13 13h2v2h-2z"/>', saisons:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>', tv:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3V9Z"/>', magazine:'<path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h6M8 16h8"/>', archives:'<path d="M4 7h16v13H4zM3 4h18v3H3z"/><path d="M9 12h6"/>', supporters:'<path d="M6 20v-8M12 20V5M18 20v-11"/><path d="M4 12h4M10 5h4M16 9h4"/>', carte:'<path d="M4 5l6-2 4 2 6-2v16l-6 2-4-2-6 2V5Z"/><path d="M10 3v16M14 5v16"/>', records:'<path d="m12 3 2.4 5 5.6.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.6-.8L12 3Z"/>', ranking:'<path d="M5 17 17 5M9 5h8v8"/>' }; return `<svg aria-hidden="true" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths[name] || '<circle cx="12" cy="12" r="8"/>'}</svg>`; };
+    const icon = (name, cls='h-4 w-4') => { const paths = { home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10Z"/>', actualites:'<path d="M4 5h16M4 12h16M4 19h10"/>', direct:'<circle cx="12" cy="12" r="8"/><path d="m10 8 5 4-5 4V8Z"/>', matchs:'<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>', classement:'<path d="M5 20V10h4v10M10 20V4h4v16M15 20v-7h4v7"/>', clubs:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>', shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>', joueurs:'<circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/>', user:'<circle cx="12" cy="8" r="3"/><path d="M5 20a7 7 0 0 1 14 0"/>', data:'<path d="M5 5h14v14H5z"/><path d="M9 9h2v2H9zM13 9h2v2h-2zM9 13h2v2H9zM13 13h2v2h-2z"/>', saisons:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>', tv:'<rect x="2" y="4" width="20" height="15" rx="2"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor"/>', magazine:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', archives:'<path d="M4 7h16v13H4zM3 4h18v3H3z"/><path d="M9 12h6"/>', supporters:'<path d="M6 20v-8M12 20V5M18 20v-11"/><path d="M4 12h4M10 5h4M16 9h4"/>', carte:'<path d="M4 5l6-2 4 2 6-2v16l-6 2-4-2-6 2V5Z"/><path d="M10 3v16M14 5v16"/>', records:'<path d="m12 3 2.4 5 5.6.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.6-.8L12 3Z"/>', ranking:'<path d="M5 17 17 5M9 5h8v8"/>', search:'<circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>', pin:'<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>', stadium:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M3 14h18M9 5v14M15 5v14"/>', calendar:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>', globe:'<circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>', play:'<polygon points="6 4 18 12 6 20 6 4" fill="currentColor"/>', star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>', '3d':'<path d="m21 16-9 5-9-5V8l9-5 9 5v8z"/><path d="m3.27 6.96 8.73 4.88 8.73-4.88M12 21.84V11.84"/>', sun:'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>', moon:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>' }; return `<svg aria-hidden="true" class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${paths[name] || '<circle cx="12" cy="12" r="8"/>'}</svg>`; };
     const pageTitle = (eyebrow,title,desc='') => `<div class="mb-8 max-w-3xl"><p class="mb-3 text-xs font-extrabold uppercase tracking-[.22em] text-emerald-700 dark:text-lime">${eyebrow}</p><h1 class="font-display text-3xl font-semibold tracking-tight sm:text-5xl">${title}</h1>${desc?`<p class="mt-4 max-w-2xl text-sm leading-7 text-slate-600 dark:text-slate-300 sm:text-base">${desc}</p>`:''}</div>`;
     const card = (content, extra='') => `<div class="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-[#19241f] ${extra}">${content}</div>`;
     const matchRow = m => { const h=club(m.home), a=club(m.away); return `<div class="flex items-center gap-3 border-b border-slate-200 py-4 last:border-0 dark:border-white/10"><span class="w-20 text-xs font-bold text-slate-500">${m.date}<br><b class="text-ink dark:text-white">${m.time}</b></span><div class="flex flex-1 items-center justify-end gap-2 text-right text-sm font-bold">${h.name}${logo(h,true)}</div><div class="min-w-[62px] text-center font-display text-lg font-bold">${m.hs === null ? '<span class="text-xs text-slate-400">VS</span>' : `${m.hs} <span class="text-slate-400">-</span> ${m.as}`}</div><div class="flex flex-1 items-center gap-2 text-sm font-bold">${logo(a,true)}${a.name}</div><span class="hidden rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase text-slate-500 sm:block dark:bg-white/10">${m.status}</span></div>`; };
@@ -491,10 +491,11 @@
             </nav>
             <div class="ml-auto flex items-center gap-1.5">
               <a href="Terrain Vivant.html" class="hidden md:inline-flex items-center gap-1.5 rounded-xl border border-coral/35 bg-coral/10 px-3 py-2 text-xs font-bold text-coral transition hover:bg-coral hover:text-white dark:border-lime/35 dark:bg-lime/10 dark:text-lime dark:hover:bg-lime dark:hover:text-ink" title="Accéder au Match Center 3D interactif">
-                <span>🏟️ Match 3D</span>
+                <span class="inline-flex">${icon('3d', 'h-3.5 w-3.5')}</span>
+                <span>Match 3D</span>
               </a>
-              <button onclick="go('search')" class="rounded-xl p-2.5 text-base text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10" aria-label="Rechercher" title="Recherche globale">⌕</button>
-              <button onclick="toggleTheme()" class="rounded-xl p-2.5 text-base text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10" aria-label="Changer de thème" title="${dark ? 'Mode clair' : 'Mode sombre'}">${dark ? '☀' : '◐'}</button>
+              <button onclick="go('search')" class="rounded-xl p-2.5 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 transition" aria-label="Rechercher" title="Recherche globale">${icon('search', 'h-4 w-4')}</button>
+              <button onclick="toggleTheme()" class="rounded-xl p-2.5 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 transition" aria-label="Changer de thème" title="${dark ? 'Mode clair' : 'Mode sombre'}">${dark ? icon('sun', 'h-4 w-4') : icon('moon', 'h-4 w-4')}</button>
               <button onclick="go('profile')" class="hidden sm:inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-3.5 py-2 text-xs font-bold shadow-sm transition hover:border-coral hover:text-coral dark:border-white/10 dark:bg-white/5 dark:text-white">
                 <span class="flex h-5 w-5 items-center justify-center rounded-full bg-lime text-[10px] font-black text-ink">AM</span>
                 <span>Mon espace</span>
@@ -1500,7 +1501,7 @@
                   ${c.logo}
                 </div>
                 <h2 class="mt-4 font-display text-xl font-bold">${c.name}</h2>
-                <p class="text-xs text-slate-500 mt-1">📍 ${c.city}, RDC · 🏟️ ${c.stadium}</p>
+                <p class="text-xs text-slate-500 mt-1 flex items-center justify-center gap-1.5 flex-wrap"><span class="inline-flex items-center gap-1">${icon('pin', 'h-3 w-3 text-coral dark:text-lime')} ${c.city}, RDC</span><span class="text-slate-300 dark:text-white/20">·</span><span class="inline-flex items-center gap-1">${icon('stadium', 'h-3 w-3 text-slate-400')} ${c.stadium}</span></p>
                 <div class="mt-6 grid grid-cols-2 gap-2 text-center text-xs">
                   <div class="rounded-xl bg-slate-50 p-2.5 dark:bg-white/5">
                     <span class="text-[9px] uppercase tracking-wider text-slate-400 font-extrabold block">Classement</span>
@@ -1578,7 +1579,7 @@
               <div class="mt-6 space-y-3 border-t border-slate-100 pt-5 text-xs dark:border-white/10">
                 <div class="flex justify-between">
                   <span class="text-slate-400">Nationalité</span>
-                  <b>🇨🇩 ${p.nationality}</b>
+                  <b><span class="inline-flex items-center gap-1">${icon('globe', 'h-3 w-3 text-slate-400')} ${p.nationality}</span></b>
                 </div>
                 ${p.age ? `<div class="flex justify-between"><span class="text-slate-400">Âge</span><b>${p.age} ans (${p.birth})</b></div>` : ''}
                 ${p.loanTo ? `<div class="flex justify-between"><span class="text-slate-400">Prêté à</span><b class="text-lime">${p.loanTo}</b></div>` : ''}
@@ -1674,8 +1675,10 @@
                     ${c.short}
                   </span>
                 </div>
-                <p class="text-xs text-slate-500 mt-0.5">
-                  📍 ${highlightMatch(c.city, q)} · 🏟️ ${c.stadium}
+                <p class="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                  <span class="inline-flex items-center gap-1">${icon('pin', 'h-3 w-3 text-coral dark:text-lime')} ${highlightMatch(c.city, q)}</span>
+                  <span class="text-slate-300 dark:text-white/20">·</span>
+                  <span class="inline-flex items-center gap-1">${icon('stadium', 'h-3 w-3 text-slate-400')} ${c.stadium}</span>
                 </p>
               </div>
             </div>
@@ -1717,7 +1720,7 @@
                 <p class="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
                   <span>${c.name}</span>
                   <span class="text-slate-300 dark:text-white/20">·</span>
-                  <span>🇨🇩 ${p.nationality}</span>
+                  <span class="inline-flex items-center gap-1">${icon('globe', 'h-3 w-3 text-slate-400')} ${p.nationality}</span>
                 </p>
               </div>
             </div>
@@ -1751,8 +1754,8 @@
                 ${a.cat}
               </span>
               ${a.code ? `
-                <span class="absolute bottom-3 left-3 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 px-2 py-0.5 text-[9px] font-mono font-bold text-lime">
-                  ★ Magazine N°1
+                <span class="absolute bottom-3 left-3 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 px-2 py-0.5 text-[9px] font-mono font-bold text-lime flex items-center gap-1">
+                  ${icon('star', 'h-2.5 w-2.5 fill-current')} Magazine N°1
                 </span>
               ` : ''}
               <span class="absolute bottom-3 right-3 text-[10px] font-bold text-white/80">
@@ -1760,7 +1763,10 @@
               </span>
             </div>
             <div class="p-5">
-              <p class="text-[11px] font-bold text-slate-400 mb-1.5">📅 ${a.date}</p>
+              <p class="text-[11px] font-bold text-slate-400 mb-1.5 flex items-center gap-1.5">
+                ${icon('calendar', 'h-3 w-3 text-slate-400')}
+                <span>${a.date}</span>
+              </p>
               <h3 class="font-display text-base font-bold text-ink dark:text-white leading-snug group-hover:text-coral transition-colors">
                 ${highlightMatch(a.title, q)}
               </h3>
@@ -1787,7 +1793,10 @@
         <div class="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-5 shadow-soft transition-all duration-200 hover:-translate-y-1 hover:shadow-md dark:border-white/10 dark:bg-[#19241f]">
           <div>
             <div class="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-white/10 text-xs">
-              <span class="font-bold text-slate-400">📅 ${m.date} · ${m.time}</span>
+              <span class="font-bold text-slate-400 flex items-center gap-1.5">
+                ${icon('calendar', 'h-3 w-3 text-slate-400')}
+                <span>${m.date} · ${m.time}</span>
+              </span>
               <span class="rounded-full ${isFinished ? 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300' : 'bg-coral/15 text-coral border border-coral/30 animate-pulse'} px-2.5 py-0.5 text-[9px] font-extrabold uppercase">
                 ${m.status}
               </span>
@@ -1807,8 +1816,9 @@
                 ${logo(a, true)}
               </div>
             </div>
-            <p class="text-[11px] text-slate-400 text-center">
-              🏟️ ${highlightMatch(m.stadium || 'Stade officiel', q)}
+            <p class="text-[11px] text-slate-400 text-center flex items-center justify-center gap-1.5">
+              ${icon('stadium', 'h-3.5 w-3.5 text-slate-400')}
+              <span>${highlightMatch(m.stadium || 'Stade officiel', q)}</span>
             </p>
           </div>
           <button onclick="go('matchs')" class="mt-4 w-full rounded-xl border border-slate-200 py-2.5 text-xs font-bold text-ink hover:border-coral hover:text-coral dark:border-white/10 dark:text-white dark:hover:border-lime dark:hover:text-lime transition">
@@ -1826,7 +1836,7 @@
               <img src="${v.image}" alt="${v.title}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90">
               <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
               <span class="absolute bottom-3 left-3 rounded-lg bg-lime px-2.5 py-1 text-[10px] font-extrabold text-ink shadow flex items-center gap-1.5">
-                <span>▶</span> REGARDER
+                <span class="inline-flex">${icon('play', 'h-2.5 w-2.5')}</span> REGARDER
               </span>
               <span class="absolute top-3 right-3 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[9px] font-bold text-white">
                 ${v.meta}
@@ -1862,8 +1872,8 @@
               <span class="absolute top-3 left-3 rounded-full bg-lime px-2.5 py-0.5 text-[9px] font-extrabold uppercase text-ink shadow">
                 ${m.number} · ${m.season}
               </span>
-              <span class="absolute bottom-3 right-3 rounded-full bg-black/70 backdrop-blur-sm border border-white/20 px-2 py-0.5 text-[9px] font-bold text-white">
-                📖 ${m.totalPages} pages HD
+              <span class="absolute bottom-3 right-3 rounded-full bg-black/70 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[9px] font-bold text-white flex items-center gap-1.5">
+                <span class="inline-flex">${icon('magazine', 'h-3 w-3')}</span> ${m.totalPages} pages HD
               </span>
             </div>
             <div class="p-5">
@@ -1889,8 +1899,8 @@
     function renderSearchEmptyState(q) {
       return `
         <div class="my-12 flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-white/50 p-10 text-center dark:border-white/10 dark:bg-white/5 max-w-2xl mx-auto">
-          <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-coral/10 text-2xl text-coral dark:bg-lime/10 dark:text-lime mb-4">
-            ⌕
+          <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-coral/10 text-coral dark:bg-lime/10 dark:text-lime mb-4">
+            ${icon('search', 'h-7 w-7')}
           </div>
           <h3 class="font-display text-xl font-bold text-ink dark:text-white">
             Aucun résultat trouvé pour « <span class="text-coral">${esc(q)}</span> »
@@ -1914,28 +1924,30 @@
 
     function renderSearchTabsHtml(data, activeCat) {
       const tabs = [
-        { id: 'all', label: 'Tout', count: data.total },
-        { id: 'clubs', label: 'Clubs', count: data.clubs.length, icon: '🛡️' },
-        { id: 'players', label: 'Joueurs', count: data.players.length, icon: '👤' },
-        { id: 'articles', label: 'Articles', count: data.articles.length, icon: '📰' },
-        { id: 'matches', label: 'Matchs', count: data.matches.length, icon: '⚽' },
-        { id: 'tv', label: 'Coulisses TV', count: data.tv.length, icon: '▶' },
-        { id: 'magazines', label: 'Magazines', count: data.magazines.length, icon: '📖' }
+        { id: 'all', label: 'Tout', count: data.total, iconName: null },
+        { id: 'clubs', label: 'Clubs', count: data.clubs.length, iconName: 'shield' },
+        { id: 'players', label: 'Joueurs', count: data.players.length, iconName: 'user' },
+        { id: 'articles', label: 'Articles', count: data.articles.length, iconName: 'actualites' },
+        { id: 'matches', label: 'Matchs', count: data.matches.length, iconName: 'matchs' },
+        { id: 'tv', label: 'Coulisses TV', count: data.tv.length, iconName: 'tv' },
+        { id: 'magazines', label: 'Magazines', count: data.magazines.length, iconName: 'magazine' }
       ];
 
       return tabs.map(tab => {
         const isActive = activeCat === tab.id;
+        const iconHtml = tab.iconName ? `<span class="inline-flex shrink-0 ${isActive ? 'text-white dark:text-ink' : 'text-slate-400 group-hover:text-coral dark:group-hover:text-lime'}">${icon(tab.iconName, 'h-3.5 w-3.5')}</span>` : '';
         return `
           <button 
             onclick="setSearchFilter('${tab.id}')"
-            class="flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all ${
+            class="group flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all ${
               isActive 
                 ? 'bg-ink text-white shadow-sm dark:bg-lime dark:text-ink' 
                 : 'border border-slate-200 bg-white text-slate-600 hover:border-coral hover:text-coral dark:border-white/10 dark:bg-[#19241f] dark:text-slate-300 dark:hover:border-lime dark:hover:text-lime'
             }"
           >
-            <span>${tab.icon ? tab.icon + ' ' : ''}${tab.label}</span>
-            <span class="rounded-full px-1.5 py-0.2 text-[10px] ${
+            ${iconHtml}
+            <span>${tab.label}</span>
+            <span class="rounded-full px-1.5 py-0.5 text-[10px] ${
               isActive 
                 ? 'bg-white/20 text-white dark:bg-black/20 dark:text-ink' 
                 : 'bg-slate-100 text-slate-500 dark:bg-white/10 dark:text-slate-400'
@@ -1975,7 +1987,7 @@
           <section class="mb-10">
             <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2 dark:border-white/10">
               <h2 class="font-display text-lg font-bold flex items-center gap-2">
-                <span>🛡️</span>
+                <span class="text-coral dark:text-lime inline-flex">${icon('shield', 'h-4 w-4')}</span>
                 <span>Clubs officiels</span>
                 <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-white/10">${data.clubs.length}</span>
               </h2>
@@ -1993,7 +2005,7 @@
           <section class="mb-10">
             <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2 dark:border-white/10">
               <h2 class="font-display text-lg font-bold flex items-center gap-2">
-                <span>👤</span>
+                <span class="text-coral dark:text-lime inline-flex">${icon('user', 'h-4 w-4')}</span>
                 <span>Joueurs & Talents</span>
                 <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-white/10">${data.players.length}</span>
               </h2>
@@ -2011,7 +2023,7 @@
           <section class="mb-10">
             <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2 dark:border-white/10">
               <h2 class="font-display text-lg font-bold flex items-center gap-2">
-                <span>📰</span>
+                <span class="text-coral dark:text-lime inline-flex">${icon('actualites', 'h-4 w-4')}</span>
                 <span>Actualités, Enquêtes & Analyses</span>
                 <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-white/10">${data.articles.length}</span>
               </h2>
@@ -2029,7 +2041,7 @@
           <section class="mb-10">
             <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2 dark:border-white/10">
               <h2 class="font-display text-lg font-bold flex items-center gap-2">
-                <span>⚽</span>
+                <span class="text-coral dark:text-lime inline-flex">${icon('matchs', 'h-4 w-4')}</span>
                 <span>Matchs & Calendrier</span>
                 <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-white/10">${data.matches.length}</span>
               </h2>
@@ -2047,7 +2059,7 @@
           <section class="mb-10">
             <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2 dark:border-white/10">
               <h2 class="font-display text-lg font-bold flex items-center gap-2">
-                <span>▶</span>
+                <span class="text-coral dark:text-lime inline-flex">${icon('tv', 'h-4 w-4')}</span>
                 <span>Coulisses TV & Vidéos</span>
                 <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-white/10">${data.tv.length}</span>
               </h2>
@@ -2065,7 +2077,7 @@
           <section class="mb-10">
             <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2 dark:border-white/10">
               <h2 class="font-display text-lg font-bold flex items-center gap-2">
-                <span>📖</span>
+                <span class="text-coral dark:text-lime inline-flex">${icon('magazine', 'h-4 w-4')}</span>
                 <span>Éditions du Magazine Officiel</span>
                 <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-white/10">${data.magazines.length}</span>
               </h2>
@@ -2123,10 +2135,13 @@
               <button 
                 id="searchClearBtn" 
                 onclick="clearSearchInput()" 
-                class="${q ? 'flex' : 'hidden'} h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xs font-bold text-slate-500 hover:bg-coral hover:text-white dark:bg-white/10 dark:text-slate-300 dark:hover:bg-coral dark:hover:text-white transition mr-2"
+                class="${q ? 'flex' : 'hidden'} h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-coral hover:text-white dark:bg-white/10 dark:text-slate-300 dark:hover:bg-coral dark:hover:text-white transition mr-2"
                 title="Effacer la recherche"
+                aria-label="Effacer la recherche"
               >
-                ✕
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
 
