@@ -212,6 +212,107 @@
       max-width: 100%;
       background: #10201a;
     }
+    .matchlens-view .ml-replay-prompt {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, rgba(16, 32, 26, 0.45) 0%, rgba(10, 20, 16, 0.82) 100%);
+      backdrop-filter: blur(4px);
+      z-index: 8;
+      transition: opacity .25s ease, visibility .25s ease;
+      pointer-events: auto;
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .matchlens-view .ml-replay-prompt.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .matchlens-view .ml-replay-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 12px;
+    }
+    .matchlens-view .ml-replay-launch-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      border-radius: 99px;
+      background: var(--ml-live);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 10px 30px rgba(227, 6, 19, 0.5);
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .matchlens-view .ml-replay-launch-btn:hover {
+      transform: scale(1.04);
+      background: #c30510;
+      box-shadow: 0 14px 40px rgba(227, 6, 19, 0.65);
+    }
+    .matchlens-view .ml-launch-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #e30613;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+    .matchlens-view .ml-launch-text {
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+    }
+    .matchlens-view .ml-launch-text b {
+      font-family: var(--ml-f-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+      line-height: 1.1;
+    }
+    .matchlens-view .ml-launch-text small {
+      font-size: 0.75rem;
+      color: #e2e8f0;
+      margin-top: 2px;
+    }
+    .matchlens-view .ml-btn-link {
+      background: var(--ml-panel2);
+      border: 1px solid var(--ml-line);
+      border-radius: 10px;
+      height: 38px;
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ml-fg);
+      cursor: pointer;
+      transition: all .15s ease;
+      white-space: nowrap;
+    }
+    .matchlens-view .ml-btn-link:hover {
+      border-color: var(--ml-mut);
+      background: var(--ml-panel);
+    }
     .matchlens-view #mlPitch {
       position: absolute;
       inset: 0;
@@ -2013,7 +2114,21 @@
             <section class="ml-stage" aria-label="Replay interactif du match">
               <div class="ml-pitchbox">
                 <canvas id="mlPitch" aria-label="Terrain 3D Linafoot interactif avec joueurs et ballon en mouvement"></canvas>
-                <div class="ml-tag" id="mlPtag">Replay 3D</div>
+                <div class="ml-tag" id="mlPtag">Synthèse d'après-match</div>
+
+                <!-- Overlay pour lancer le replay quand on le souhaite -->
+                <div class="ml-replay-prompt" id="mlReplayPrompt">
+                  <span class="ml-replay-badge">Synthèse complète d'après-match</span>
+                  <button type="button" class="ml-replay-launch-btn" id="mlLaunchReplayBtn">
+                    <span class="ml-launch-icon">
+                      <svg viewBox="0 0 24 24" class="w-5 h-5 fill-current"><path d="M8 5v14l11-7z"/></svg>
+                    </span>
+                    <span class="ml-launch-text">
+                      <b id="mlLaunchTitle">Lancer le Replay 3D interactif</b>
+                      <small id="mlLaunchSubtitle">Revivre les 90 minutes, tirs et buts en 3D temps réel</small>
+                    </span>
+                  </button>
+                </div>
                 
                 <!-- Sélecteur d'angles de caméra 3D -->
                 <div class="ml-views" id="mlViews" role="group" aria-label="Caméra 3D">
@@ -2051,6 +2166,14 @@
                 </button>
                 <button class="ml-btn" id="mlNext" aria-label="Événement suivant" title="Événement suivant">
                   <svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5l11 7L4 19z"/></svg>
+                </button>
+                <button class="ml-btn-link" id="mlRestartBtn" title="Relancer le match depuis le coup d'envoi">
+                  <span>↺</span>
+                  <span>Du début</span>
+                </button>
+                <button class="ml-btn-link" id="mlSummaryBtn" title="Afficher la synthèse complète d'après-match">
+                  <span>🏁</span>
+                  <span>Après-match</span>
                 </button>
 
                 <!-- Sélecteur de vitesse -->
@@ -2450,7 +2573,10 @@
         const last = n => n.split(' ').slice(-1)[0];
         const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
-        let T = 0, playing = true, speed = 15, snap = true, dragging = false, filterKey = false, tab = 'feed';
+        const isPostMatch = m.status === 'Terminé' || m.status !== 'En direct';
+        let T = isPostMatch ? END : 0;
+        let playing = false;
+        let speed = 15, snap = true, dragging = false, filterKey = false, tab = 'feed';
         const tcol = tm => tm ? (a.color || '#ffb52b') : (h.color || '#17573a');
         const nm = (tm, slot, t) => M.nameOf(tm, M.playerAt(tm, slot, t));
         const mmss = t => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0');
@@ -2490,7 +2616,48 @@
         function setPlay(){ if ($('mlPlayIc')) $('mlPlayIc').innerHTML = playing ? PAUSE : PLAY; }
         setPlay();
 
-        if ($('mlPlay')) $('mlPlay').onclick = () => { if (T >= END) { T = 0; snap = true; } playing = !playing; setPlay(); };
+        function startReplayFromStart(){
+          T = 0;
+          snap = true;
+          playing = true;
+          trail.length = 0;
+          lastN = 0;
+          setPlay();
+          if ($('mlReplayPrompt')) $('mlReplayPrompt').classList.add('hidden');
+          dirty = true;
+        }
+
+        function showPostMatchSummary(){
+          T = END;
+          playing = false;
+          snap = true;
+          trail.length = 0;
+          lastN = evCount(END);
+          setPlay();
+          if ($('mlReplayPrompt')) {
+            if ($('mlLaunchTitle')) $('mlLaunchTitle').textContent = '↺ Revoir le Replay 3D';
+            if ($('mlLaunchSubtitle')) $('mlLaunchSubtitle').textContent = 'Revivre les temps forts et actions en 3D';
+            $('mlReplayPrompt').classList.remove('hidden');
+          }
+          dirty = true;
+          updateUI(performance.now());
+        }
+
+        if ($('mlLaunchReplayBtn')) $('mlLaunchReplayBtn').onclick = startReplayFromStart;
+        if ($('mlRestartBtn')) $('mlRestartBtn').onclick = startReplayFromStart;
+        if ($('mlSummaryBtn')) $('mlSummaryBtn').onclick = showPostMatchSummary;
+
+        if ($('mlPlay')) $('mlPlay').onclick = () => {
+          if (T >= END) {
+            startReplayFromStart();
+            return;
+          }
+          playing = !playing;
+          setPlay();
+          if (playing && $('mlReplayPrompt')) $('mlReplayPrompt').classList.add('hidden');
+          else if (!playing && T >= END && $('mlReplayPrompt')) $('mlReplayPrompt').classList.remove('hidden');
+        };
+
         const keyEvents = EV.filter(e => ['goal', 'yellow', 'penalty', 'sub', 'ht', 'corner', 'shot'].includes(e.type) && (e.type !== 'shot' || e.out !== 'block'));
         if ($('mlNext')) $('mlNext').onclick = () => { const e = keyEvents.find(e => e.t > T + 9); seek(e ? e.t - 7 : END); };
         if ($('mlPrev')) $('mlPrev').onclick = () => { const c = keyEvents.filter(e => e.t < T - 1); const e = c.length ? c[c.length - 1] : null; seek(e ? Math.max(0, e.t - 7) : 0); };
@@ -2501,6 +2668,7 @@
           lastN = evCount(T);
           trail.length = 0;
           dirty = true;
+          if (playing && $('mlReplayPrompt')) $('mlReplayPrompt').classList.add('hidden');
         }
 
         if ($('mlSeek')) {
@@ -3026,7 +3194,12 @@
         if ($('mlFeed')) {
           $('mlFeed').addEventListener('click', e => {
             const li = e.target.closest('li');
-            if (li) seek(+li.dataset.t - 8);
+            if (li) {
+              seek(+li.dataset.t - 8);
+              playing = true;
+              setPlay();
+              if ($('mlReplayPrompt')) $('mlReplayPrompt').classList.add('hidden');
+            }
           });
         }
 
@@ -3160,11 +3333,14 @@
           if ($('mlGA')) $('mlGA').textContent = s[0];
           if ($('mlGB')) $('mlGB').textContent = s[1];
           const c = clock(T, H1);
-          if ($('mlClk')) $('mlClk').textContent = c.m + c.s + "'";
+          if ($('mlClk')) {
+            if (T >= END) $('mlClk').textContent = "90'";
+            else $('mlClk').textContent = c.m + c.s + "'";
+          }
           const st = $('mlState');
           if (st) {
             if (T >= END) { st.textContent = 'Terminé'; st.className = 'ml-live off'; }
-            else if (playing) { st.textContent = 'Replay'; st.className = 'ml-live'; }
+            else if (playing) { st.textContent = 'Replay 3D'; st.className = 'ml-live'; }
             else { st.textContent = 'Pause'; st.className = 'ml-live off'; }
           }
           const pa = M.stat(T, 0, 'poss'), pb = M.stat(T, 1, 'poss'), pp = (pa + pb) ? Math.round(100 * pa / (pa + pb)) : 50;
@@ -3178,7 +3354,10 @@
           if ($('mlScB')) $('mlScB').textContent = sc[1];
 
           if ($('mlTdisp')) $('mlTdisp').textContent = mmss(T) + ' / ' + mmss(END);
-          if ($('mlPtag')) $('mlPtag').textContent = (T < H1 ? '1re' : '2e') + ' mi-temps';
+          if ($('mlPtag')) {
+            if (T >= END) $('mlPtag').textContent = "Synthèse d'après-match";
+            else $('mlPtag').textContent = (T < H1 ? '1re' : '2e') + ' mi-temps';
+          }
           if (!dragging && $('mlSeek')) $('mlSeek').value = Math.round(T / END * 1000);
 
           commentary();
@@ -3205,7 +3384,15 @@
           if (playing) {
             gdt = rdt * speed;
             T = Math.min(END, T + gdt);
-            if (T >= END) { playing = false; setPlay(); }
+            if (T >= END) {
+              playing = false;
+              setPlay();
+              if ($('mlReplayPrompt')) {
+                if ($('mlLaunchTitle')) $('mlLaunchTitle').textContent = '↺ Revoir le Replay 3D';
+                if ($('mlLaunchSubtitle')) $('mlLaunchSubtitle').textContent = 'Revivre les 90 minutes, tirs et buts en 3D temps réel';
+                $('mlReplayPrompt').classList.remove('hidden');
+              }
+            }
             const n = evCount(T);
             if (n > lastN) {
               if (n - lastN < 6) for (let i = lastN; i < n; i++) flash(EV[i]);
@@ -3235,7 +3422,8 @@
 
         resize();
         updCam(10);
-        lastN = 0;
+        lastN = isPostMatch ? evCount(END) : 0;
+        updateUI(performance.now());
         animId = requestAnimationFrame(t => { prev = t; frame(t); });
 
         window.__mlActiveInstance = {
