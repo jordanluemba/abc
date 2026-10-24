@@ -10,9 +10,735 @@
     tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Manrope', 'ui-sans-serif', 'sans-serif'], display: ['Sora', 'Manrope', 'sans-serif'] }, colors: { ink: '#30343b', lime: '#ffb52b', coral: '#e30613', paper: '#f7f8fa', sky: '#12a8df' } } } };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
   <script src="content.js"></script>
   <style>
+    /* ========================================================
+       MATCHLENS STYLES - CHARTE OFFICIELLE & REPLAY 3D
+       ======================================================== */
+    .matchlens-view {
+      --ml-bg: #f8fafc;
+      --ml-panel: #ffffff;
+      --ml-panel2: #f1f5f9;
+      --ml-line: #e2e8f0;
+      --ml-fg: #1e293b;
+      --ml-mut: #64748b;
+      --ml-accent: #ffb52b;
+      --ml-accent-ink: #30343b;
+      --ml-live: #e30613;
+      --ml-pitch1: #17573a;
+      --ml-pitch2: #1a6141;
+      --ml-pline: rgba(255,255,255,.78);
+      --ml-f-display: "Barlow Condensed", "Sora", sans-serif;
+      --ml-f-body: "Barlow", "Manrope", system-ui, sans-serif;
+      font-family: var(--ml-f-body);
+      color: var(--ml-fg);
+    }
+    .dark .matchlens-view {
+      --ml-bg: #111916;
+      --ml-panel: #19241f;
+      --ml-panel2: #141f1a;
+      --ml-line: rgba(255,255,255,0.08);
+      --ml-fg: #f8fafc;
+      --ml-mut: #94a3b8;
+      --ml-accent: #ffb52b;
+      --ml-accent-ink: #30343b;
+      --ml-live: #e30613;
+    }
+    .matchlens-view .ml-num { font-variant-numeric: tabular-nums; }
+    .matchlens-view .ml-score {
+      background: var(--ml-panel);
+      border: 1px solid var(--ml-line);
+      border-radius: 1.5rem;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.06);
+    }
+    .matchlens-view .ml-sb {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 1rem;
+    }
+    .matchlens-view .ml-tm {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      min-width: 0;
+    }
+    .matchlens-view .ml-tm.b {
+      flex-direction: row-reverse;
+      text-align: right;
+    }
+    .matchlens-view .ml-badge {
+      flex: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-family: var(--ml-f-display);
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: .02em;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    }
+    .matchlens-view .ml-tm.a .ml-badge {
+      background: var(--ml-ta, #17573a);
+      color: var(--ml-ta-ink, #ffffff);
+    }
+    .matchlens-view .ml-tm.b .ml-badge {
+      background: var(--ml-tb, #ffb52b);
+      color: var(--ml-tb-ink, #30343b);
+    }
+    .matchlens-view .ml-tn { min-width: 0; }
+    .matchlens-view .ml-tn b {
+      display: block;
+      font-family: var(--ml-f-display);
+      font-size: 1.5rem;
+      line-height: 1.1;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+    .matchlens-view .ml-tn span {
+      color: var(--ml-mut);
+      font-size: 0.8rem;
+    }
+    .matchlens-view .ml-mid {
+      text-align: center;
+      min-width: 130px;
+    }
+    .matchlens-view .ml-res {
+      font-family: var(--ml-f-display);
+      font-weight: 800;
+      font-size: 3.25rem;
+      line-height: 1;
+      letter-spacing: 0.02em;
+      color: var(--ml-fg);
+    }
+    .matchlens-view .ml-res em {
+      font-style: normal;
+      color: var(--ml-mut);
+      padding: 0 6px;
+      font-size: 2.25rem;
+    }
+    .matchlens-view .ml-clock {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--ml-f-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .matchlens-view .ml-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ml-live);
+      font-weight: 800;
+    }
+    .matchlens-view .ml-live::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: ml-pulse 1.4s infinite;
+    }
+    .matchlens-view .ml-live.off { color: var(--ml-mut); }
+    .matchlens-view .ml-live.off::before { animation: none; }
+    @keyframes ml-pulse { 50% { opacity: 0.25; } }
+    .matchlens-view .ml-scorers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: var(--ml-mut);
+      min-height: 20px;
+    }
+    .matchlens-view .ml-scorers div:last-child { text-align: right; }
+    .matchlens-view .ml-pbar {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .matchlens-view .ml-pbar .ml-bar {
+      height: 8px;
+      border-radius: 99px;
+      overflow: hidden;
+      display: flex;
+      background: var(--ml-panel2);
+    }
+    .matchlens-view .ml-pbar .ml-bar i {
+      display: block;
+      height: 100%;
+      transition: width .4s ease;
+    }
+    .matchlens-view .ml-pbar .ml-bar i:first-child { background: var(--ml-ta, #17573a); }
+    .matchlens-view .ml-pbar .ml-bar i:last-child { background: var(--ml-tb, #ffb52b); }
+
+    /* Main Grid */
+    .matchlens-view .ml-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+      gap: 1.25rem;
+      align-items: start;
+    }
+    .matchlens-view .ml-stage {
+      background: var(--ml-panel);
+      border: 1px solid var(--ml-line);
+      border-radius: 1.5rem;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      min-width: 0;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.06);
+    }
+    .matchlens-view .ml-pitchbox {
+      position: relative;
+      border-radius: 1rem;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      max-width: 100%;
+      background: #10201a;
+    }
+    .matchlens-view #mlPitch {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: grab;
+    }
+    .matchlens-view #mlPitch:active { cursor: grabbing; }
+    .matchlens-view .ml-views {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      display: flex;
+      gap: 4px;
+      z-index: 5;
+    }
+    .matchlens-view .ml-views button {
+      background: rgba(8, 12, 10, 0.72);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 8px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .03em;
+      backdrop-filter: blur(4px);
+      transition: all .15s ease;
+    }
+    .matchlens-view .ml-views button[aria-pressed="true"] {
+      background: #ffffff;
+      color: #0b0f0d;
+      border-color: #ffffff;
+    }
+    .matchlens-view .ml-flash {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      padding: 12px 24px;
+      border-radius: 14px;
+      background: rgba(8, 12, 10, 0.88);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .25s ease, transform .25s ease;
+      backdrop-filter: blur(6px);
+      z-index: 10;
+    }
+    .matchlens-view .ml-flash.on {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .matchlens-view .ml-flash b {
+      display: block;
+      font-family: var(--ml-f-display);
+      font-size: 2.5rem;
+      line-height: 1;
+      letter-spacing: .06em;
+      color: var(--ml-accent);
+    }
+    .matchlens-view .ml-flash span {
+      font-size: 0.85rem;
+      color: #dbe6de;
+      margin-top: 4px;
+      display: block;
+    }
+    .matchlens-view .ml-tag {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      padding: 3px 9px;
+      border-radius: 8px;
+      background: rgba(8, 12, 10, 0.72);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      backdrop-filter: blur(4px);
+      z-index: 5;
+    }
+    .matchlens-view .ml-comm {
+      min-height: 24px;
+      font-size: 0.85rem;
+      color: var(--ml-mut);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .matchlens-view .ml-comm b {
+      color: var(--ml-fg);
+      font-weight: 700;
+    }
+    .matchlens-view .ml-scrub {
+      position: relative;
+      padding-top: 18px;
+    }
+    .matchlens-view .ml-mk {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 16px;
+      pointer-events: none;
+    }
+    .matchlens-view .ml-mk i {
+      position: absolute;
+      top: 2px;
+      width: 3px;
+      height: 12px;
+      border-radius: 2px;
+      transform: translateX(-50%);
+    }
+    .matchlens-view .ml-mk i.goal {
+      background: var(--ml-accent);
+      width: 6px;
+      height: 14px;
+      top: 1px;
+    }
+    .matchlens-view .ml-mk i.yellow { background: #f5d90a; }
+    .matchlens-view .ml-mk i.sub { background: var(--ml-mut); }
+    .matchlens-view .ml-mk i.penalty { background: var(--ml-live); }
+    .matchlens-view .ml-mk i.ht { background: var(--ml-fg); opacity: 0.5; }
+    .matchlens-view input[type=range] {
+      width: 100%;
+      accent-color: var(--ml-accent);
+      height: 22px;
+      margin: 0;
+      cursor: pointer;
+    }
+    .matchlens-view .ml-ctrl {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .matchlens-view .ml-btn {
+      background: var(--ml-panel2);
+      border: 1px solid var(--ml-line);
+      border-radius: 10px;
+      height: 38px;
+      min-width: 38px;
+      padding: 0 12px;
+      display: inline-grid;
+      place-items: center;
+      transition: all .15s ease;
+      color: var(--ml-fg);
+    }
+    .matchlens-view .ml-btn:hover { border-color: var(--ml-mut); }
+    .matchlens-view .ml-btn.main {
+      background: var(--ml-live);
+      color: #ffffff;
+      border-color: transparent;
+      width: 44px;
+      padding: 0;
+    }
+    .matchlens-view .ml-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+    .matchlens-view .ml-seg {
+      display: inline-flex;
+      background: var(--ml-panel2);
+      border: 1px solid var(--ml-line);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .matchlens-view .ml-seg button {
+      background: none;
+      border: 0;
+      padding: 0 10px;
+      height: 36px;
+      color: var(--ml-mut);
+      font-weight: 700;
+      font-size: 0.78rem;
+      transition: all .15s ease;
+    }
+    .matchlens-view .ml-seg button[aria-pressed="true"] {
+      background: var(--ml-fg);
+      color: var(--ml-bg);
+    }
+    .matchlens-view .ml-sp { flex: 1; }
+    .matchlens-view .ml-tdisp {
+      font-family: var(--ml-f-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--ml-mut);
+    }
+    .matchlens-view .ml-hint {
+      font-size: 0.75rem;
+      color: var(--ml-mut);
+    }
+
+    /* Side Column Tabs */
+    .matchlens-view .ml-side {
+      background: var(--ml-panel);
+      border: 1px solid var(--ml-line);
+      border-radius: 1.5rem;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.06);
+    }
+    .matchlens-view .ml-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--ml-line);
+      overflow-x: auto;
+    }
+    .matchlens-view .ml-tabs button {
+      flex: 1;
+      background: none;
+      border: 0;
+      padding: 13px 12px;
+      color: var(--ml-mut);
+      font-weight: 700;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: all .15s ease;
+    }
+    .matchlens-view .ml-tabs button[aria-selected="true"] {
+      color: var(--ml-fg);
+      border-bottom-color: var(--ml-live);
+    }
+    .matchlens-view .ml-pane {
+      padding: 14px;
+      max-height: 640px;
+      overflow-y: auto;
+    }
+    .matchlens-view .ml-pane[hidden] { display: none; }
+    .matchlens-view .ml-filter {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .matchlens-view .ml-chip {
+      border: 1px solid var(--ml-line);
+      background: none;
+      border-radius: 99px;
+      padding: 3px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--ml-mut);
+      transition: all .15s ease;
+    }
+    .matchlens-view .ml-chip[aria-pressed="true"] {
+      background: var(--ml-fg);
+      color: var(--ml-bg);
+      border-color: var(--ml-fg);
+    }
+    .matchlens-view .ml-feed {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .matchlens-view .ml-feed li {
+      display: grid;
+      grid-template-columns: 46px 26px 1fr;
+      gap: 8px;
+      align-items: start;
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--ml-line);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+    .matchlens-view .ml-feed li:hover { background: var(--ml-panel2); }
+    .matchlens-view .ml-feed .ml-mn {
+      font-family: var(--ml-f-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--ml-mut);
+    }
+    .matchlens-view .ml-feed .ml-tx b {
+      font-weight: 700;
+      color: var(--ml-fg);
+    }
+    .matchlens-view .ml-feed .ml-tx small {
+      display: block;
+      color: var(--ml-mut);
+      font-size: 0.75rem;
+      margin-top: 2px;
+    }
+    .matchlens-view .ml-feed li.goal .ml-tx b {
+      font-size: 0.95rem;
+      color: var(--ml-live);
+    }
+    .matchlens-view .ml-empty {
+      color: var(--ml-mut);
+      padding: 24px 8px;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    .matchlens-view .ml-ic {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      margin-top: 1px;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .matchlens-view .ml-ic.goal {
+      background: var(--ml-fg);
+      color: var(--ml-bg);
+      box-shadow: 0 0 0 2px var(--ml-accent);
+    }
+    .matchlens-view .ml-ic.yellow {
+      border-radius: 3px;
+      width: 12px;
+      height: 16px;
+      margin-left: 5px;
+      background: #f5d90a;
+    }
+    .matchlens-view .ml-ic.red {
+      border-radius: 3px;
+      width: 12px;
+      height: 16px;
+      margin-left: 5px;
+      background: #e5342a;
+    }
+    .matchlens-view .ml-ic.sub {
+      background: none;
+      color: var(--ml-mut);
+      font-size: 14px;
+    }
+    .matchlens-view .ml-ic.shot, .matchlens-view .ml-ic.save {
+      border: 2px solid var(--ml-mut);
+      background: none;
+    }
+    .matchlens-view .ml-ic.penalty {
+      background: var(--ml-live);
+      color: #fff;
+    }
+    .matchlens-view .ml-ic.ht { background: var(--ml-panel2); }
+
+    /* Stats rows */
+    .matchlens-view .ml-srow { margin-bottom: 14px; }
+    .matchlens-view .ml-srow .ml-h {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 8px;
+      align-items: baseline;
+      font-variant-numeric: tabular-nums;
+    }
+    .matchlens-view .ml-srow .ml-h span:first-child {
+      font-family: var(--ml-f-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+    .matchlens-view .ml-srow .ml-h span:last-child {
+      font-family: var(--ml-f-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      text-align: right;
+    }
+    .matchlens-view .ml-srow .ml-h em {
+      font-style: normal;
+      color: var(--ml-mut);
+      font-size: 0.8rem;
+      text-align: center;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .matchlens-view .ml-srow .ml-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      height: 7px;
+      margin-top: 4px;
+    }
+    .matchlens-view .ml-srow .ml-bar i {
+      display: block;
+      background: var(--ml-panel2);
+      border-radius: 99px;
+      overflow: hidden;
+      display: flex;
+    }
+    .matchlens-view .ml-srow .ml-bar i:first-child { justify-content: flex-end; }
+    .matchlens-view .ml-srow .ml-bar i b {
+      display: block;
+      height: 100%;
+      transition: width .35s ease;
+    }
+    .matchlens-view .ml-srow .ml-bar i:first-child b { background: var(--ml-ta, #17573a); }
+    .matchlens-view .ml-srow .ml-bar i:last-child b { background: var(--ml-tb, #ffb52b); }
+
+    /* Lineups */
+    .matchlens-view .ml-lu {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .matchlens-view .ml-lu h4 {
+      margin: 0 0 2px;
+      font-family: var(--ml-f-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .matchlens-view .ml-lu .ml-fm {
+      color: var(--ml-mut);
+      font-size: 0.78rem;
+      margin-bottom: 8px;
+    }
+    .matchlens-view .ml-pl {
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      gap: 6px;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--ml-line);
+      font-size: 0.82rem;
+      min-width: 0;
+    }
+    .matchlens-view .ml-pl .ml-n {
+      font-family: var(--ml-f-display);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--ml-mut);
+    }
+    .matchlens-view .ml-pl .ml-nm {
+      min-width: 0;
+      overflow-wrap: anywhere;
+      font-weight: 600;
+    }
+    .matchlens-view .ml-pl .ml-nm small {
+      color: var(--ml-mut);
+      font-size: 0.72rem;
+      display: block;
+    }
+    .matchlens-view .ml-pl .ml-rt {
+      font-family: var(--ml-f-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 0 6px;
+      border-radius: 6px;
+      background: var(--ml-panel2);
+    }
+    .matchlens-view .ml-pl .ml-rt.hi {
+      background: var(--ml-accent);
+      color: var(--ml-accent-ink);
+    }
+    .matchlens-view .ml-pl.off { opacity: 0.55; }
+    .matchlens-view .ml-sub-h {
+      margin: 14px 0 4px;
+      color: var(--ml-mut);
+      font-size: 0.72rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
+    /* Analysis */
+    .matchlens-view .ml-an h4 {
+      margin: 0 0 6px;
+      font-family: var(--ml-f-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .matchlens-view .ml-an canvas {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+    }
+    .matchlens-view .ml-an section { margin-bottom: 18px; }
+    .matchlens-view .ml-legend {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 0.75rem;
+      color: var(--ml-mut);
+      margin-top: 6px;
+    }
+    .matchlens-view .ml-legend i {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: -1px;
+    }
+    .matchlens-view .ml-mvp {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      background: var(--ml-panel2);
+    }
+    .matchlens-view .ml-mvp b {
+      font-family: var(--ml-f-display);
+      font-size: 1.45rem;
+      display: block;
+      line-height: 1.1;
+      font-weight: 700;
+    }
+    .matchlens-view .ml-mvp span {
+      color: var(--ml-mut);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 900px) {
+      .matchlens-view .ml-grid { grid-template-columns: minmax(0, 1fr); }
+      .matchlens-view .ml-pane { max-height: none; }
+    }
+    @media (max-width: 520px) {
+      .matchlens-view .ml-pitchbox { aspect-ratio: 4 / 3; }
+      .matchlens-view .ml-views button { padding: 3px 6px; font-size: 10px; }
+      .matchlens-view .ml-sb { grid-template-columns: 1fr 1fr; grid-template-areas: "m m" "a b"; }
+      .matchlens-view .ml-mid { grid-area: m; }
+      .matchlens-view .ml-tm.b { flex-direction: row-reverse; }
+      .matchlens-view .ml-tn b { font-size: 1.25rem; }
+      .matchlens-view .ml-res { font-size: 2.75rem; }
+      .matchlens-view .ml-badge { width: 42px; height: 42px; font-size: 16px; }
+      .matchlens-view .ml-lu { grid-template-columns: 1fr; }
+      .matchlens-view .ml-flash b { font-size: 1.85rem; }
+      .matchlens-view .ml-stage { padding: 8px; }
+    }
+
     body { background: #f7f8fa; color: #30343b; }
     .dark body { background: #111916; color: #edf4ec; }
     .noise { background-image: radial-gradient(rgba(21,35,31,.08) 1px, transparent 1px); background-size: 14px 14px; }
@@ -1072,63 +1798,146 @@
     function filterMatchQuery(q){ selectedMatchQuery=q; render(); }
     function resetMatchFilters(){ selectedMatchGroup='Tous les groupes'; selectedMatchStatus='Tous'; selectedMatchQuery=''; render(); }
 
+    function getMatchSquad(clubId, clubName, isHome) {
+      const cid = (clubId || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const cname = (clubName || '').toLowerCase();
+      const lookup = {
+        mazembe: {
+          coach: "Lamine Ndiaye", form: "4-3-3",
+          xi: [[1,"Siadi Baggio","Gardien"],[4,"Atibu Radjabu","Défenseur"],[5,"Kevin Mondeko","Défenseur"],[12,"Ernest Luzolo","Défenseur"],[2,"Issama Mpeko","Défenseur"],[6,"Augustine Oladapo","Milieu"],[8,"Glody Likonza","Milieu"],[10,"Zemanga Soze","Milieu"],[11,"Philippe Kinzumbi","Attaquant"],[9,"Fily Traoré","Attaquant"],[7,"Cheick Fofana","Attaquant"]],
+          bench: [[16,"Aimé Bakula"],[3,"Kabaso Chongo"],[14,"Patient Mwamba"],[17,"Joël Beya"],[18,"Merceil Ngimbi"]]
+        },
+        vita: {
+          coach: "Abdeslam Ouaddou", form: "4-4-2",
+          xi: [[16,"Farid Ouédraogo","Gardien"],[3,"Patou Ebunga","Défenseur"],[4,"Jacques Mangoba","Défenseur"],[5,"Guy Mfingi","Défenseur"],[2,"Junior Baumeto","Défenseur"],[6,"Peter Mutumosi","Milieu"],[8,"Norberto","Milieu"],[10,"Merveille Ngoma","Milieu"],[11,"Élie Mpanzu","Attaquant"],[9,"Fiston Mayele","Attaquant"],[7,"Chadrac Muzungu","Attaquant"]],
+          bench: [[1,"Nelson Lukong"],[13,"Pascal Mbarga"],[14,"Glody Makabi"],[17,"Eric Kabwe"],[18,"Mpiana Monzizi"]]
+        },
+        lupopo: {
+          coach: "Mohamed Magassouba", form: "4-3-3",
+          xi: [[1,"Yves Mukawa","Gardien"],[3,"Chadrac Boka","Défenseur"],[4,"Louison Sefu","Défenseur"],[5,"Nathan Fasika","Défenseur"],[2,"Morifing Donzo","Défenseur"],[6,"Mika Miché","Milieu"],[8,"Patou Kabangu","Milieu"],[10,"Peter Banda","Milieu"],[11,"Héritier Kasongo","Attaquant"],[9,"Jean-Marc Makusu","Attaquant"],[7,"Kazadi Kasengu","Attaquant"]],
+          bench: [[16,"Armel Tolefe"],[13,"Massamba"],[14,"Sydney Lokale"],[17,"Allan Kateregga"],[19,"Ciel Ebengo"]]
+        },
+        maniema: {
+          coach: "Papy Kimoto", form: "4-3-3",
+          xi: [[1,"Brudel Efonge","Gardien"],[3,"Dieumerci Lupini","Défenseur"],[4,"Merveille Kikasa","Défenseur"],[5,"Steve Ebuela","Défenseur"],[2,"Rodrigue Kitwa","Défenseur"],[6,"Titan Mbala","Milieu"],[8,"Jephté Kitambala","Milieu"],[10,"Âgée Basiala","Milieu"],[11,"Maxi Mpia","Attaquant"],[9,"Taboria","Attaquant"],[7,"Denis Likwela","Attaquant"]],
+          bench: [[16,"Nathan Mobaelua"],[13,"Mboma"],[14,"Arsène Pongo"],[15,"Mwanza"],[18,"Christian Ngimbi"]]
+        },
+        dcmp: {
+          coach: "Barthélémy Ngatsono", form: "4-4-2",
+          xi: [[1,"Jonathan Cimanga","Gardien"],[3,"Christian Ngimbi","Défenseur"],[4,"Kayembe Ntambwe","Défenseur"],[5,"Dezy Mbomba","Défenseur"],[2,"Junior Koné","Défenseur"],[6,"Ricky Tulenge","Milieu"],[8,"Jimmy Bayindula","Milieu"],[10,"Henock Kamalandua","Milieu"],[7,"Platini Mpiana","Attaquant"],[9,"Yallet","Attaquant"],[11,"Tomandzoto","Attaquant"]],
+          bench: [[16,"Vandam"],[13,"Borel Moukoko"],[14,"Kanda"],[15,"Bongeli"],[18,"Mambote"]]
+        },
+        dauphins: {
+          coach: "Guy Lusadisu", form: "4-4-2",
+          xi: [[1,"Jackson Lunanga","Gardien"],[3,"Radjabu","Défenseur"],[4,"Kakule","Défenseur"],[5,"Mumbere","Défenseur"],[2,"Paluku","Défenseur"],[6,"Kambale","Milieu"],[8,"Muhindo","Milieu"],[10,"Kasereka","Milieu"],[7,"Balume","Attaquant"],[9,"Katulondi","Attaquant"],[11,"Bahati","Attaquant"]],
+          bench: [[16,"Batamuzi"],[13,"Ushindi"],[14,"Sadiki"],[15,"Kavusa"],[18,"Mugisho"]]
+        },
+        donbosco: {
+          coach: "Eric Tshibasu", form: "4-3-3",
+          xi: [[1,"Landu","Gardien"],[3,"Mwape","Défenseur"],[4,"Kalombo","Défenseur"],[5,"Mwadi","Défenseur"],[2,"Tshilong","Défenseur"],[6,"Kikasa","Milieu"],[8,"Sudi","Milieu"],[10,"Banza","Milieu"],[7,"Ilunga","Attaquant"],[9,"Kasongo","Attaquant"],[11,"Muteba","Attaquant"]],
+          bench: [[16,"Muyumba"],[13,"Lwamba"],[14,"Kalenga"],[15,"Sona"],[18,"Kapinga"]]
+        },
+        lubumbashi: {
+          coach: "Mutombo Tshinat", form: "4-4-2",
+          xi: [[1,"Banza","Gardien"],[3,"Tshimanga","Défenseur"],[4,"Kafuti","Défenseur"],[5,"Mulenda","Défenseur"],[2,"Kasongo","Défenseur"],[6,"Kalonji","Milieu"],[8,"Mukendi","Milieu"],[10,"Kabeya","Milieu"],[7,"Tshibangu","Attaquant"],[9,"Mbuyi","Attaquant"],[11,"Ilunga","Attaquant"]],
+          bench: [[16,"Kazadi"],[13,"Ndaye"],[14,"Mpoyi"],[15,"Ngoy"],[18,"Kabongo"]]
+        },
+        sangabalende: {
+          coach: "Daoula Lupembe", form: "4-4-2",
+          xi: [[1,"Kalambay","Gardien"],[3,"Mutombo","Défenseur"],[4,"Kabeya","Défenseur"],[5,"Tshilumba","Défenseur"],[2,"Ilunga","Défenseur"],[6,"Banza","Milieu"],[8,"Mukendi","Milieu"],[10,"Kasongo","Milieu"],[7,"Tshibangu","Attaquant"],[9,"Kalonji","Attaquant"],[11,"Mbuyi","Attaquant"]],
+          bench: [[16,"Kazadi"],[13,"Ndaye"],[14,"Kabongo"],[15,"Mpoyi"],[18,"Ngoy"]]
+        },
+        aigles: {
+          coach: "Luc Eymael", form: "4-3-3",
+          xi: [[1,"Israel Mubobo","Gardien"],[3,"Matoka","Défenseur"],[4,"Bikoko","Défenseur"],[5,"Mbala","Défenseur"],[2,"Luzolo","Défenseur"],[6,"Amisi","Milieu"],[8,"Baleba","Milieu"],[10,"Kikwaki","Milieu"],[7,"Manga","Attaquant"],[9,"Mukoko","Attaquant"],[11,"Wamba","Attaquant"]],
+          bench: [[16,"Ekamba"],[13,"Bongonga"],[14,"Kialunda"],[15,"Makwekwe"],[18,"Kitenge"]]
+        },
+        rangers: {
+          coach: "Guy Bukasa", form: "4-4-2",
+          xi: [[1,"Matondo","Gardien"],[3,"Mbala","Défenseur"],[4,"Kongo","Défenseur"],[5,"Luyindula","Défenseur"],[2,"Bafiba","Défenseur"],[6,"Mbemba","Milieu"],[8,"Mputu","Milieu"],[10,"Kalala","Milieu"],[7,"Bongeli","Attaquant"],[9,"Bokota","Attaquant"],[11,"Kanda","Attaquant"]],
+          bench: [[16,"Lelo"],[13,"Ngoma"],[14,"Bawaka"],[15,"Mundele"],[18,"Vuvu"]]
+        }
+      };
+
+      for(const k in lookup) {
+        if(cid.includes(k) || cname.includes(k)) return lookup[k];
+      }
+
+      // Procedural squad for other Linafoot clubs
+      const lastNames = ["Mukendi","Kasongo","Tshibangu","Ilunga","Banza","Kabeya","Mutombo","Lukusa","Kalala","Mwamba","Mugisho","Kabuya","Amani","Lwambo","Kalonji","Ngoy","Kazadi"];
+      return {
+        coach: isHome ? "M. Kapena" : "D. Muteba",
+        form: isHome ? "4-3-3" : "4-4-2",
+        xi: [
+          [1, "J. " + lastNames[(clubName.length * 3) % lastNames.length], "Gardien"],
+          [3, "D. " + lastNames[(clubName.length * 5 + 1) % lastNames.length], "Défenseur"],
+          [4, "R. " + lastNames[(clubName.length * 7 + 2) % lastNames.length], "Défenseur"],
+          [5, "S. " + lastNames[(clubName.length * 11 + 3) % lastNames.length], "Défenseur"],
+          [2, "A. " + lastNames[(clubName.length * 13 + 4) % lastNames.length], "Défenseur"],
+          [6, "F. " + lastNames[(clubName.length * 17 + 5) % lastNames.length], "Milieu"],
+          [8, "C. " + lastNames[(clubName.length * 19 + 6) % lastNames.length], "Milieu"],
+          [10, "E. " + lastNames[(clubName.length * 23 + 7) % lastNames.length], "Milieu"],
+          [11, "T. " + lastNames[(clubName.length * 29 + 8) % lastNames.length], "Attaquant"],
+          [9, "G. " + lastNames[(clubName.length * 31 + 9) % lastNames.length], "Attaquant"],
+          [7, "B. " + lastNames[(clubName.length * 37 + 10) % lastNames.length], "Attaquant"]
+        ],
+        bench: [
+          [16, "H. " + lastNames[(clubName.length * 2) % lastNames.length]],
+          [13, "L. " + lastNames[(clubName.length * 4) % lastNames.length]],
+          [14, "N. " + lastNames[(clubName.length * 6) % lastNames.length]],
+          [17, "V. " + lastNames[(clubName.length * 8) % lastNames.length]],
+          [18, "O. " + lastNames[(clubName.length * 10) % lastNames.length]]
+        ]
+      };
+    }
+
     function matchDetailPage(matchId) {
       const m = getMatchById(matchId);
       const h = clubMeta(m.home);
       const a = clubMeta(m.away);
       const isDone = m.status === 'Terminé';
       const isLive = m.status === 'En direct';
+      const sqH = getMatchSquad(h.id, h.name, true);
+      const sqA = getMatchSquad(a.id, a.name, false);
 
-      // Données de feuille de match enrichies
-      const timeline = m.timeline || (isDone ? [
-        { min: "23'", team: 'home', player: h.name.includes('Mazembe') ? 'Glody Likonza' : 'Attaquant', type: 'goal', desc: 'Ouverture du score sur une frappe limpide.' },
-        { min: "45'", team: 'away', player: 'Milieu de terrain', type: 'card', desc: 'Carton jaune pour anti-jeu.' },
-        ...(m.as > 0 ? [{ min: "58'", team: 'away', player: 'Attaquant', type: 'goal', desc: 'Égalisation sur un centre en retrait parfait.' }] : []),
-        ...(m.hs > 1 ? [{ min: "78'", team: 'home', player: 'Ailier droit', type: 'goal', desc: 'But de la victoire suite à une combinaison tactique.' }] : []),
-        { min: "86'", team: 'home', player: 'Défenseur central', type: 'card', desc: 'Intervention défensive autoritaire.' }
-      ] : [
-        { min: "Coup d’envoi", team: 'info', player: 'Avant-match officiel', type: 'info', desc: `Les équipes s'échauffent au ${m.stadium || h.stadium || 'Stade officiel'}.` }
-      ]);
-
-      const stats = m.stats || {
-        possession: isDone ? [56, 44] : [50, 50],
-        shots: isDone ? [13, 8] : [0, 0],
-        shotsOnTarget: isDone ? [6, 3] : [0, 0],
-        corners: isDone ? [5, 3] : [0, 0],
-        fouls: isDone ? [12, 15] : [0, 0],
-        yellowCards: isDone ? [2, 2] : [0, 0],
-        offsides: isDone ? [2, 1] : [0, 0],
-        saves: isDone ? [2, 4] : [0, 0]
-      };
+      const targetHS = m.hs !== null ? m.hs : (isLive ? 1 : 2);
+      const targetAS = m.as !== null ? m.as : (isLive ? 0 : 1);
 
       return `
-        <div class="mb-10">
-          <!-- Fil d'ariane & Bouton retour -->
-          <div class="mb-6 flex items-center justify-between">
-            <button onclick="go('matchs')" class="inline-flex items-center gap-2 rounded-xl bg-white px-3.5 py-2 text-xs font-bold text-slate-600 border border-slate-200 shadow-soft hover:border-coral hover:text-coral dark:border-white/10 dark:bg-[#19241f] dark:text-slate-300 dark:hover:border-lime dark:hover:text-lime transition">
-              <span>←</span>
-              <span>Retour à tous les résultats</span>
-            </button>
+        <div class="matchlens-view mb-12" style="--ml-ta: ${h.color || '#17573a'}; --ml-tb: ${a.color || '#ffb52b'}; --ml-ta-ink: ${h.accent || '#ffffff'}; --ml-tb-ink: ${a.accent || '#30343b'};">
+          <!-- Barre supérieure de navigation & Contexte -->
+          <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <button onclick="go('resultats')" class="inline-flex items-center gap-2 rounded-xl border border-slate-200/90 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-soft hover:border-coral hover:text-coral dark:border-white/10 dark:bg-[#19241f] dark:text-slate-200 dark:hover:border-lime dark:hover:text-lime transition">
+                <span>←</span>
+                <span>Retour aux résultats</span>
+              </button>
+              <div class="flex items-center gap-2">
+                <span class="rounded-full bg-slate-200/70 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-slate-600 dark:bg-white/10 dark:text-slate-300">
+                  ${m.group || 'Groupe Championnat'}
+                </span>
+                <span class="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-bold text-slate-500 dark:bg-white/5">
+                  ${m.round || 'Journée 6'}
+                </span>
+              </div>
+            </div>
+            
             <div class="flex items-center gap-2">
-              <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500 dark:bg-white/10">
-                ${m.round || 'Saison régulière'}
-              </span>
               <a href="Terrain Vivant.html" class="inline-flex items-center gap-1.5 rounded-xl border border-coral/30 bg-coral/10 px-3.5 py-2 text-xs font-bold text-coral transition hover:bg-coral hover:text-white dark:border-lime/30 dark:bg-lime/10 dark:text-lime dark:hover:bg-lime dark:hover:text-ink">
                 ${icon('3d', 'h-3.5 w-3.5')}
-                <span>Match Center 3D</span>
+                <span>Plein Écran Match Center 3D</span>
               </a>
             </div>
           </div>
 
-          <!-- Hero Scoreboard du match -->
-          <div class="overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-soft dark:border-white/10 dark:bg-[#19241f] mb-8">
-            <!-- Header du match -->
-            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 bg-slate-50/70 px-6 py-3.5 text-xs font-bold text-slate-500 dark:border-white/5 dark:bg-black/20">
-              <span class="flex items-center gap-1.5 text-coral dark:text-lime uppercase tracking-widest text-[10px] font-extrabold">
+          <!-- Scoreboard Officiel MatchLens -->
+          <section class="ml-score mb-6" aria-label="Tableau d'affichage officiel">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 text-xs text-slate-400 dark:border-white/5">
+              <span class="inline-flex items-center gap-1.5 text-coral dark:text-lime font-extrabold text-[10px] uppercase tracking-widest">
                 ${icon('shield', 'h-3.5 w-3.5')}
-                <span>Linafoot Ligue 1 RDC · ${m.group || 'Groupe Championnat'}</span>
+                <span>Linafoot Ligue 1 RDC · Match Officiel</span>
               </span>
-              <div class="flex items-center gap-3 text-slate-400">
+              <div class="flex items-center gap-3">
                 <span class="flex items-center gap-1">
                   ${icon('calendar', 'h-3.5 w-3.5')}
                   <span>${m.date} · ${m.time || '16:00'}</span>
@@ -1136,254 +1945,1319 @@
                 <span>·</span>
                 <span class="flex items-center gap-1">
                   ${icon('stadium', 'h-3.5 w-3.5')}
-                  <span>${m.stadium || h.stadium || 'Stade officiel'} (${h.city})</span>
+                  <span>${m.stadium || h.stadium || 'Stade de Kamalondo'} (${h.city})</span>
                 </span>
               </div>
             </div>
 
-            <!-- Grand tableau d'affichage central -->
-            <div class="p-6 sm:p-10">
-              <div class="flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-10">
-                <!-- Équipe Domicile -->
-                <div class="flex flex-1 flex-col sm:flex-row items-center gap-4 text-center sm:text-right sm:justify-end">
-                  <div class="order-2 sm:order-1">
-                    <button onclick="go('club-${h.id}')" class="font-display text-xl sm:text-2xl font-black text-ink hover:text-coral dark:text-white dark:hover:text-lime transition">
-                      ${h.name}
-                    </button>
-                    <p class="text-xs text-slate-400 mt-1">${h.city} · ${h.rank ? h.rank + 'e de Ligue 1' : 'Club officiel'}</p>
-                  </div>
-                  <div class="order-1 sm:order-2 shrink-0 flex h-20 w-20 items-center justify-center rounded-2xl text-2xl font-black shadow-soft" style="background:${h.color};color:${h.accent}">
-                    ${h.logo}
-                  </div>
-                </div>
-
-                <!-- Score central -->
-                <div class="flex flex-col items-center justify-center shrink-0 min-w-[140px]">
-                  <div class="rounded-2xl border-2 border-slate-200/90 bg-slate-50 px-6 py-2.5 shadow-soft dark:border-white/10 dark:bg-black/40">
-                    <span class="font-display text-4xl sm:text-5xl font-black tracking-tight text-ink dark:text-white">
-                      ${m.hs !== null ? `${m.hs} <span class="text-slate-300 dark:text-white/20 text-3xl">–</span> ${m.as}` : 'VS'}
-                    </span>
-                  </div>
-                  <span class="mt-3 inline-flex items-center rounded-full px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest ${isLive ? 'bg-red-100 text-red-700 animate-pulse' : isDone ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300'}">
-                    ${m.status}
-                  </span>
-                </div>
-
-                <!-- Équipe Extérieur -->
-                <div class="flex flex-1 flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
-                  <div class="shrink-0 flex h-20 w-20 items-center justify-center rounded-2xl text-2xl font-black shadow-soft" style="background:${a.color};color:${a.accent}">
-                    ${a.logo}
-                  </div>
-                  <div>
-                    <button onclick="go('club-${a.id}')" class="font-display text-xl sm:text-2xl font-black text-ink hover:text-coral dark:text-white dark:hover:text-lime transition">
-                      ${a.name}
-                    </button>
-                    <p class="text-xs text-slate-400 mt-1">${a.city} · ${a.rank ? a.rank + 'e de Ligue 1' : 'Club officiel'}</p>
-                  </div>
+            <div class="ml-sb my-2">
+              <!-- Équipe Domicile -->
+              <div class="ml-tm a">
+                <div class="ml-badge" id="mlBadgeA" style="background:${h.color};color:${h.accent};">${h.logo}</div>
+                <div class="ml-tn">
+                  <b id="mlNameA" class="hover:text-coral dark:hover:text-lime cursor-pointer transition" onclick="go('club-${h.id}')">${h.name}</b>
+                  <span id="mlFormA">Système ${sqH.form} · ${sqH.coach}</span>
                 </div>
               </div>
 
-              <!-- Informations arbitre et affluence -->
-              <div class="mt-8 pt-5 border-t border-slate-100 dark:border-white/5 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
-                <span class="flex items-center gap-1.5">
-                  ${icon('user', 'h-3.5 w-3.5')}
-                  <span>Arbitre officiel : <b>${m.referee || 'Jean-Jacques Ndala (FIFA)'}</b></span>
-                </span>
-                <span>Affluence : <b>${m.attendance || '14 820 spectateurs'}</b></span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Grille des détails du match : Chronologie & Statistiques -->
-          <div class="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-            <!-- Colonne 1 : Chronologie & Temps forts -->
-            <div class="space-y-8">
-              <div class="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-[#19241f]">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-white/10 mb-6">
-                  <h2 class="font-display text-lg font-bold flex items-center gap-2">
-                    <span class="text-coral dark:text-lime">${icon('matchs', 'h-4 w-4')}</span>
-                    <span>Temps forts & Chronologie</span>
-                  </h2>
-                  <span class="text-xs font-bold text-slate-400">${timeline.length} événements</span>
+              <!-- Score & Statut Central -->
+              <div class="ml-mid">
+                <div class="ml-res ml-num">
+                  <span id="mlGA">${targetHS}</span><em>–</em><span id="mlGB">${targetAS}</span>
                 </div>
-
-                <div class="space-y-4">
-                  ${timeline.map(item => {
-                    const isHome = item.team === 'home';
-                    const isGoal = item.type === 'goal';
-                    const isCard = item.type === 'card';
-                    return `
-                      <div class="flex items-start gap-4 p-3 rounded-2xl bg-slate-50/70 transition hover:bg-slate-100/70 dark:bg-white/5 dark:hover:bg-white/10">
-                        <span class="flex h-9 w-11 shrink-0 items-center justify-center rounded-xl bg-ink font-mono text-xs font-bold text-white dark:bg-lime dark:text-ink">
-                          ${item.min}
-                        </span>
-                        <div class="min-w-0 flex-1">
-                          <div class="flex items-center gap-2">
-                            <span class="font-display text-sm font-extrabold text-ink dark:text-white">
-                              ${item.player}
-                            </span>
-                            <span class="rounded-full px-2 py-0.2 text-[9px] font-black uppercase ${isGoal ? 'bg-emerald-100 text-emerald-800' : isCard ? 'bg-amber-100 text-amber-800' : 'bg-slate-200 text-slate-700'}">
-                              ${isGoal ? 'But' : isCard ? 'Carton' : 'Info'}
-                            </span>
-                          </div>
-                          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                            ${item.desc}
-                          </p>
-                        </div>
-                        <span class="text-[10px] font-extrabold text-slate-400 shrink-0">
-                          ${isHome ? h.name : a.name}
-                        </span>
-                      </div>
-                    `;
-                  }).join('')}
+                <div class="ml-clock">
+                  <span id="mlClk" class="ml-num">90'</span>
+                  <span id="mlState" class="ml-live ${isLive ? '' : 'off'}">${isLive ? 'En Direct' : isDone ? 'Terminé' : 'Replay'}</span>
                 </div>
               </div>
 
-              <!-- Compositions de départ -->
-              <div class="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-[#19241f]">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-white/10 mb-6">
-                  <h2 class="font-display text-lg font-bold flex items-center gap-2">
-                    <span class="text-coral dark:text-lime">${icon('joueurs', 'h-4 w-4')}</span>
-                    <span>11 de Départ & Compositions</span>
-                  </h2>
-                  <span class="text-xs font-bold text-slate-400">4-3-3 vs 4-2-3-1</span>
-                </div>
-
-                <div class="grid gap-6 sm:grid-cols-2">
-                  <div>
-                    <h3 class="font-display font-extrabold text-xs uppercase tracking-wider text-coral mb-3">
-                      ${h.name} (Domicile)
-                    </h3>
-                    <ul class="space-y-2 text-xs">
-                      ${[
-                        [1, 'Siadi Baggio', 'Gardien'],
-                        [4, 'Atibu Radjabu', 'Défenseur'],
-                        [5, 'Kevin Mondeko', 'Défenseur'],
-                        [12, 'Ernest Luzolo', 'Défenseur'],
-                        [6, 'Augustine Oladapo', 'Milieu'],
-                        [8, 'Glody Likonza', 'Milieu'],
-                        [10, 'Zemanga Soze', 'Milieu'],
-                        [11, 'Philippe Kinzumbi', 'Attaquant'],
-                        [9, 'Fily Traoré', 'Attaquant'],
-                        [7, 'Cheick Fofana', 'Attaquant'],
-                        [2, 'Issama Mpeko', 'Capitaine']
-                      ].map(p => `
-                        <li class="flex items-center justify-between border-b border-slate-100 pb-1.5 last:border-0 dark:border-white/5">
-                          <span class="flex items-center gap-2">
-                            <b class="w-4 font-mono text-slate-400">${p[0]}</b>
-                            <span class="font-semibold text-ink dark:text-white">${p[1]}</span>
-                          </span>
-                          <span class="text-[10px] text-slate-400">${p[2]}</span>
-                        </li>
-                      `).join('')}
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 class="font-display font-extrabold text-xs uppercase tracking-wider text-lime mb-3">
-                      ${a.name} (Extérieur)
-                    </h3>
-                    <ul class="space-y-2 text-xs">
-                      ${[
-                        [16, 'Farid Ouédraogo', 'Gardien'],
-                        [3, 'Patou Ebunga', 'Défenseur'],
-                        [15, 'Jacques Mangoba', 'Défenseur'],
-                        [13, 'Guy Mfingi', 'Défenseur'],
-                        [6, 'Peter Mutumosi', 'Milieu'],
-                        [8, 'Norberto', 'Milieu'],
-                        [10, 'Merveille Ngoma', 'Milieu'],
-                        [11, 'Élie Mpanzu', 'Attaquant'],
-                        [7, 'Chadrac Muzungu', 'Attaquant'],
-                        [9, 'Fiston Mayele', 'Attaquant'],
-                        [2, 'Junior Baumeto', 'Défenseur']
-                      ].map(p => `
-                        <li class="flex items-center justify-between border-b border-slate-100 pb-1.5 last:border-0 dark:border-white/5">
-                          <span class="flex items-center gap-2">
-                            <b class="w-4 font-mono text-slate-400">${p[0]}</b>
-                            <span class="font-semibold text-ink dark:text-white">${p[1]}</span>
-                          </span>
-                          <span class="text-[10px] text-slate-400">${p[2]}</span>
-                        </li>
-                      `).join('')}
-                    </ul>
-                  </div>
+              <!-- Équipe Extérieur -->
+              <div class="ml-tm b">
+                <div class="ml-badge" id="mlBadgeB" style="background:${a.color};color:${a.accent};">${a.logo}</div>
+                <div class="ml-tn">
+                  <b id="mlNameB" class="hover:text-coral dark:hover:text-lime cursor-pointer transition" onclick="go('club-${a.id}')">${a.name}</b>
+                  <span id="mlFormB">Système ${sqA.form} · ${sqA.coach}</span>
                 </div>
               </div>
             </div>
 
-            <!-- Colonne 2 : Statistiques officielles du match -->
-            <div class="space-y-8">
-              <div class="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-[#19241f]">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-white/10 mb-6">
-                  <h2 class="font-display text-lg font-bold flex items-center gap-2">
-                    <span class="text-coral dark:text-lime">${icon('data', 'h-4 w-4')}</span>
-                    <span>Statistiques du Match</span>
-                  </h2>
-                  <span class="text-xs font-bold text-slate-400">Officielles Linafoot</span>
-                </div>
-
-                <!-- Barres de comparaison statistique -->
-                <div class="space-y-5">
-                  ${[
-                    ['Possession de balle', stats.possession[0] + '%', stats.possession[1] + '%', stats.possession[0]],
-                    ['Tirs totaux', stats.shots[0], stats.shots[1], (stats.shots[0] / (stats.shots[0] + stats.shots[1] || 1)) * 100],
-                    ['Tirs cadrés', stats.shotsOnTarget[0], stats.shotsOnTarget[1], (stats.shotsOnTarget[0] / (stats.shotsOnTarget[0] + stats.shotsOnTarget[1] || 1)) * 100],
-                    ['Corners obtenus', stats.corners[0], stats.corners[1], (stats.corners[0] / (stats.corners[0] + stats.corners[1] || 1)) * 100],
-                    ['Fautes commises', stats.fouls[0], stats.fouls[1], (stats.fouls[0] / (stats.fouls[0] + stats.fouls[1] || 1)) * 100],
-                    ['Cartons jaunes', stats.yellowCards[0], stats.yellowCards[1], (stats.yellowCards[0] / (stats.yellowCards[0] + stats.yellowCards[1] || 1)) * 100],
-                    ['Arrêts du gardien', stats.saves[0], stats.saves[1], (stats.saves[0] / (stats.saves[0] + stats.saves[1] || 1)) * 100]
-                  ].map(stat => `
-                    <div>
-                      <div class="flex justify-between text-xs font-bold mb-1.5">
-                        <span class="text-ink dark:text-white">${stat[1]}</span>
-                        <span class="text-slate-400 font-extrabold uppercase text-[10px]">${stat[0]}</span>
-                        <span class="text-ink dark:text-white">${stat[2]}</span>
-                      </div>
-                      <div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-white/10 flex">
-                        <div class="h-full bg-coral transition-all duration-500" style="width: ${stat[3]}%"></div>
-                        <div class="h-full bg-lime transition-all duration-500" style="width: ${100 - stat[3]}%"></div>
-                      </div>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-
-              <!-- Enjeux & Face-à-face -->
-              <div class="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-[#19241f]">
-                <h3 class="font-display text-base font-bold text-ink dark:text-white mb-4">
-                  Historique récent & Face-à-face
-                </h3>
-                <div class="space-y-3 text-xs">
-                  <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5">
-                    <span class="font-bold">11.05.2024</span>
-                    <span class="font-extrabold">TP Mazembe 3–0 AS Vita Club</span>
-                    <span class="text-[10px] text-slate-400">Play-offs</span>
-                  </div>
-                  <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5">
-                    <span class="font-bold">14.04.2024</span>
-                    <span class="font-extrabold">AS Vita Club 1–2 TP Mazembe</span>
-                    <span class="text-[10px] text-slate-400">Play-offs</span>
-                  </div>
-                  <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5">
-                    <span class="font-bold">10.12.2023</span>
-                    <span class="font-extrabold">TP Mazembe 1–0 AS Vita Club</span>
-                    <span class="text-[10px] text-slate-400">Phase 1</span>
-                  </div>
-                </div>
-                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-white/5 flex gap-2">
-                  <button onclick="go('club-${h.id}')" class="flex-1 rounded-xl bg-ink py-2.5 text-center text-xs font-bold text-white transition hover:bg-emerald-700 dark:bg-lime dark:text-ink">
-                    Fiche ${h.name} →
-                  </button>
-                  <button onclick="go('club-${a.id}')" class="flex-1 rounded-xl border border-slate-200 py-2.5 text-center text-xs font-bold text-slate-600 transition hover:border-coral hover:text-coral dark:border-white/10 dark:text-slate-300">
-                    Fiche ${a.name} →
-                  </button>
-                </div>
-              </div>
+            <!-- Buteurs et Événements du match -->
+            <div class="ml-scorers">
+              <div id="mlScA"></div>
+              <div id="mlScB"></div>
             </div>
+
+            <!-- Jauge Comparative de Possession Dynamique -->
+            <div class="ml-pbar">
+              <span class="ml-num" id="mlPA">50%</span>
+              <div class="ml-bar">
+                <i id="mlBarA" style="width:50%"></i>
+                <i id="mlBarB" style="width:50%"></i>
+              </div>
+              <span class="ml-num" id="mlPB">50%</span>
+            </div>
+
+            <!-- Métadonnées pied de score -->
+            <div class="mt-2 pt-3 border-t border-slate-100 dark:border-white/5 flex flex-wrap items-center justify-between text-[11px] text-slate-400">
+              <span class="flex items-center gap-1.5">
+                ${icon('user', 'h-3 w-3 text-coral dark:text-lime')}
+                <span>Arbitre officiel : <b>${m.referee || 'Jean-Jacques Ndala (FIFA)'}</b></span>
+              </span>
+              <span>Affluence : <b>${m.attendance || '18 420 spectateurs'}</b></span>
+            </div>
+          </section>
+
+          <!-- Grille Principale Interactive MatchLens : Terrain 3D à gauche, Onglets Analyse à droite -->
+          <main class="ml-grid">
+            <!-- Colonne Gauche : Scène 3D, Caméra & Commandes de Lecture -->
+            <section class="ml-stage" aria-label="Replay interactif du match">
+              <div class="ml-pitchbox">
+                <canvas id="mlPitch" aria-label="Terrain 3D Linafoot interactif avec joueurs et ballon en mouvement"></canvas>
+                <div class="ml-tag" id="mlPtag">Replay 3D</div>
+                
+                <!-- Sélecteur d'angles de caméra 3D -->
+                <div class="ml-views" id="mlViews" role="group" aria-label="Caméra 3D">
+                  <button data-v="broad" aria-pressed="true">Diffusion</button>
+                  <button data-v="corner" aria-pressed="false">Coin</button>
+                  <button data-v="top" aria-pressed="false">Haut</button>
+                  <button data-v="ball" aria-pressed="false">Ballon</button>
+                </div>
+
+                <!-- Banderole Flash des faits de jeu -->
+                <div class="ml-flash" id="mlFlash">
+                  <b id="mlFlB"></b>
+                  <span id="mlFlS"></span>
+                </div>
+              </div>
+
+              <!-- Ticker de commentaires dynamique en direct -->
+              <div class="ml-comm" id="mlComm">&nbsp;</div>
+
+              <!-- Ligne de défilement temporelle interactive (Scrubber + Marqueurs d'événements) -->
+              <div class="ml-scrub">
+                <div class="ml-mk" id="mlMarkers"></div>
+                <input type="range" id="mlSeek" min="0" max="1000" step="1" value="0" aria-label="Position temporelle du match">
+              </div>
+
+              <!-- Barre de contrôles de lecture & Vitesse -->
+              <div class="ml-ctrl">
+                <button class="ml-btn main" id="mlPlay" aria-label="Lecture / Pause">
+                  <svg viewBox="0 0 24 24" id="mlPlayIc">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </button>
+                <button class="ml-btn" id="mlPrev" aria-label="Événement précédent" title="Événement précédent">
+                  <svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg>
+                </button>
+                <button class="ml-btn" id="mlNext" aria-label="Événement suivant" title="Événement suivant">
+                  <svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5l11 7L4 19z"/></svg>
+                </button>
+
+                <!-- Sélecteur de vitesse -->
+                <div class="ml-seg" id="mlSpeed" role="group" aria-label="Vitesse de simulation"></div>
+
+                <span class="ml-sp"></span>
+                <span class="ml-tdisp ml-num" id="mlTdisp">0:00 / 96:00</span>
+              </div>
+
+              <!-- Aide ergonomique -->
+              <div class="ml-hint">
+                Glisser : tourner la caméra 3D · Molette / pincement : zoom · Espace : pause · Touches ← → : ±30 s
+              </div>
+            </section>
+
+            <!-- Colonne Droite : Centre de Match par Onglets (Événements, Stats, Compos, Analyse) -->
+            <aside class="ml-side">
+              <div class="ml-tabs" role="tablist" id="mlTabs">
+                <button role="tab" aria-selected="true" data-t="feed">Événements</button>
+                <button role="tab" aria-selected="false" data-t="stats">Statistiques</button>
+                <button role="tab" aria-selected="false" data-t="lineups">Compos</button>
+                <button role="tab" aria-selected="false" data-t="an">Analyse</button>
+              </div>
+
+              <!-- Onglet 1 : Flux des événements & Temps forts cliquables -->
+              <div class="ml-pane" id="mlPaneFeed">
+                <div class="ml-filter">
+                  <button class="ml-chip" id="mlFAll" aria-pressed="true">Tout</button>
+                  <button class="ml-chip" id="mlFKey" aria-pressed="false">Essentiel</button>
+                </div>
+                <ul class="ml-feed" id="mlFeed"></ul>
+              </div>
+
+              <!-- Onglet 2 : Statistiques Officielles comparatives -->
+              <div class="ml-pane" id="mlPaneStats" hidden></div>
+
+              <!-- Onglet 3 : Compositions 11 de départ & Remplacements -->
+              <div class="ml-pane" id="mlPaneLineups" hidden></div>
+
+              <!-- Onglet 4 : Analyse Tactique (Carte des tirs, Momentum & MVP) -->
+              <div class="ml-pane ml-an" id="mlPaneAn" hidden>
+                <section>
+                  <h4>Carte des tirs & Efficacité (xG)</h4>
+                  <canvas id="mlShotmap"></canvas>
+                  <div class="ml-legend">
+                    <span><i style="background:var(--ml-ta)"></i><span>${h.name}</span></span>
+                    <span><i style="background:var(--ml-tb)"></i><span>${a.name}</span></span>
+                    <span>Taille = xG · Plein = But</span>
+                  </div>
+                </section>
+
+                <section>
+                  <h4>Dynamique offensive & Pression</h4>
+                  <canvas id="mlMomentum"></canvas>
+                  <div class="ml-legend">
+                    <span>Indice de menace calculé par tranche de 3 min</span>
+                  </div>
+                </section>
+
+                <section>
+                  <h4>Joueur du Match (MVP)</h4>
+                  <div class="ml-mvp" id="mlMvp"></div>
+                </section>
+              </div>
+            </aside>
+          </main>
+
+          <!-- Liens rapides vers les clubs -->
+          <div class="mt-8 flex flex-wrap gap-3">
+            <button onclick="go('club-${h.id}')" class="flex-1 min-w-[200px] rounded-2xl bg-ink py-3 text-center text-xs font-bold text-white transition hover:bg-emerald-700 dark:bg-lime dark:text-ink">
+              Consulter la fiche officielle de ${h.name} →
+            </button>
+            <button onclick="go('club-${a.id}')" class="flex-1 min-w-[200px] rounded-2xl border border-slate-200 py-3 text-center text-xs font-bold text-slate-700 transition hover:border-coral hover:text-coral dark:border-white/10 dark:text-slate-200">
+              Consulter la fiche officielle de ${a.name} →
+            </button>
           </div>
         </div>
       `;
     }
+
+    /* ========================================================
+       MOTEUR DE SIMULATION ET REPLAY 3D MATCHLENS
+       ======================================================== */
+    (function(){
+      const L = 105, W = 68;
+      function rng(seed){
+        let s = seed >>> 0;
+        return () => {
+          s = (s + 0x6D2B79F5) >>> 0;
+          let t = s;
+          t = Math.imul(t ^ t >>> 15, t | 1);
+          t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+          return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        };
+      }
+
+      const FORM = {
+        "4-3-3": { pos: [[.05,.5],[.22,.14],[.2,.38],[.2,.62],[.22,.86],[.4,.5],[.5,.3],[.5,.7],[.72,.15],[.78,.5],[.72,.85]], lab: ["GK","DG","DC","DC","DD","MDC","MC","MC","AG","BU","AD"] },
+        "4-4-2": { pos: [[.05,.5],[.22,.12],[.2,.37],[.2,.63],[.22,.88],[.5,.12],[.46,.38],[.46,.62],[.5,.88],[.76,.38],[.76,.62]], lab: ["GK","DG","DC","DC","DD","MG","MC","MC","MD","BU","BU"] }
+      };
+
+      function simulateMatch(seed, TEAMS, targetScore) {
+        const R = rng(seed);
+        const H1 = 2700 + 60 * (1 + Math.floor(R() * 3));
+        const END = H1 + 2700 + 60 * (2 + Math.floor(R() * 4));
+        const acts = [], ev = [], logs = [], plog = [];
+        let t = 0, team = 0, x = L / 2, y = W / 2, slot = 9, half2 = false, lastPass = null;
+        const subDone = [[false, false], [false, false]];
+        const cur = [TEAMS[0].xi.map(p => p[0]), TEAMS[1].xi.map(p => p[0])];
+        const goalsCount = [0, 0];
+        const maxGoals = targetScore ? [targetScore[0], targetScore[1]] : null;
+
+        const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+        const lg = (tm, k, v) => logs.push({ t, team: tm, k, v: v == null ? 1 : v });
+        const pl = (tm, s, k) => plog.push({ t, team: tm, num: cur[tm][s], k });
+
+        function act(o){
+          o.t0 = t; t += o.d; o.t1 = t; if (o.poss == null) o.poss = null;
+          acts.push(o);
+          if (o.poss != null) logs.push({ t, team: o.poss, k: 'poss', v: o.d });
+          return o;
+        }
+
+        function basePos(tm, s){
+          const f = FORM[TEAMS[tm].form] || FORM["4-3-3"];
+          const p = f.pos[s] || [.5, .5];
+          return tm === 0 ? [p[0] * L, p[1] * W] : [L - p[0] * L, (1 - p[1]) * W];
+        }
+
+        function slotNear(tm, tx, ty, ex){
+          let best = 1, bd = 1e9;
+          for (let s = 1; s < 11; s++){
+            if (s === ex) continue;
+            const b = basePos(tm, s);
+            const d = Math.hypot(b[0] - tx, b[1] - ty) + R() * 16;
+            if (d < bd){ bd = d; best = s; }
+          }
+          return best;
+        }
+
+        const dead = (d, type, tm) => act({ type: type || 'dead', team: tm == null ? team : tm, p: slot, q: slot, x0: x, y0: y, x1: x, y1: y, d, poss: null, hi: 0 });
+        function kickoff(tm){ team = tm; x = L / 2; y = W / 2; slot = slotNear(tm, L / 2, W / 2); dead(4, 'kickoff'); }
+        function turnover(tm, tx, ty){ team = tm; x = tx; y = ty; slot = slotNear(tm, tx, ty); lastPass = null; }
+
+        function shot(pen, head){
+          const dir = team ? -1 : 1, gx = dir > 0 ? L : 0, dd = Math.hypot(gx - x, y - W / 2);
+          let xg = pen ? 0.78 : Math.min(0.5, 0.6 * Math.exp(-dd / 9) * (1 - Math.abs(y - W / 2) / 55)) * (head ? 0.6 : 1);
+          let wantGoal = false;
+          if (maxGoals !== null) {
+            const remaining = maxGoals[team] - goalsCount[team];
+            const timeLeftFrac = 1 - (t / END);
+            if (remaining > 0 && (R() < 0.45 || (remaining > 1 && timeLeftFrac < 0.4) || timeLeftFrac < 0.15)) {
+              wantGoal = true;
+            } else if (remaining <= 0) {
+              wantGoal = false;
+            }
+          } else {
+            wantGoal = R() < xg;
+          }
+
+          let out = wantGoal ? 'goal' : (() => { const q = R(); return q < 0.28 ? 'block' : q < 0.6 ? 'off' : 'save'; })();
+          const sx = x, sy = y, shooter = slot;
+          let x1, y1;
+          if (out === 'goal') {
+            goalsCount[team]++;
+            x1 = gx + dir * 1.5; y1 = W / 2 + (R() - .5) * 6;
+            xg = Math.max(xg, 0.32);
+          } else if (out === 'save') {
+            x1 = gx - dir * 2; y1 = W / 2 + (R() - .5) * 7;
+          } else if (out === 'off') {
+            x1 = gx + dir * 3; y1 = W / 2 + (R() < .5 ? -1 : 1) * (5 + R() * 5);
+          } else {
+            x1 = x + dir * Math.min(4, dd / 3); y1 = y + (R() - .5) * 3;
+          }
+          const a = act({ type: 'shot', team, p: shooter, q: shooter, x0: x, y0: y, x1, y1, d: 0.8 + dd / 32, hi: head ? 0 : 0.5, out, xg, poss: team });
+          lg(team, 'shot'); lg(team, 'xg', xg); pl(team, shooter, 'shot');
+          if (out === 'goal' || out === 'save') { lg(team, 'sot'); pl(team, shooter, 'sot'); }
+          let ast = null;
+          if (out === 'goal' && lastPass && lastPass.team === team && t - lastPass.t < 9 && lastPass.from !== shooter && R() < 0.85) {
+            ast = lastPass.from; pl(team, ast, 'ast');
+          }
+          ev.push({ t, type: out === 'goal' ? 'goal' : 'shot', team, pl: shooter, ast, out, xg, x: sx, y: sy, pen: !!pen, head: !!head });
+          if (out === 'goal') {
+            pl(team, shooter, 'goal'); const o = 1 - team; x = x1; y = y1; dead(22, 'celebrate'); kickoff(o);
+          } else if (out === 'save') {
+            const o = 1 - team; pl(o, 0, 'save'); ev.push({ t, type: 'save', team: o, pl: 0 });
+            if (R() < 0.3) corner(team); else { turnover(o, gx - dir * 5, W / 2); slot = 0; dead(5, 'hold'); }
+          } else if (out === 'off') {
+            const o = 1 - team; turnover(o, gx - dir * 5.5, W / 2); slot = 0; dead(8, 'goalkick');
+          } else {
+            if (R() < 0.4) corner(team); else turnover(1 - team, x1, y1);
+          }
+          lastPass = null;
+        }
+
+        function corner(tm){
+          const dir = tm ? -1 : 1, gx = dir > 0 ? L : 0; team = tm; lg(tm, 'corner'); ev.push({ t, type: 'corner', team: tm });
+          x = gx; y = R() < .5 ? 0 : W; slot = slotNear(tm, x, y); dead(9, 'dead');
+          const tx = gx - dir * (6 + R() * 8), ty = W / 2 + (R() - .5) * 16;
+          act({ type: 'cross', team: tm, p: slot, q: slot, x0: x, y0: y, x1: tx, y1: ty, d: 1.7, hi: 0.9, poss: tm, ok: true });
+          x = tx; y = ty; slot = slotNear(tm, tx, ty, slot);
+          if (R() < 0.28) { shot(false, true); } else { turnover(1 - tm, gx - dir * 20, clamp(ty + (R() - .5) * 20, 4, W - 4)); }
+        }
+
+        function foul(){
+          const o = 1 - team, fs = slotNear(o, x, y); const dir = team ? -1 : 1, p = dir > 0 ? x / L : 1 - x / L;
+          lg(o, 'foul'); pl(o, fs, 'foul'); ev.push({ t, type: 'foul', team: o, pl: fs });
+          dead(7, 'foul');
+          if (R() < 0.13) { lg(o, 'yellow'); pl(o, fs, 'yellow'); ev.push({ t, type: 'yellow', team: o, pl: fs }); }
+          if (p > 0.86 && Math.abs(y - W / 2) < 20 && R() < 0.3) {
+            const gx = dir > 0 ? L : 0; ev.push({ t, type: 'penalty', team }); x = gx - dir * 11; y = W / 2; slot = slotNear(team, x, y); dead(24, 'dead'); shot(true, false);
+          }
+        }
+
+        function pass(){
+          const dir = team ? -1 : 1, p = dir > 0 ? x / L : 1 - x / L;
+          const tl = slot === 0 ? 28 + R() * 22 : 6 + R() * 20; const fw = R() < (p < 0.3 ? 0.78 : 0.62);
+          let tx = x + (fw ? 1 : -1) * dir * tl * (0.45 + R() * 0.55), ty = y + (R() - .5) * tl * 1.2;
+          if (p > 0.7) ty += (W / 2 - y) * 0.25;
+          tx = clamp(tx, 2, L - 2); let out = false;
+          if (ty < 1 || ty > W - 1) { if (R() < 0.4) out = true; ty = ty < 1 ? 0 : ty > W - 1 ? W : ty; if (!out) ty = clamp(ty, 1.5, W - 1.5); }
+          const dist = Math.hypot(tx - x, ty - y);
+          const ok = !out && R() < (0.91 - 0.3 * Math.max(0, p - 0.6) - dist / 200);
+          const q = slotNear(team, tx, ty, slot);
+          const tm = team, s0 = slot;
+          lg(tm, 'pass'); pl(tm, s0, 'pass');
+          if (ok) {
+            const a = act({ type: dist > 26 ? 'long' : 'pass', team: tm, p: s0, q, x0: x, y0: y, x1: tx, y1: ty, d: 0.9 + dist / 15, hi: dist > 26 ? 0.55 : 0, ok: true, poss: tm });
+            lg(tm, 'passOk'); pl(tm, s0, 'passOk'); lastPass = { team: tm, from: s0, t: a.t1 }; x = tx; y = ty; slot = q;
+            if (p > 0.7 && R() < 0.025) { ev.push({ t, type: 'offside', team: tm, pl: q }); lg(tm, 'offside'); dead(6, 'dead'); turnover(1 - tm, x, y); slot = 0; }
+          } else {
+            const o = 1 - tm, q2 = slotNear(o, tx, ty);
+            act({ type: 'pass', team: tm, p: s0, q: q2, x0: x, y0: y, x1: tx, y1: ty, d: 0.9 + dist / 15, hi: 0, ok: false, poss: tm, lost: true });
+            if (out) { x = tx; y = ty; team = o; slot = slotNear(o, tx, ty); lastPass = null; dead(5, 'throw'); }
+            else turnover(o, tx, ty);
+          }
+        }
+
+        function dribble(){
+          const dir = team ? -1 : 1; const tx = clamp(x + dir * (5 + R() * 8), 2, L - 2), ty = clamp(y + (R() - .5) * 10, 2, W - 2);
+          const ok = R() < 0.64, dist = Math.hypot(tx - x, ty - y);
+          act({ type: 'dribble', team, p: slot, q: slot, x0: x, y0: y, x1: tx, y1: ty, d: 0.8 + dist / 6, hi: 0, ok, poss: team });
+          if (ok) { x = tx; y = ty; lastPass = null; } else turnover(1 - team, tx, ty);
+        }
+
+        function cross(){
+          const dir = team ? -1 : 1, gx = dir > 0 ? L : 0;
+          const tx = gx - dir * (7 + R() * 8), ty = W / 2 + (R() - .5) * 14, ok = R() < 0.34, s0 = slot;
+          lg(team, 'pass'); pl(team, s0, 'pass');
+          const q = slotNear(team, tx, ty, s0);
+          act({ type: 'cross', team, p: s0, q, x0: x, y0: y, x1: tx, y1: ty, d: 1.5, hi: 0.8, ok, poss: team, lost: !ok });
+          if (ok) { lg(team, 'passOk'); pl(team, s0, 'passOk'); lastPass = { team, from: s0, t }; x = tx; y = ty; slot = q; if (R() < 0.65) shot(false, true); }
+          else if (R() < 0.28) { x = tx; y = ty; corner(team); }
+          else turnover(1 - team, gx - dir * 18, clamp(ty + (R() - .5) * 20, 4, W - 4));
+        }
+
+        dead(3, 'kickoff');
+        while (t < END) {
+          for (let tm = 0; tm < 2; tm++) {
+            TEAMS[tm].subs.forEach((s, i) => {
+              if (!subDone[tm][i] && t >= s.t) {
+                subDone[tm][i] = true;
+                const out = cur[tm][s.slot], inn = TEAMS[tm].bench[s.inIdx][0];
+                cur[tm][s.slot] = inn;
+                ev.push({ t, type: 'sub', team: tm, slot: s.slot, out, inn });
+              }
+            });
+          }
+          if (!half2 && t >= H1) { half2 = true; ev.push({ t, type: 'ht' }); kickoff(1); continue; }
+          const dir = team ? -1 : 1, gx = dir > 0 ? L : 0, p = dir > 0 ? x / L : 1 - x / L, d = Math.hypot(gx - x, y - W / 2);
+          if (R() < 0.008) { foul(); continue; }
+          if (d < 30 && slot !== 0 && R() < (d < 18 ? 0.05 : 0.02)) { shot(false, false); continue; }
+          if (p > 0.72 && (y < 16 || y > 52) && R() < 0.2) { cross(); continue; }
+          if (slot !== 0 && R() < 0.13) { dribble(); continue; }
+          pass();
+        }
+        ev.push({ t, type: 'ft' });
+
+        // Ensure target score if requested
+        if (maxGoals !== null) {
+          for (let tm = 0; tm < 2; tm++) {
+            while (goalsCount[tm] < maxGoals[tm]) {
+              goalsCount[tm]++;
+              const goalT = (H1 / 2) + (goalsCount[tm] * 720) + (R() * 200);
+              const shooterSlot = [9, 10, 7, 11][goalsCount[tm] % 4];
+              ev.push({ t: goalT, type: 'goal', team: tm, pl: shooterSlot, ast: 8, out: 'goal', xg: 0.58, x: tm ? 18 : 88, y: 34, pen: false, head: false });
+              pl(tm, shooterSlot, 'goal');
+              lg(tm, 'shot'); lg(tm, 'sot'); lg(tm, 'xg', 0.58);
+            }
+          }
+          ev.sort((a, b) => a.t - b.t);
+        }
+
+        const S = [{}, {}];
+        logs.forEach(l => {
+          const o = S[l.team][l.k] || (S[l.team][l.k] = { ts: [], cum: [] });
+          const c = o.cum.length ? o.cum[o.cum.length - 1] : 0;
+          o.ts.push(l.t); o.cum.push(c + l.v);
+        });
+
+        function stat(tt, tm, k){
+          const o = S[tm][k]; if (!o) return 0;
+          let lo = 0, hi = o.ts.length;
+          while (lo < hi) { const m = (lo + hi) >> 1; if (o.ts[m] <= tt) lo = m + 1; else hi = m; }
+          return lo ? o.cum[lo - 1] : 0;
+        }
+
+        const BIN = 180, nb = Math.ceil(END / BIN), threat = [new Array(nb).fill(0), new Array(nb).fill(0)];
+        acts.forEach(a => {
+          if (a.poss == null) return;
+          const dir = a.team ? -1 : 1, pe = dir > 0 ? a.x1 / L : 1 - a.x1 / L;
+          const b = Math.min(nb - 1, Math.floor(a.t1 / BIN));
+          if (pe > 0.68) threat[a.team][b] += 1;
+          if (a.type === 'shot') threat[a.team][b] += 2 + 6 * a.xg;
+        });
+
+        function actIdx(tt){
+          let lo = 0, hi = acts.length - 1;
+          while (lo < hi) { const m = (lo + hi + 1) >> 1; if (acts[m].t0 <= tt) lo = m; else hi = m - 1; }
+          return lo;
+        }
+
+        function ballAt(tt){
+          const i = actIdx(tt), a = acts[i];
+          const u = a.d > 0 ? clamp((tt - a.t0) / a.d, 0, 1) : 1;
+          const e = a.type === 'dead' ? u : (u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2) * 0.35 + u * 0.65;
+          return { x: a.x0 + (a.x1 - a.x0) * e, y: a.y0 + (a.y1 - a.y0) * e, h: (a.hi || 0) * Math.sin(Math.PI * u), i, u, a };
+        }
+
+        function playerAt(tm, s, tt){
+          let n = TEAMS[tm].xi[s][0];
+          TEAMS[tm].subs.forEach(sb => { if (sb.slot === s && sb.t <= tt) n = TEAMS[tm].bench[sb.inIdx][0]; });
+          return n;
+        }
+
+        function nameOf(tm, num){
+          const q = TEAMS[tm].xi.concat(TEAMS[tm].bench).find(p => p[0] === num);
+          return q ? q[1] : '#' + num;
+        }
+
+        return { seed, H1, END, acts, events: ev, plog, stat, threat, BIN, ballAt, actIdx, playerAt, nameOf, basePos, TEAMS };
+      }
+
+      function clock(t, H1){
+        if (t < H1) { const m = t / 60; return m < 45 ? { m: Math.floor(m) + 1, s: '' } : { m: 45, s: '+' + (Math.floor(m) - 44) }; }
+        const m = 45 + (t - H1) / 60; return m < 90 ? { m: Math.floor(m) + 1, s: '' } : { m: 90, s: '+' + (Math.floor(m) - 89) };
+      }
+
+      window.destroyMatchLens = function() {
+        if (window.__mlActiveInstance) {
+          window.__mlActiveInstance.stop();
+          window.__mlActiveInstance = null;
+        }
+      };
+
+      window.refreshMatchLensTheme = function() {
+        if (window.__mlActiveInstance && window.__mlActiveInstance.refresh) {
+          window.__mlActiveInstance.refresh();
+        }
+      };
+
+      window.initMatchLens = function(matchId) {
+        window.destroyMatchLens();
+        const cv = document.getElementById('mlPitch');
+        if (!cv) return;
+
+        const m = getMatchById(matchId);
+        const h = clubMeta(m.home);
+        const a = clubMeta(m.away);
+        const sqH = getMatchSquad(h.id, h.name, true);
+        const sqA = getMatchSquad(a.id, a.name, false);
+
+        const targetHS = m.hs !== null ? m.hs : (m.status === 'En direct' ? 1 : 2);
+        const targetAS = m.as !== null ? m.as : (m.status === 'En direct' ? 0 : 1);
+
+        const TEAMS = [
+          {
+            name: h.name, short: (h.name || 'DOM').slice(0, 3).toUpperCase(),
+            color: h.color || '#17573a', ink: h.accent || '#ffffff', form: sqH.form, coach: sqH.coach,
+            xi: sqH.xi, bench: sqH.bench,
+            subs: [{ t: 61 * 60, slot: 10, inIdx: 2 }, { t: 75 * 60, slot: 6, inIdx: 3 }]
+          },
+          {
+            name: a.name, short: (a.name || 'EXT').slice(0, 3).toUpperCase(),
+            color: a.color || '#ffb52b', ink: a.accent || '#30343b', form: sqA.form, coach: sqA.coach,
+            xi: sqA.xi, bench: sqA.bench,
+            subs: [{ t: 58 * 60, slot: 10, inIdx: 2 }, { t: 72 * 60, slot: 5, inIdx: 3 }]
+          }
+        ];
+
+        const matchNumericId = parseInt(matchId, 10) || 1;
+        const seed = (matchNumericId * 89 + 173) % 1000;
+        const M = simulateMatch(seed, TEAMS, [targetHS, targetAS]);
+        const END = M.END, H1 = M.H1, EV = M.events;
+
+        const $ = id => document.getElementById(id);
+        const last = n => n.split(' ').slice(-1)[0];
+        const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+        let T = 0, playing = true, speed = 15, snap = true, dragging = false, filterKey = false, tab = 'feed';
+        const tcol = tm => tm ? (a.color || '#ffb52b') : (h.color || '#17573a');
+        const nm = (tm, slot, t) => M.nameOf(tm, M.playerAt(tm, slot, t));
+        const mmss = t => Math.floor(t / 60) + ':' + String(Math.floor(t % 60)).padStart(2, '0');
+        const minStr = t => { const c = clock(t, H1); return c.m + c.s + "'"; };
+
+        // Playback Markers
+        const mk = $('mlMarkers');
+        if (mk) {
+          mk.innerHTML = '';
+          ['goal', 'yellow', 'sub', 'penalty', 'ht'].forEach(ty => {
+            EV.filter(e => e.type === ty).forEach(e => {
+              const i = document.createElement('i');
+              i.className = ty;
+              i.style.left = (e.t / END * 100) + '%';
+              mk.appendChild(i);
+            });
+          });
+        }
+
+        // Speed buttons
+        const sp = $('mlSpeed');
+        if (sp) {
+          sp.innerHTML = '';
+          [1, 5, 15, 60].forEach(v => {
+            const b = document.createElement('button');
+            b.textContent = '×' + v;
+            b.setAttribute('aria-pressed', v === speed);
+            b.onclick = () => {
+              speed = v;
+              [...sp.children].forEach(c => c.setAttribute('aria-pressed', c === b));
+            };
+            sp.appendChild(b);
+          });
+        }
+
+        const PLAY = '<path d="M8 5v14l11-7z"/>', PAUSE = '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
+        function setPlay(){ if ($('mlPlayIc')) $('mlPlayIc').innerHTML = playing ? PAUSE : PLAY; }
+        setPlay();
+
+        if ($('mlPlay')) $('mlPlay').onclick = () => { if (T >= END) { T = 0; snap = true; } playing = !playing; setPlay(); };
+        const keyEvents = EV.filter(e => ['goal', 'yellow', 'penalty', 'sub', 'ht', 'corner', 'shot'].includes(e.type) && (e.type !== 'shot' || e.out !== 'block'));
+        if ($('mlNext')) $('mlNext').onclick = () => { const e = keyEvents.find(e => e.t > T + 9); seek(e ? e.t - 7 : END); };
+        if ($('mlPrev')) $('mlPrev').onclick = () => { const c = keyEvents.filter(e => e.t < T - 1); const e = c.length ? c[c.length - 1] : null; seek(e ? Math.max(0, e.t - 7) : 0); };
+
+        function seek(t){
+          T = Math.max(0, Math.min(END, t));
+          snap = true;
+          lastN = evCount(T);
+          trail.length = 0;
+          dirty = true;
+        }
+
+        if ($('mlSeek')) {
+          $('mlSeek').addEventListener('input', e => { dragging = true; seek(e.target.value / 1000 * END); });
+          $('mlSeek').addEventListener('change', () => { dragging = false; });
+        }
+
+        const onKeyDown = e => {
+          const tg = e.target.tagName;
+          if (tg === 'INPUT' || tg === 'BUTTON') return;
+          if (e.code === 'Space') { e.preventDefault(); if ($('mlPlay')) $('mlPlay').click(); }
+          if (e.code === 'ArrowRight') seek(T + 30);
+          if (e.code === 'ArrowLeft') seek(T - 30);
+        };
+        document.addEventListener('keydown', onKeyDown);
+
+        if ($('mlTabs')) {
+          $('mlTabs').addEventListener('click', e => {
+            const b = e.target.closest('button');
+            if (!b) return;
+            tab = b.dataset.t;
+            [...$('mlTabs').children].forEach(c => c.setAttribute('aria-selected', c === b));
+            ['feed', 'stats', 'lineups', 'an'].forEach(n => {
+              const p = $('mlPane' + n.charAt(0).toUpperCase() + n.slice(1));
+              if (p) p.hidden = n !== tab;
+            });
+            dirty = true;
+            lastHeavy = 0;
+          });
+        }
+
+        if ($('mlFAll')) $('mlFAll').onclick = () => { filterKey = false; $('mlFAll').setAttribute('aria-pressed', true); $('mlFKey').setAttribute('aria-pressed', false); feedKey = ''; dirty = true; };
+        if ($('mlFKey')) $('mlFKey').onclick = () => { filterKey = true; $('mlFAll').setAttribute('aria-pressed', false); $('mlFKey').setAttribute('aria-pressed', true); feedKey = ''; dirty = true; };
+
+        /* 3D Pitch canvas */
+        const ctx = cv.getContext('2d');
+        let CW = 0, CH = 0, SX = 1, SY = 1;
+        const P_ = [0, 1].map(tm => Array.from({ length: 11 }, (_, s) => { const b = M.basePos(tm, s); return { x: b[0], y: b[1], tx: b[0], ty: b[1] }; }));
+        const WGT = [.04, .2, .22, .22, .2, .3, .34, .34, .3, .3, .3];
+        const trail = [];
+        let ball = M.ballAt(0);
+
+        function drawPitch2D(g, w, h, lw){
+          const sx = w / L, sy = h / W, c1 = '#17573a', c2 = '#1a6141';
+          for (let i = 0; i < 14; i++){
+            g.fillStyle = i % 2 ? c2 : c1;
+            g.fillRect(Math.floor(i * w / 14), 0, Math.ceil(w / 14) + 1, h);
+          }
+          g.strokeStyle = 'rgba(255,255,255,0.78)';
+          g.lineWidth = lw;
+          g.lineJoin = 'round';
+          const R2 = (x, y, a, b) => g.strokeRect(x * sx, y * sy, a * sx, b * sy);
+          const m2 = lw / 2;
+          g.strokeRect(m2, m2, w - lw, h - lw);
+          g.beginPath(); g.moveTo(L / 2 * sx, 0); g.lineTo(L / 2 * sx, h); g.stroke();
+          g.beginPath(); g.ellipse(L / 2 * sx, W / 2 * sy, 9.15 * sx, 9.15 * sy, 0, 0, 7); g.stroke();
+          const dot = (x, y) => { g.fillStyle = 'rgba(255,255,255,0.85)'; g.beginPath(); g.ellipse(x * sx, y * sy, Math.max(1.5, .3 * sx), Math.max(1.5, .3 * sx), 0, 0, 7); g.fill(); };
+          dot(L / 2, W / 2); dot(11, W / 2); dot(L - 11, W / 2);
+          R2(0, (W - 40.32) / 2, 16.5, 40.32); R2(L - 16.5, (W - 40.32) / 2, 16.5, 40.32);
+          R2(0, (W - 18.32) / 2, 5.5, 18.32); R2(L - 5.5, (W - 18.32) / 2, 5.5, 18.32);
+          const a2 = Math.acos(5.5 / 9.15);
+          g.beginPath(); g.ellipse(11 * sx, W / 2 * sy, 9.15 * sx, 9.15 * sy, 0, -a2, a2); g.stroke();
+          g.beginPath(); g.ellipse((L - 11) * sx, W / 2 * sy, 9.15 * sx, 9.15 * sy, 0, Math.PI - a2, Math.PI + a2); g.stroke();
+          R2(-2, (W - 7.32) / 2, 2, 7.32); R2(L, (W - 7.32) / 2, 2, 7.32);
+        }
+
+        function resize(){
+          if (!cv) return;
+          const r = cv.getBoundingClientRect();
+          const d = Math.min(2, window.devicePixelRatio || 1);
+          CW = Math.max(10, Math.round(r.width * d));
+          CH = Math.max(10, Math.round(r.height * d));
+          cv.width = CW;
+          cv.height = CH;
+          SX = CW / L;
+          SY = CH / W;
+          dirty = true;
+        }
+
+        const VIEWS = {
+          broad: { yaw: 0, tilt: .62, dist: 128, pan: .1 },
+          top: { yaw: 0, tilt: 1.36, dist: 112, pan: 0 },
+          corner: { yaw: .85, tilt: .56, dist: 124, pan: .25 },
+          ball: { yaw: 0, tilt: .46, dist: 44, pan: 1 }
+        };
+        const cam = { yaw: 0, tilt: .62, dist: 128, tx: 0, tz: 0 }, want = Object.assign({ tx: 0, tz: 0 }, VIEWS.broad);
+        let cp = [0, 40, 60], cf = [0, 0, -1], cr = [1, 0, 0], cu = [0, 1, 0], focal = 1000;
+
+        function setView(n){
+          Object.assign(want, VIEWS[n]);
+          if ($('mlViews')) [...$('mlViews').children].forEach(b => b.setAttribute('aria-pressed', b.dataset.v === n));
+        }
+        if ($('mlViews')) $('mlViews').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setView(b.dataset.v); });
+
+        function updCam(dt){
+          const asp = CW / CH, fit = Math.max(1, 1.78 / asp), k = 1 - Math.exp(-dt * 3.5);
+          cam.tx += ((ball.x - L / 2) * want.pan - cam.tx) * k;
+          cam.tz += ((ball.y - W / 2) * want.pan * .6 - cam.tz) * k;
+          let dy = want.yaw - cam.yaw;
+          dy = ((dy + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI;
+          cam.yaw += dy * k;
+          cam.tilt += (want.tilt - cam.tilt) * k;
+          cam.dist += (want.dist * fit - cam.dist) * k;
+          const ct = Math.cos(cam.tilt), st = Math.sin(cam.tilt);
+          cp = [cam.tx + cam.dist * ct * Math.sin(cam.yaw), cam.dist * st, cam.tz + cam.dist * ct * Math.cos(cam.yaw)];
+          const fx = cam.tx - cp[0], fy = -cp[1], fz = cam.tz - cp[2], fl = Math.hypot(fx, fy, fz);
+          cf = [fx / fl, fy / fl, fz / fl];
+          const rl = Math.hypot(cf[2], cf[0]);
+          cr = [-cf[2] / rl, 0, cf[0] / rl];
+          cu = [cr[1] * cf[2] - cr[2] * cf[1], cr[2] * cf[0] - cr[0] * cf[2], cr[0] * cf[1] - cr[1] * cf[0]];
+          focal = CW / (2 * Math.tan(.5 * 58 * Math.PI / 180));
+        }
+
+        function P(x, y, z){
+          const dx = x - cp[0], dy = y - cp[1], dz = z - cp[2];
+          const zc = dx * cf[0] + dy * cf[1] + dz * cf[2];
+          if (zc < 1) return null;
+          const s = focal / zc;
+          return [CW / 2 + (dx * cr[0] + dy * cr[1] + dz * cr[2]) * s, CH * .52 - (dx * cu[0] + dy * cu[1] + dz * cu[2]) * s, s, zc];
+        }
+
+        function poly(pts, fill, stroke, lw){
+          const q = pts.map(p => P(p[0], p[1], p[2]));
+          if (q.some(v => !v)) return;
+          ctx.beginPath();
+          q.forEach((v, i) => i ? ctx.lineTo(v[0], v[1]) : ctx.moveTo(v[0], v[1]));
+          ctx.closePath();
+          if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+          if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1; ctx.stroke(); }
+        }
+
+        function seg(a, b, w, col){
+          const p = P(a[0], a[1], a[2]), q = P(b[0], b[1], b[2]);
+          if (!p || !q) return;
+          ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]);
+          ctx.strokeStyle = col; ctx.lineWidth = w; ctx.stroke();
+        }
+
+        function pline(pts, y){
+          let started = false;
+          ctx.beginPath();
+          pts.forEach(p => {
+            const q = P(p[0] - L / 2, y, p[1] - W / 2);
+            if (!q) { started = false; return; }
+            if (started) ctx.lineTo(q[0], q[1]);
+            else { ctx.moveTo(q[0], q[1]); started = true; }
+          });
+          ctx.stroke();
+        }
+
+        const arcPts = (cx, cy, r, a0, a1, n) => {
+          const o = [];
+          for (let i = 0; i <= n; i++){ const a = a0 + (a1 - a0) * i / n; o.push([cx + Math.cos(a) * r, cy + Math.sin(a) * r]); }
+          return o;
+        };
+
+        const LINES = (() => {
+          const rect = (x, y, w, h) => [[x, y], [x + w, y], [x + w, y + h], [x, y + h], [x, y]], a = Math.acos(5.5 / 9.15);
+          return [
+            rect(0, 0, 105, 68), [[52.5, 0], [52.5, 68]], arcPts(52.5, 34, 9.15, 0, Math.PI * 2, 48),
+            rect(0, 13.84, 16.5, 40.32), rect(88.5, 13.84, 16.5, 40.32), rect(0, 24.84, 5.5, 18.32), rect(99.5, 24.84, 5.5, 18.32),
+            arcPts(11, 34, 9.15, -a, a, 16), arcPts(94, 34, 9.15, Math.PI - a, Math.PI + a, 16)
+          ];
+        })();
+
+        // Stadium Stands
+        const SR = rng(11), HEADC = ['#ffb52b', '#ffb52b', '#e30613', '#e30613', '#12a8df', '#f4f4f0', '#20262a', '#3d9b4b'];
+        const SIDES = [{ ax: 'x', sg: -1, half: 60 }, { ax: 'x', sg: 1, half: 60 }, { ax: 'z', sg: -1, half: 40 }, { ax: 'z', sg: 1, half: 40 }];
+        const ROWS = 10, RD = 2.2, RH = 1.7, D0 = 7;
+        SIDES.forEach(sd => {
+          sd.heads = [];
+          for (let i = 0; i < ROWS; i++){
+            const row = [];
+            for (let a = -sd.half + .6; a < sd.half; a += 1.15){ if (SR() < .86) row.push([a + SR() * .3, HEADC[Math.floor(SR() * HEADC.length)]]); }
+            sd.heads.push(row);
+          }
+        });
+
+        function sidePt(sd, a, d, h){ return sd.ax === 'x' ? [a, h, sd.sg * (34 + d)] : [sd.sg * (52.5 + d), h, a]; }
+        function sideVisible(sd){ const n = sd.ax === 'x' ? [0, sd.sg] : [sd.sg, 0]; return ((cp[0] - cam.tx) * n[0] + (cp[2] - cam.tz) * n[1]) < -2; }
+
+        function drawStands(){
+          const vis = SIDES.filter(sideVisible).map(sd => ({ sd, z: (P(...sidePt(sd, 0, 15, 6)) || [0, 0, 0, 1e9])[3] })).sort((a, b) => b.z - a.z);
+          vis.forEach(({ sd }) => {
+            for (let i = ROWS - 1; i >= 0; i--){
+              const d = D0 + i * RD, h = 1 + i * RH, h0 = h - RH, half = sd.half;
+              poly([sidePt(sd, -half, d, h0), sidePt(sd, half, d, h0), sidePt(sd, half, d, h), sidePt(sd, -half, d, h)], i % 2 ? '#1a2723' : '#1e2d29');
+              poly([sidePt(sd, -half, d, h), sidePt(sd, half, d, h), sidePt(sd, half, d + RD, h), sidePt(sd, -half, d + RD, h)], i % 2 ? '#243732' : '#283c37');
+              const hs = sd.heads[i]; const m = P(...sidePt(sd, 0, d + RD / 2, h + .8)); if (!m) continue; const z = Math.max(1.6, .42 * m[2]);
+              for (let k = 0; k < hs.length; k++){ const q = P(...sidePt(sd, hs[k][0], d + RD * .5, h + .85)); if (!q) continue; ctx.fillStyle = hs[k][1]; ctx.fillRect(q[0] - z / 2, q[1] - z, z, z * 1.15); }
+            }
+            poly([sidePt(sd, -sd.half, D0 + ROWS * RD, 1 + ROWS * RH), sidePt(sd, sd.half, D0 + ROWS * RD, 1 + ROWS * RH), sidePt(sd, sd.half, D0 + ROWS * RD, 1 + ROWS * RH + 4), sidePt(sd, -sd.half, D0 + ROWS * RD, 1 + ROWS * RH + 4)], '#111b17');
+          });
+        }
+
+        function drawBoards(){
+          const cols = ['#e30613', '#ffb52b', '#12a8df', '#ffffff'];
+          SIDES.forEach(sd => {
+            if (!sideVisible(sd)) return;
+            const half = sd.half - 8; let n = 0;
+            for (let a = -half; a < half; a += 8, n++) poly([sidePt(sd, a, 3, 0), sidePt(sd, Math.min(a + 8, half), 3, 0), sidePt(sd, Math.min(a + 8, half), 3, 1), sidePt(sd, a, 3, 1)], cols[n % 4]);
+          });
+        }
+
+        function drawGoals(){
+          [-1, 1].forEach(sx => {
+            const X = sx * 52.5, Xb = sx * 55.2, w = Math.max(1.5, .13 * focal / cam.dist), net = 'rgba(255,255,255,.28)';
+            poly([[X, 0, -3.66], [Xb, 0, -3.66], [Xb, 2.2, -3.66], [X, 2.44, -3.66]], net);
+            poly([[X, 0, 3.66], [Xb, 0, 3.66], [Xb, 2.2, 3.66], [X, 2.44, 3.66]], net);
+            poly([[Xb, 0, -3.66], [Xb, 0, 3.66], [Xb, 2.2, 3.66], [Xb, 2.2, -3.66]], 'rgba(255,255,255,.18)');
+            poly([[X, 2.44, -3.66], [Xb, 2.2, -3.66], [Xb, 2.2, 3.66], [X, 2.44, 3.66]], net);
+            seg([X, 0, -3.66], [X, 2.44, -3.66], w, '#fff'); seg([X, 0, 3.66], [X, 2.44, 3.66], w, '#fff'); seg([X, 2.44, -3.66], [X, 2.44, 3.66], w, '#fff');
+          });
+          [[-1, -1], [-1, 1], [1, -1], [1, 1]].forEach(c => {
+            const x = c[0] * 52.5, z = c[1] * 34;
+            seg([x, 0, z], [x, 1.5, z], Math.max(1, .05 * focal / cam.dist), '#fff');
+            poly([[x, 1.5, z], [x - c[0] * .5, 1.35, z], [x, 1.2, z]], '#ffb52b');
+          });
+        }
+
+        const SKIN = ['#e0b08a', '#b9805a', '#7a4e32', '#4a2f1d'];
+        function drawBody(tm, s, p, num){
+          const X = p.x - L / 2, Z = p.y - W / 2, f = P(X, 0, Z); if (!f) return; const k = f[2];
+          const shirt = s === 0 ? (tm ? '#ff9a5c' : '#4ade80') : (tm ? (a.color || '#ffb52b') : (h.color || '#17573a'));
+          const shorts = tm ? '#1e293b' : '#0f172a', skin = SKIN[(s * 7 + tm * 3) % 4];
+          const aPt = P(X, .5, Z), bPt = P(X, .95, Z), cPt = P(X, 1.5, Z), hPt = P(X, 1.7, Z);
+          ctx.lineCap = 'round';
+          const ln = (u, v, w, col) => { ctx.beginPath(); ctx.moveTo(u[0], u[1]); ctx.lineTo(v[0], v[1]); ctx.strokeStyle = col; ctx.lineWidth = Math.max(1.5, w * k); ctx.stroke(); };
+          ln(f, aPt, .26, skin); ln(aPt, bPt, .42, shorts); ln(bPt, cPt, .54, shirt);
+          ctx.beginPath(); ctx.arc(hPt[0], hPt[1], Math.max(2, .17 * k), 0, 7); ctx.fillStyle = skin; ctx.fill();
+          if (k >= 19) {
+            const mPt = P(X, 1.22, Z);
+            ctx.fillStyle = s === 0 ? '#111' : (tm ? (a.accent || '#30343b') : (h.accent || '#ffffff'));
+            ctx.font = '700 ' + Math.round(.42 * k) + 'px Barlow Condensed, sans-serif';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(num, mPt[0], mPt[1] + .5);
+          }
+          ctx.lineCap = 'butt';
+        }
+
+        function shadowAt(X, Z, r, al){
+          const g = P(X, 0, Z); if (!g) return;
+          const rx = r * g[2], ry = rx * Math.max(.22, Math.sin(cam.tilt));
+          ctx.fillStyle = 'rgba(0,0,0,' + al + ')';
+          ctx.beginPath(); ctx.ellipse(g[0], g[1], rx, ry, 0, 0, 7); ctx.fill();
+        }
+
+        function targets(b, tt){
+          const actObj = b.a, pt = actObj.team;
+          for (let tm = 0; tm < 2; tm++){
+            const dir = tm ? -1 : 1;
+            for (let s = 0; s < 11; s++){
+              const p = P_[tm][s], bs = M.basePos(tm, s), w = WGT[s], ph = tt * .6 + s * 1.7 + tm * 3;
+              let tx, ty;
+              if (s === 0) {
+                tx = bs[0] + (b.x - bs[0]) * .03; ty = bs[1] + (b.y - W / 2) * .14;
+                if (actObj.type === 'shot' && tm !== pt) ty = W / 2 + (actObj.y1 - W / 2) * b.u * .8;
+              } else {
+                const sh = (tm === pt ? 7 : -3) * dir;
+                tx = bs[0] + sh + (b.x - bs[0] - sh) * w; ty = bs[1] + (b.y - bs[1]) * w * 1.1;
+                tx += Math.sin(ph) * 1.1; ty += Math.cos(ph * .8) * 1.1;
+              }
+              p.tx = tx; p.ty = ty;
+            }
+          }
+          const deadEv = actObj.type === 'dead' || actObj.type === 'kickoff' || actObj.type === 'celebrate' || actObj.type === 'hold' || actObj.type === 'goalkick' || actObj.type === 'foul' || actObj.type === 'throw';
+          const car = P_[pt][actObj.p];
+          if (actObj.type === 'dribble' || deadEv) { car.tx = b.x; car.ty = b.y; } else { car.tx = actObj.x0; car.ty = actObj.y0; }
+          const rt = actObj.lost ? 1 - pt : pt;
+          if (actObj.type !== 'shot' && actObj.q != null && !deadEv && actObj.q !== actObj.p || (actObj.lost && actObj.q != null)) {
+            const rc = P_[rt][actObj.q]; const f = b.u > .15 ? 1 : 0; if (f) { rc.tx = actObj.x1; rc.ty = actObj.y1; }
+          }
+          const ot = 1 - pt; let bi = -1, bd = 1e9;
+          for (let s = 1; s < 11; s++){ const q = P_[ot][s], d = Math.hypot(q.tx - b.x, q.ty - b.y); if (d < bd) { bd = d; bi = s; } }
+          if (bi > 0 && !(actObj.lost && bi === actObj.q)) { const q = P_[ot][bi]; q.tx += (b.x - q.tx) * .8; q.ty += (b.y - q.ty) * .8; }
+        }
+
+        function stepPlayers(gdt){
+          const k = snap ? 1 : 1 - Math.exp(-gdt * 1.3), cap = snap ? 1e9 : 12 * gdt + .15;
+          P_.forEach(tm => tm.forEach(p => {
+            let dx = (p.tx - p.x) * k, dy = (p.ty - p.y) * k;
+            const l = Math.hypot(dx, dy);
+            if (l > cap) { dx *= cap / l; dy *= cap / l; }
+            p.x += dx; p.y += dy;
+          }));
+          snap = false;
+        }
+
+        function drawPitchScene(){
+          const g0 = ctx.createLinearGradient(0, 0, 0, CH);
+          g0.addColorStop(0, '#091310'); g0.addColorStop(.55, '#12221b'); g0.addColorStop(1, '#0e1c16');
+          ctx.fillStyle = g0; ctx.fillRect(0, 0, CW, CH);
+          poly([[-150, 0, -120], [150, 0, -120], [150, 0, 120], [-150, 0, 120]], '#0e1d17');
+          drawStands();
+          poly([[-62, 0, -41], [62, 0, -41], [62, 0, 41], [-62, 0, 41]], '#17402a');
+          for (let i = 0; i < 14; i++){
+            const x0 = -52.5 + i * 7.5;
+            poly([[x0, 0, -34], [x0 + 7.5, 0, -34], [x0 + 7.5, 0, 34], [x0, 0, 34]], i % 2 ? '#1a6141' : '#17573a');
+          }
+          ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = Math.max(1.1, .17 * focal / cam.dist); ctx.lineJoin = 'round';
+          LINES.forEach(l => pline(l, .02));
+          [[11, 34], [94, 34], [52.5, 34]].forEach(sp => {
+            const q = P(sp[0] - L / 2, .02, sp[1] - W / 2);
+            if (q) { ctx.fillStyle = 'rgba(255,255,255,.9)'; ctx.beginPath(); ctx.arc(q[0], q[1], Math.max(1.5, .3 * q[2]), 0, 7); ctx.fill(); }
+          });
+          drawBoards(); drawGoals();
+
+          const actObj = ball.a, pt = actObj.team, tc = tcol(pt);
+          if (['pass', 'long', 'cross', 'shot'].includes(actObj.type)) {
+            ctx.save(); ctx.strokeStyle = tc; ctx.globalAlpha = .75; ctx.lineWidth = Math.max(1.5, .22 * focal / cam.dist);
+            if (actObj.type !== 'pass') ctx.setLineDash([6, 5]);
+            ctx.beginPath(); let st = false;
+            for (let i = 0; i <= 14; i++){
+              const u = i / 14, q = P(actObj.x0 + (actObj.x1 - actObj.x0) * u - L / 2, .03, actObj.y0 + (actObj.y1 - actObj.y0) * u - W / 2);
+              if (!q) continue; if (st) ctx.lineTo(q[0], q[1]); else { ctx.moveTo(q[0], q[1]); st = true; }
+            }
+            ctx.stroke(); ctx.restore();
+          }
+
+          const cpP = P_[pt][actObj.p], cg = P(cpP.x - L / 2, .03, cpP.y - W / 2);
+          if (cg) {
+            ctx.strokeStyle = '#ffb52b'; ctx.lineWidth = 2.4; ctx.beginPath();
+            ctx.ellipse(cg[0], cg[1], 1.25 * cg[2], 1.25 * cg[2] * Math.max(.22, Math.sin(cam.tilt)), 0, 0, 7); ctx.stroke();
+          }
+
+          for (let tm = 0; tm < 2; tm++) for (let s = 0; s < 11; s++){ const p = P_[tm][s]; shadowAt(p.x - L / 2, p.y - W / 2, .7, .28); }
+          shadowAt(ball.x - L / 2, ball.y - W / 2, .28 * (1 + ball.h * .2), Math.max(.12, .4 - ball.h * .25));
+
+          ctx.lineCap = 'round';
+          for (let i = 1; i < trail.length; i++){
+            const u = trail[i - 1], v = trail[i], p = P(u.x - L / 2, .15 + u.h * 4, u.y - W / 2), q = P(v.x - L / 2, .15 + v.h * 4, v.y - W / 2);
+            if (!p || !q) continue; const f = i / trail.length;
+            ctx.strokeStyle = 'rgba(255,255,255,' + f * .6 + ')'; ctx.lineWidth = Math.max(1, f * .28 * q[2]);
+            ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); ctx.stroke();
+          }
+          ctx.lineCap = 'butt';
+
+          const items = [];
+          for (let tm = 0; tm < 2; tm++) for (let s = 0; s < 11; s++){
+            const p = P_[tm][s], g = P(p.x - L / 2, 0, p.y - W / 2);
+            if (g) items.push({ z: g[3], f: () => drawBody(tm, s, p, M.playerAt(tm, s, T)) });
+          }
+          const bp = P(ball.x - L / 2, .25 + ball.h * 4, ball.y - W / 2);
+          if (bp) items.push({ z: bp[3], f: () => {
+            const r = Math.max(3, .26 * bp[2]);
+            ctx.beginPath(); ctx.arc(bp[0], bp[1], r, 0, 7); ctx.fillStyle = '#fff'; ctx.fill();
+            ctx.lineWidth = 1.4; ctx.strokeStyle = '#0b0f0d'; ctx.stroke();
+            ctx.fillStyle = '#0b0f0d'; ctx.beginPath(); ctx.arc(bp[0] - r * .15, bp[1] - r * .1, r * .36, 0, 7); ctx.fill();
+          } });
+          items.sort((u, v) => v.z - u.z).forEach(it => it.f());
+
+          const hh = P(cpP.x - L / 2, 2.1, cpP.y - W / 2);
+          if (hh && CW > 420) {
+            const lab = last(nm(pt, actObj.p, T));
+            ctx.font = '700 ' + Math.round(Math.max(11, CW / 90)) + 'px Barlow, sans-serif';
+            const w = ctx.measureText(lab).width + 14;
+            ctx.fillStyle = 'rgba(8,12,10,.85)';
+            if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(hh[0] - w / 2, hh[1] - 17, w, 18, 5); ctx.fill(); }
+            else { ctx.fillRect(hh[0] - w / 2, hh[1] - 17, w, 18); }
+            ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.fillText(lab, hh[0], hh[1] - 8);
+          }
+        }
+
+        // Pointer controls: orbit & pinch
+        const pts = new Map(); let pd = 0;
+        cv.style.touchAction = 'pan-y';
+        const onPDown = e => { cv.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY }); if (pts.size === 2) { const v = [...pts.values()]; pd = Math.hypot(v[0].x - v[1].x, v[0].y - v[1].y); } };
+        const onPMove = e => {
+          const p = pts.get(e.pointerId); if (!p) return;
+          const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
+          if (pts.size === 1) {
+            want.yaw -= dx * .006; want.tilt = Math.max(.2, Math.min(1.4, want.tilt + dy * .004));
+            if ($('mlViews')) [...$('mlViews').children].forEach(b => b.setAttribute('aria-pressed', false));
+          } else if (pts.size === 2) {
+            const v = [...pts.values()], d = Math.hypot(v[0].x - v[1].x, v[0].y - v[1].y);
+            if (pd) want.dist = Math.max(25, Math.min(170, want.dist * pd / d)); pd = d;
+          }
+        };
+        const onPUp = e => { pts.delete(e.pointerId); pd = 0; };
+        const onWheel = e => { e.preventDefault(); want.dist = Math.max(25, Math.min(170, want.dist * (1 + Math.sign(e.deltaY) * .08))); };
+
+        cv.addEventListener('pointerdown', onPDown);
+        cv.addEventListener('pointermove', onPMove);
+        cv.addEventListener('pointerup', onPUp);
+        cv.addEventListener('pointercancel', onPUp);
+        cv.addEventListener('wheel', onWheel, { passive: false });
+
+        // Event Flash banner
+        let lastN = 0, flashT = 0;
+        const evCount = t => { let lo = 0, hi = EV.length; while (lo < hi) { const m = (lo + hi) >> 1; if (EV[m].t <= t) lo = m + 1; else hi = m; } return lo; };
+        function flash(e){
+          let b, s, ms = 2600;
+          if (e.type === 'goal') { b = 'BUT !'; s = nm(e.team, e.pl, e.t) + ' · ' + TEAMS[e.team].name; ms = 4200; }
+          else if (e.type === 'penalty') { b = 'PENALTY'; s = 'Pour ' + TEAMS[e.team].name; }
+          else if (e.type === 'yellow') { b = 'CARTON JAUNE'; s = nm(e.team, e.pl, e.t) + ' (' + TEAMS[e.team].name + ')'; }
+          else if (e.type === 'ht') { b = 'MI-TEMPS'; s = ''; }
+          else if (e.type === 'ft') { b = 'FIN DU MATCH'; s = ''; }
+          else if (e.type === 'sub') { b = 'REMPLACEMENT'; s = M.nameOf(e.team, e.inn) + ' pour ' + M.nameOf(e.team, e.out); }
+          else return;
+          if ($('mlFlB')) $('mlFlB').textContent = b;
+          if ($('mlFlS')) $('mlFlS').textContent = s;
+          if ($('mlFlash')) $('mlFlash').classList.add('on');
+          clearTimeout(flashT);
+          flashT = setTimeout(() => { if ($('mlFlash')) $('mlFlash').classList.remove('on'); }, ms);
+        }
+
+        // Live Commentary
+        function commentary(){
+          if (!$('mlComm')) return;
+          const aObj = ball.a, tm = aObj.team, p = last(nm(tm, aObj.p, T));
+          const rq = aObj.q != null ? last(nm(aObj.lost ? 1 - tm : tm, aObj.q, T)) : '';
+          let t;
+          switch (aObj.type) {
+            case 'pass': t = aObj.lost ? `<b>${p}</b> perd le ballon, récupéré par <b>${rq}</b>` : `<b>${p}</b> passe proprement à <b>${rq}</b>`; break;
+            case 'long': t = `<b>${p}</b> allonge une passe vers <b>${rq}</b>`; break;
+            case 'dribble': t = `<b>${p}</b> tente un dribble${aObj.ok ? ' réussi' : ' et se fait reprendre'}`; break;
+            case 'cross': t = `<b>${p}</b> centre fort dans la surface${aObj.lost ? ' · renvoyé par la défense' : ''}`; break;
+            case 'shot': t = aObj.out === 'goal' ? `<b>${p}</b> décoche une frappe limpide… <b>BUT POUR ${TEAMS[tm].name.toUpperCase()} !</b>` : aObj.out === 'save' ? `<b>${p}</b> frappe au but, bel arrêt du gardien` : aObj.out === 'off' ? `<b>${p}</b> tente sa chance, ça passe à côté` : `<b>${p}</b> tire, contré par la défense`; break;
+            case 'kickoff': t = 'Coup d’envoi du match'; break;
+            case 'celebrate': t = `<b>${p}</b> célèbre le but avec ses coéquipiers devant les supporters`; break;
+            case 'foul': t = 'Faute signalée · coup franc'; break;
+            case 'hold': t = 'Le gardien capte sereinement le ballon'; break;
+            case 'goalkick': t = 'Six mètres pour le gardien'; break;
+            case 'throw': t = 'Touche'; break;
+            default: t = 'Jeu arrêté · préparation de la relance';
+          }
+          $('mlComm').innerHTML = `<i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${tcol(tm)}"></i>${t}`;
+        }
+
+        // Stats panel
+        const rowsDef = [
+          ['Possession de balle', tt => { const a = M.stat(tt, 0, 'poss'), b = M.stat(tt, 1, 'poss'), s = a + b || 1; return [Math.round(100 * a / s), 100 - Math.round(100 * a / s), '%']; }],
+          ['Tirs totaux', tt => [M.stat(tt, 0, 'shot'), M.stat(tt, 1, 'shot')]],
+          ['Tirs cadrés', tt => [M.stat(tt, 0, 'sot'), M.stat(tt, 1, 'sot')]],
+          ['Occasions nettes (xG)', tt => [M.stat(tt, 0, 'xg'), M.stat(tt, 1, 'xg'), '', 2]],
+          ['Passes totales', tt => [M.stat(tt, 0, 'pass'), M.stat(tt, 1, 'pass')]],
+          ['Précision des passes', tt => [0, 1].map(i => { const p = M.stat(tt, i, 'pass'); return p ? Math.round(100 * M.stat(tt, i, 'passOk') / p) : 0; }).concat('%')],
+          ['Corners obtenus', tt => [M.stat(tt, 0, 'corner'), M.stat(tt, 1, 'corner')]],
+          ['Fautes commises', tt => [M.stat(tt, 0, 'foul'), M.stat(tt, 1, 'foul')]],
+          ['Hors-jeu', tt => [M.stat(tt, 0, 'offside'), M.stat(tt, 1, 'offside')]],
+          ['Cartons jaunes', tt => [M.stat(tt, 0, 'yellow'), M.stat(tt, 1, 'yellow')]]
+        ];
+
+        if ($('mlPaneStats')) {
+          $('mlPaneStats').innerHTML = rowsDef.map((r, i) => `
+            <div class="ml-srow">
+              <div class="ml-h">
+                <span id="mlSa${i}">0</span>
+                <em>${r[0]}</em>
+                <span id="mlSb${i}">0</span>
+              </div>
+              <div class="ml-bar">
+                <i><b id="mlBa${i}" style="width:0"></b></i>
+                <i><b id="mlBb${i}" style="width:0"></b></i>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        function updStats(){
+          rowsDef.forEach((r, i) => {
+            const v = r[1](T), d = v[3] || 0, u = v[2] || '', tot = (v[0] + v[1]) || 0;
+            if ($('mlSa' + i)) $('mlSa' + i).textContent = v[0].toFixed(d) + u;
+            if ($('mlSb' + i)) $('mlSb' + i).textContent = v[1].toFixed(d) + u;
+            if ($('mlBa' + i)) $('mlBa' + i).style.width = (tot ? 100 * v[0] / tot : 50) + '%';
+            if ($('mlBb' + i)) $('mlBb' + i).style.width = (tot ? 100 * v[1] / tot : 50) + '%';
+          });
+        }
+
+        function scoreAt(tt){
+          const s = [0, 0];
+          EV.forEach(e => { if (e.type === 'goal' && e.t <= tt) s[e.team]++; });
+          return s;
+        }
+
+        function evText(e){
+          const T0 = TEAMS[e.team], pn = e.pl != null ? nm(e.team, e.pl, e.t) : '';
+          switch (e.type) {
+            case 'goal': {
+              const s = scoreAt(e.t);
+              const an = e.ast != null ? ' · passe de ' + nm(e.team, e.ast, e.t) : '';
+              return { i: 'goal', t: `<b>But de ${pn}</b>${e.pen ? ' (penalty)' : e.head ? ' (tête)' : ''}`, s: `${T0.name} ${s[0]}–${s[1]}${an} · xG ${e.xg.toFixed(2)}` };
+            }
+            case 'shot': return { i: 'shot', t: `Tir de <b>${pn}</b> ${e.out === 'save' ? 'arrêté' : e.out === 'off' ? 'non cadré' : 'contré'}`, s: `${T0.name} · xG ${e.xg.toFixed(2)}` };
+            case 'corner': return { i: 'corner', t: `Corner pour <b>${T0.name}</b>`, s: 'Phase arrêtée' };
+            case 'foul': return { i: 'foul', t: `Faute commise par <b>${pn}</b>`, s: T0.name };
+            case 'yellow': return { i: 'yellow', t: `Carton jaune pour <b>${pn}</b>`, s: T0.name };
+            case 'offside': return { i: 'offside', t: `Hors-jeu sifflé contre <b>${pn}</b>`, s: T0.name };
+            case 'sub': return { i: 'sub', t: `Remplacement · <b>${M.nameOf(e.team, e.inn)}</b> entre`, s: `À la place de ${M.nameOf(e.team, e.out)} · ${T0.name}` };
+            case 'penalty': return { i: 'penalty', t: `Penalty accordé à <b>${T0.name}</b>`, s: 'Faute dans la surface' };
+            case 'ht': return { i: 'ht', t: '<b>Mi-temps sifflée</b>', s: 'Score à la pause' };
+            case 'ft': return { i: 'ht', t: '<b>Fin du match</b>', s: 'Score final officiel' };
+          }
+          return null;
+        }
+
+        const KEYS = ['goal', 'yellow', 'penalty', 'sub', 'ht', 'ft'];
+        let feedKey = '';
+        function updFeed(n){
+          const k = n + '|' + filterKey; if (k === feedKey) return; feedKey = k;
+          const list = EV.slice(0, n).filter(e => e.type !== 'save' && (!filterKey || KEYS.includes(e.type))).reverse();
+          const ic = {
+            goal: '<svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>',
+            yellow: '', red: '',
+            sub: '⇄', corner: '⚑', foul: '!', offside: '⚐', penalty: 'P', ht: '⏸', shot: '●'
+          };
+          if ($('mlFeed')) {
+            $('mlFeed').innerHTML = list.length ? list.map(e => {
+              const x = evText(e);
+              if (!x) return '';
+              return `
+                <li class="${e.type}" data-t="${e.t}">
+                  <span class="ml-mn ml-num">${e.type === 'ft' || e.type === 'ht' ? '' : minStr(e.t)}</span>
+                  <span class="ml-ic ${x.i}">${ic[x.i] || ''}</span>
+                  <span class="ml-tx">${x.t}<small>${x.s}</small></span>
+                </li>
+              `;
+            }).join('') : '<div class="ml-empty">Le match vient de débuter.</div>';
+          }
+        }
+
+        if ($('mlFeed')) {
+          $('mlFeed').addEventListener('click', e => {
+            const li = e.target.closest('li');
+            if (li) seek(+li.dataset.t - 8);
+          });
+        }
+
+        function pstats(tt){
+          const m = {};
+          M.plog.forEach(l => {
+            if (l.t > tt) return;
+            const k = l.team * 100 + l.num, o = m[k] || (m[k] = { goal: 0, ast: 0, shot: 0, sot: 0, pass: 0, passOk: 0, save: 0, yellow: 0, foul: 0 });
+            o[l.k]++;
+          });
+          return m;
+        }
+
+        function rating(s, tm, num){
+          let r = 6;
+          if (s) {
+            r += s.goal * 1.2 + s.ast * .7 + s.sot * .15 + s.shot * .05 + s.save * .4 - s.foul * .15 - s.yellow * .3;
+            if (s.pass >= 6) r += (s.passOk / s.pass - .78) * 1.8;
+          }
+          r += ((num * 37 + tm * 11) % 7 - 3) * .04;
+          return Math.max(4.5, Math.min(9.9, r));
+        }
+
+        function updLineups(){
+          if (!$('mlPaneLineups')) return;
+          const ps = pstats(T);
+          let hHtml = '<div class="ml-lu">';
+          for (let tm = 0; tm < 2; tm++){
+            const TT = TEAMS[tm];
+            hHtml += `<div><h4>${TT.name}</h4><div class="ml-fm">Système ${TT.form} · Entraîneur : ${TT.coach}</div>`;
+            const formObj = FORM[TT.form] || FORM["4-3-3"];
+            for (let s = 0; s < 11; s++){
+              const num = M.playerAt(tm, s, T), st = ps[tm * 100 + num] || {}, r = rating(st, tm, num), lab = formObj.lab[s] || 'J';
+              const bits = [st.goal ? st.goal + ' but' : '', st.ast ? st.ast + ' passe d.' : '', st.yellow ? 'jaune' : ''].filter(Boolean).join(' · ');
+              hHtml += `
+                <div class="ml-pl">
+                  <span class="ml-n ml-num">${num}</span>
+                  <span class="ml-nm">${M.nameOf(tm, num)} <small>${lab}${bits ? ' · ' + bits : ''}</small></span>
+                  <span class="ml-rt ml-num ${r >= 7.4 ? 'hi' : ''}">${T < 300 ? '–' : r.toFixed(1)}</span>
+                </div>
+              `;
+            }
+            const subs = EV.filter(e => e.type === 'sub' && e.team === tm && e.t <= T);
+            if (subs.length) {
+              hHtml += '<div class="ml-sub-h">Remplacés</div>';
+              subs.forEach(e => {
+                hHtml += `<div class="ml-pl off"><span class="ml-n ml-num">${e.out}</span><span class="ml-nm">${M.nameOf(tm, e.out)} <small>sorti à la ${minStr(e.t)}</small></span><span></span></div>`;
+              });
+            }
+            const used = subs.map(e => e.inn);
+            hHtml += '<div class="ml-sub-h">Banc des remplaçants</div>';
+            TT.bench.filter(b => !used.includes(b[0])).forEach(b => {
+              hHtml += `<div class="ml-pl off"><span class="ml-n ml-num">${b[0]}</span><span class="ml-nm">${b[1]}</span><span></span></div>`;
+            });
+            hHtml += '</div>';
+          }
+          $('mlPaneLineups').innerHTML = hHtml + '</div>';
+        }
+
+        function fitCanvas(c, hh){
+          const d = Math.min(2, window.devicePixelRatio || 1), w = c.clientWidth || 300;
+          c.width = Math.round(w * d); c.height = Math.round(hh * d); c.style.height = hh + 'px';
+          return d;
+        }
+
+        function updAnalysis(){
+          const c = $('mlShotmap');
+          if (c) {
+            const d = fitCanvas(c, Math.round((c.clientWidth || 300) * 68 / 105)), g = c.getContext('2d');
+            drawPitch2D(g, c.width, c.height, Math.max(1, d * .9));
+            const sx = c.width / L, sy = c.height / W;
+            EV.forEach(e => {
+              if (e.t > T || (e.type !== 'shot' && e.type !== 'goal')) return;
+              const rad = (4.5 + e.xg * 40) * d * .7, col = tcol(e.team);
+              g.beginPath(); g.arc(e.x * sx, e.y * sy, rad, 0, 7);
+              if (e.type === 'goal') { g.fillStyle = col; g.fill(); g.lineWidth = 2 * d; g.strokeStyle = '#fff'; g.stroke(); }
+              else { g.globalAlpha = .55; g.fillStyle = col; g.fill(); g.globalAlpha = 1; g.lineWidth = 1.5 * d; g.strokeStyle = col; g.stroke(); }
+            });
+          }
+
+          const mCanvas = $('mlMomentum');
+          if (mCanvas) {
+            const d2 = fitCanvas(mCanvas, 150), hCtx = mCanvas.getContext('2d'), W2 = mCanvas.width, H2 = mCanvas.height, mid = H2 / 2, nb = M.threat[0].length, bw = W2 / nb;
+            const mx = Math.max(1, ...M.threat[0], ...M.threat[1]);
+            hCtx.fillStyle = '#141f1a'; hCtx.fillRect(0, 0, W2, H2);
+            hCtx.fillStyle = 'rgba(255,255,255,0.12)'; hCtx.fillRect(0, mid - .5, W2, 1.5 * d2);
+            for (let i = 0; i < nb; i++){
+              if (i * M.BIN > T) break;
+              const aVal = M.threat[0][i] / mx * (mid - 8 * d2), bVal = M.threat[1][i] / mx * (mid - 8 * d2);
+              hCtx.fillStyle = h.color || '#17573a'; hCtx.fillRect(i * bw + 1, mid - aVal, bw - 2, aVal);
+              hCtx.fillStyle = a.color || '#ffb52b'; hCtx.fillRect(i * bw + 1, mid, bw - 2, bVal);
+            }
+            EV.forEach(e => {
+              if (e.type === 'goal' && e.t <= T) {
+                const x = e.t / END * W2;
+                hCtx.beginPath(); hCtx.arc(x, e.team ? H2 - 10 * d2 : 10 * d2, 5 * d2, 0, 7);
+                hCtx.fillStyle = '#fff'; hCtx.fill(); hCtx.lineWidth = 2 * d2; hCtx.strokeStyle = tcol(e.team); hCtx.stroke();
+              }
+            });
+            const ht = M.H1 / END * W2;
+            hCtx.fillStyle = '#94a3b8'; hCtx.fillRect(ht, 0, d2, H2);
+            hCtx.fillStyle = '#ffffff'; hCtx.fillRect(T / END * W2, 0, 2 * d2, H2);
+          }
+
+          // MVP Calculation
+          const ps = pstats(T); let best = null;
+          for (let tm = 0; tm < 2; tm++){
+            TEAMS[tm].xi.concat(TEAMS[tm].bench).forEach(p => {
+              const st = ps[tm * 100 + p[0]];
+              if (!st || st.pass < 3 && !st.save) return;
+              const r = rating(st, tm, p[0]);
+              if (!best || r > best.r) best = { r, tm, p, st };
+            });
+          }
+          if ($('mlMvp')) {
+            $('mlMvp').innerHTML = best && T > 600 ? `
+              <div class="ml-badge" style="background:${tcol(best.tm)};color:${best.tm ? (a.accent || '#30343b') : (h.accent || '#ffffff')};width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:22px">
+                ${best.p[0]}
+              </div>
+              <div>
+                <b>${best.p[1]}</b>
+                <span>${TEAMS[best.tm].name} · Note du match : ${best.r.toFixed(1)} · ${best.st.goal} but · ${best.st.ast} passe d. · ${best.st.passOk}/${best.st.pass} passes</span>
+              </div>
+            ` : '<span>Disponible après 10 minutes de jeu.</span>';
+          }
+        }
+
+        let dirty = true, lastUI = 0, lastHeavy = 0;
+        function updateUI(now){
+          const s = scoreAt(T);
+          if ($('mlGA')) $('mlGA').textContent = s[0];
+          if ($('mlGB')) $('mlGB').textContent = s[1];
+          const c = clock(T, H1);
+          if ($('mlClk')) $('mlClk').textContent = c.m + c.s + "'";
+          const st = $('mlState');
+          if (st) {
+            if (T >= END) { st.textContent = 'Terminé'; st.className = 'ml-live off'; }
+            else if (playing) { st.textContent = 'Replay'; st.className = 'ml-live'; }
+            else { st.textContent = 'Pause'; st.className = 'ml-live off'; }
+          }
+          const pa = M.stat(T, 0, 'poss'), pb = M.stat(T, 1, 'poss'), pp = (pa + pb) ? Math.round(100 * pa / (pa + pb)) : 50;
+          if ($('mlPA')) $('mlPA').textContent = pp + '%';
+          if ($('mlPB')) $('mlPB').textContent = (100 - pp) + '%';
+          if ($('mlBarA')) $('mlBarA').style.width = pp + '%';
+          if ($('mlBarB')) $('mlBarB').style.width = (100 - pp) + '%';
+
+          const sc = [0, 1].map(tm => EV.filter(e => e.type === 'goal' && e.team === tm && e.t <= T).map(e => last(nm(tm, e.pl, e.t)) + ' ' + minStr(e.t) + (e.pen ? ' (p.)' : '')).join(' · '));
+          if ($('mlScA')) $('mlScA').textContent = sc[0];
+          if ($('mlScB')) $('mlScB').textContent = sc[1];
+
+          if ($('mlTdisp')) $('mlTdisp').textContent = mmss(T) + ' / ' + mmss(END);
+          if ($('mlPtag')) $('mlPtag').textContent = (T < H1 ? '1re' : '2e') + ' mi-temps';
+          if (!dragging && $('mlSeek')) $('mlSeek').value = Math.round(T / END * 1000);
+
+          commentary();
+          const n = evCount(T);
+          if (tab === 'feed') updFeed(n);
+          if (now - lastHeavy > 600 || dirty) {
+            lastHeavy = now;
+            if (tab === 'stats') updStats();
+            if (tab === 'lineups') updLineups();
+            if (tab === 'an') updAnalysis();
+          }
+          dirty = false;
+        }
+
+        let prev = performance.now();
+        let running = true;
+        let animId = null;
+
+        function frame(now){
+          if (!running) return;
+          const rdt = Math.min(.1, (now - prev) / 1000);
+          prev = now;
+          let gdt = 0;
+          if (playing) {
+            gdt = rdt * speed;
+            T = Math.min(END, T + gdt);
+            if (T >= END) { playing = false; setPlay(); }
+            const n = evCount(T);
+            if (n > lastN) {
+              if (n - lastN < 6) for (let i = lastN; i < n; i++) flash(EV[i]);
+              lastN = n;
+            }
+          }
+          const pb = ball;
+          ball = M.ballAt(T);
+          if (Math.hypot(ball.x - pb.x, ball.y - pb.y) > 22) trail.length = 0;
+          if (playing || trail.length === 0) {
+            trail.push({ x: ball.x, y: ball.y, h: ball.h });
+            if (trail.length > 20) trail.shift();
+          }
+          targets(ball, T);
+          stepPlayers(gdt);
+          updCam(rdt);
+          drawPitchScene();
+          if (now - lastUI > 200 || dirty) {
+            lastUI = now;
+            updateUI(now);
+          }
+          animId = requestAnimationFrame(frame);
+        }
+
+        const onWinResize = () => { resize(); dirty = true; };
+        window.addEventListener('resize', onWinResize);
+
+        resize();
+        updCam(10);
+        lastN = 0;
+        animId = requestAnimationFrame(t => { prev = t; frame(t); });
+
+        window.__mlActiveInstance = {
+          stop: () => {
+            running = false;
+            if (animId) cancelAnimationFrame(animId);
+            window.removeEventListener('resize', onWinResize);
+            document.removeEventListener('keydown', onKeyDown);
+            cv.removeEventListener('pointerdown', onPDown);
+            cv.removeEventListener('pointermove', onPMove);
+            cv.removeEventListener('pointerup', onPUp);
+            cv.removeEventListener('pointercancel', onPUp);
+            cv.removeEventListener('wheel', onWheel);
+          },
+          refresh: () => {
+            resize();
+            dirty = true;
+          }
+        };
+      };
+    })();
+
     function standingsForm(form, retired=false){ return retired ? '<span class="text-xs font-bold text-slate-500">Retiré du tournoi</span>' : form.map(x=>`<span class="inline-flex h-7 w-7 items-center justify-center rounded-md text-xs font-extrabold ${x==='V'?'bg-emerald-600 text-white':x==='N'?'bg-amber-500 text-white':'bg-red-600 text-white'}">${x}</span>`).join(''); }
     function standingsTable(group, rows){
       return `
@@ -3054,9 +4928,14 @@
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
       if (window.LCL_ADS && window.LCL_ADS.initAll) window.LCL_ADS.initAll();
+      if (current.startsWith('match-')) {
+        setTimeout(() => { if (window.initMatchLens) window.initMatchLens(current.slice(6)); }, 40);
+      } else {
+        if (window.destroyMatchLens) window.destroyMatchLens();
+      }
     }
     function go(id){ current=id; location.hash=id; render(); }
-    function toggleTheme(){ dark=!dark; localStorage.setItem('lcl-theme',dark?'dark':'light'); render(); }
+    function toggleTheme(){ dark=!dark; localStorage.setItem('lcl-theme',dark?'dark':'light'); render(); if (window.refreshMatchLensTheme) window.refreshMatchLensTheme(); }
     function toggleSidebar(){ sidebarCollapsed=!sidebarCollapsed; localStorage.setItem('lcl-sidebar',sidebarCollapsed?'collapsed':'expanded'); render(); }
     function toggleMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
     function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),2200); }
