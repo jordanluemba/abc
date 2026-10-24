@@ -457,7 +457,7 @@
       ]
     };
     const archivedStandings = { '2024-2025': standings2024, '2023-2024': standings2023 };
-    const nav = [ ['Accueil','home'], ['Actualités','actualites'], ['Direct','direct'], ['Matchs','matchs'], ['Classement','classement'], ['Clubs','clubs'], ['Joueurs','joueurs'], ['Data','data'] ];
+    const nav = [ ['Accueil','home'], ['Actualités','actualites'], ['Direct','direct'], ['Résultats','matchs'], ['Classement','classement'], ['Clubs','clubs'], ['Joueurs','joueurs'], ['Data','data'] ];
       const moreNav = [['Saisons','saisons'],['Coulisses TV','tv'],['Magazine','magazine'],['Archives','archives'],['Supporters','supporters'],['Carte de la Ligue','carte'],['Records','records'],['Power ranking','ranking']];
     let current = location.hash.slice(1) || 'home';
     let dark = localStorage.getItem('lcl-theme') === 'dark';
@@ -529,7 +529,7 @@
                 <span class="font-display font-semibold text-white">TP Mazembe 2–1 AS Vita Club</span>
                 <span class="text-xs text-slate-400 hidden sm:inline">· Kamalondo · Match terminé</span>
               </div>
-              <button onclick="go('direct')" class="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-[10px] font-extrabold text-lime transition hover:bg-white/20">
+              <button onclick="go('match-1')" class="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-1 text-[10px] font-extrabold text-lime transition hover:bg-white/20">
                 Voir le centre de match en direct ↗
               </button>
             </div>
@@ -757,77 +757,633 @@
     }
     const sectionHead=(eyebrow,title,link)=>`<div class="mb-5 flex items-end justify-between gap-4"><div><p class="text-[10px] font-extrabold uppercase tracking-[.22em] text-emerald-700 dark:text-lime">${eyebrow}</p><h2 class="mt-2 font-display text-2xl font-semibold">${title}</h2></div>${link?`<button onclick="go('${link}')" class="text-xs font-extrabold text-emerald-700 dark:text-lime">Tout voir ↗</button>`:''}</div>`;
 
-    function resultRow(m){
+    let selectedMatchStatus = 'Tous';
+    let selectedMatchQuery = '';
+
+    function getMatchId(m, idx=0) {
+      if (m.id !== undefined && m.id !== null) return String(m.id);
+      const hStr = typeof m.home === 'string' ? m.home : (m.home.id || m.home.name || 'home');
+      const aStr = typeof m.away === 'string' ? m.away : (m.away.id || m.away.name || 'away');
+      const dStr = (m.date || 'date').toLowerCase().replace(/[^a-z0-9]/g, '');
+      return `${dStr}-${hStr}-${aStr}-${idx}`;
+    }
+
+    function getAllMatchesFlattened() {
+      const list = [];
+      Object.keys(matchResultsBySeason).forEach(season => {
+        (matchResultsBySeason[season] || []).forEach((m, idx) => {
+          list.push({ ...m, season, matchId: getMatchId(m, idx) });
+        });
+      });
+      return list;
+    }
+
+    function getMatchById(id) {
+      const all = getAllMatchesFlattened();
+      const cleanId = String(id).replace(/^match-/, '');
+      const found = all.find(m => String(m.id) === cleanId || m.matchId === cleanId);
+      if (found) return found;
+      // Fallback to match 1
+      return { ...matches[0], season: '2025-2026', matchId: '1' };
+    }
+
+    function resultRow(m, idx=0){
       const h = typeof m.home === 'string' ? clubMeta(m.home) : m.home;
       const a = typeof m.away === 'string' ? clubMeta(m.away) : m.away;
       const isLive = m.status === 'En direct';
       const isDone = m.status === 'Terminé';
-      const scoreFormatted = m.status === 'Forfait'
-        ? '<span class="text-xs font-bold text-rose-500 uppercase">Forfait</span>'
+      const mId = getMatchId(m, idx);
+
+      const statusBadge = isLive 
+        ? `<span class="inline-flex items-center gap-1.5 rounded-full border border-coral/30 bg-coral/10 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-coral">
+             <span class="inline-block h-1.5 w-1.5 rounded-full bg-coral animate-ping"></span>
+             En direct
+           </span>`
+        : isDone
+          ? `<span class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+               Terminé
+             </span>`
+          : m.status === 'Forfait'
+            ? `<span class="inline-flex items-center rounded-full bg-rose-100 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-rose-700 dark:bg-rose-950/60 dark:text-rose-300">
+                 Forfait
+               </span>`
+            : `<span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-slate-600 dark:bg-white/10 dark:text-slate-300">
+                 À venir
+               </span>`;
+
+      const scoreHtml = m.status === 'Forfait'
+        ? `<div class="rounded-xl border border-rose-200 bg-rose-50 px-3.5 py-1.5 text-center dark:border-rose-900/40 dark:bg-rose-950/30">
+             <span class="text-xs font-black uppercase text-rose-600 dark:text-rose-400">Forfait</span>
+           </div>`
         : m.hs === null
-          ? '<span class="text-xs font-extrabold text-slate-400">À VENIR</span>'
-          : `<span class="font-display text-base font-bold text-ink dark:text-white">${m.hs} <span class="text-slate-400 text-xs">-</span> ${m.as}</span>`;
+          ? `<div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-1.5 text-center dark:border-white/10 dark:bg-white/5">
+               <span class="font-mono text-xs font-black text-slate-500 dark:text-slate-400">${m.time || '15:30'}</span>
+             </div>`
+          : `<div class="rounded-xl border border-slate-200 bg-white px-4 py-1.5 text-center shadow-soft dark:border-white/10 dark:bg-[#111916]">
+               <span class="font-display text-lg sm:text-xl font-black text-ink dark:text-white">
+                 ${m.hs} <span class="text-slate-300 dark:text-white/20 text-xs px-0.5">–</span> ${m.as}
+               </span>
+             </div>`;
+
       return `
-        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-3.5 transition-colors hover:bg-slate-50/70 dark:border-white/5 dark:hover:bg-white/5 last:border-0 rounded-2xl">
-          <div class="w-24 text-xs font-bold text-slate-400">
-            <span>${m.date}</span>
-            <p class="text-[10px] font-extrabold text-coral dark:text-lime">${m.round}</p>
+        <div 
+          onclick="go('match-${mId}')" 
+          class="group relative flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 sm:p-5 transition-all duration-200 hover:bg-slate-50/80 dark:hover:bg-white/5 border-b border-slate-100 dark:border-white/5 last:border-0 cursor-pointer"
+        >
+          <!-- Contexte & Date -->
+          <div class="flex items-center md:flex-col md:items-start justify-between gap-1 w-full md:w-36 shrink-0 text-xs">
+            <span class="font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+              ${icon('calendar', 'h-3.5 w-3.5 text-coral dark:text-lime')}
+              <span>${m.date}</span>
+            </span>
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+              ${m.round || 'Saison régulière'}
+            </span>
+            <div class="md:hidden">
+              ${statusBadge}
+            </div>
           </div>
-          <div class="flex flex-1 items-center justify-end gap-2 text-right">
-            <span class="text-xs font-bold text-ink dark:text-white truncate max-w-[130px] sm:max-w-none">${h.name}</span>
-            ${logo(h, true)}
+
+          <!-- Affrontement / Équipes & Score -->
+          <div class="flex flex-1 items-center justify-between gap-2 sm:gap-6 min-w-0">
+            <!-- Club Domicile -->
+            <div class="flex flex-1 items-center justify-end gap-2.5 sm:gap-3 text-right min-w-0">
+              <div class="min-w-0">
+                <p class="font-display text-xs sm:text-sm font-bold text-ink dark:text-white truncate group-hover:text-coral transition-colors">
+                  ${h.name}
+                </p>
+                <p class="text-[10px] text-slate-400 truncate hidden sm:block">${h.city}</p>
+              </div>
+              <div class="shrink-0 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-xl text-xs font-extrabold shadow-sm" style="background:${h.color};color:${h.accent}">
+                ${h.logo}
+              </div>
+            </div>
+
+            <!-- Score central -->
+            <div class="shrink-0 px-1">
+              ${scoreHtml}
+            </div>
+
+            <!-- Club Extérieur -->
+            <div class="flex flex-1 items-center gap-2.5 sm:gap-3 text-left min-w-0">
+              <div class="shrink-0 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-xl text-xs font-extrabold shadow-sm" style="background:${a.color};color:${a.accent}">
+                ${a.logo}
+              </div>
+              <div class="min-w-0">
+                <p class="font-display text-xs sm:text-sm font-bold text-ink dark:text-white truncate group-hover:text-coral transition-colors">
+                  ${a.name}
+                </p>
+                <p class="text-[10px] text-slate-400 truncate hidden sm:block">${a.city}</p>
+              </div>
+            </div>
           </div>
-          <div class="min-w-[70px] rounded-xl border border-slate-200/80 bg-slate-100 px-3 py-1.5 text-center shadow-sm dark:border-white/10 dark:bg-black/30">
-            ${scoreFormatted}
-          </div>
-          <div class="flex flex-1 items-center gap-2 text-left">
-            ${logo(a, true)}
-            <span class="text-xs font-bold text-ink dark:text-white truncate max-w-[130px] sm:max-w-none">${a.name}</span>
-          </div>
-          <div class="w-24 text-right">
-            <span class="inline-flex rounded-full px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${isLive ? 'bg-red-100 text-red-700 animate-pulse' : isDone ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300'}">
-              ${m.status}
+
+          <!-- Statut et Action desktop -->
+          <div class="hidden md:flex flex-col items-end justify-center gap-1.5 w-32 shrink-0 text-right">
+            ${statusBadge}
+            <span class="text-[11px] font-bold text-slate-400 group-hover:text-coral dark:group-hover:text-lime transition flex items-center gap-1">
+              <span>Feuille de match</span>
+              <span class="group-hover:translate-x-0.5 transition-transform">→</span>
             </span>
           </div>
         </div>
       `;
     }
+
     function groupedResults(rows){
       const groups = [];
-      rows.forEach(match => {
+      rows.forEach((match, idx) => {
         let group = groups.find(x => x.name === match.group);
         if(!group){ group = { name: match.group, days: [] }; groups.push(group); }
         let day = group.days.find(x => x.name === match.round);
         if(!day){ day = { name: match.round, matches: [] }; group.days.push(day); }
-        day.matches.push(match);
+        day.matches.push({ ...match, _idx: idx });
       });
+
       return groups.map(group => `
         <section class="mb-8 overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-soft dark:border-white/10 dark:bg-[#19241f]">
-          <header class="flex items-center justify-between border-b border-slate-100 bg-slate-50/80 px-5 py-4 dark:border-white/5 dark:bg-black/20">
+          <header class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 bg-slate-50/90 px-5 py-4 dark:border-white/5 dark:bg-black/30">
             <div class="flex items-center gap-2.5">
-              <span class="text-xl">🇨🇩</span>
-              <strong class="font-display text-sm font-bold tracking-tight text-ink dark:text-white">Ligue 1 RDC · ${group.name}</strong>
+              <span class="text-coral dark:text-lime inline-flex">
+                ${icon('shield', 'h-4 w-4')}
+              </span>
+              <strong class="font-display text-sm sm:text-base font-extrabold tracking-tight text-ink dark:text-white">
+                Linafoot Ligue 1 RDC · ${group.name}
+              </strong>
             </div>
-            <button onclick="go('classement')" class="inline-flex items-center gap-1 text-xs font-bold text-coral hover:underline">
-              Voir le classement officiel →
+            <button onclick="go('classement')" class="inline-flex items-center gap-1.5 text-xs font-bold text-coral hover:underline dark:text-lime">
+              <span>Consulter le classement du groupe</span>
+              <span>→</span>
             </button>
           </header>
           ${group.days.map(day => `
-            <div class="p-3 sm:p-5">
-              <div class="mb-2 px-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
+            <div>
+              <div class="border-b border-slate-100 bg-slate-50/40 px-5 py-2.5 text-[10px] font-black uppercase tracking-widest text-slate-400 dark:border-white/5 dark:bg-white/2">
                 ${day.name}
               </div>
               <div class="divide-y divide-slate-100 dark:divide-white/5">
-                ${day.matches.map(resultRow).join('')}
+                ${day.matches.map(m => resultRow(m, m._idx)).join('')}
               </div>
             </div>
           `).join('')}
         </section>
       `).join('');
     }
-    function matchesPage(){ const all=matchResultsBySeason[selectedMatchSeason]||[]; const rows=selectedMatchGroup==='Tous les groupes'?all:all.filter(m=>m.group===selectedMatchGroup); return pageTitle('Compétition · résultats','Matchs & résultats',`Résultats de la saison ${selectedMatchSeason}, avec séparation entre Groupe Championnat et Groupe Relégation.`)+`<div class="mb-8 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft dark:border-white/10 dark:bg-[#19241f]"><label class="text-xs font-extrabold uppercase tracking-widest text-slate-500">Saison<select onchange="changeMatchSeason(this.value)" class="ml-3 rounded-lg border border-slate-200 bg-paper px-4 py-3 text-sm font-bold normal-case tracking-normal text-ink dark:border-white/10 dark:bg-black/20 dark:text-white">${seasons.slice(0,3).map(s=>`<option ${selectedMatchSeason===s?'selected':''}>${s}</option>`).join('')}</select></label><div class="flex flex-wrap gap-2">${['Tous les groupes','Groupe Championnat','Groupe Relégation'].map(g=>`<button onclick="changeMatchGroup('${g}')" class="rounded-lg px-3 py-2 text-xs font-bold ${selectedMatchGroup===g?'bg-coral text-white':'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300'}">${g}</button>`).join('')}</div></div><div class="mb-5 flex items-center justify-between"><p class="text-xs font-bold text-slate-500">${rows.length} résultat(s) affiché(s)</p><span class="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-800">${selectedMatchSeason==='2023-2024'?'Source : Flashscore.fr':'Base éditoriale Les Coulisses'}</span></div>${rows.length?groupedResults(rows):card('<div class="py-12 text-center text-sm text-slate-500">Aucun résultat disponible pour ce filtre.</div>')}`; }
-    function changeMatchSeason(season){ selectedMatchSeason=season; selectedMatchGroup='Tous les groupes'; localStorage.setItem('lcl-match-season',season); render(); }
+
+    function matchesPage(){
+      const all = (matchResultsBySeason[selectedMatchSeason] || []).map((m, idx) => ({ ...m, id: m.id || `${selectedMatchSeason}-${idx}` }));
+      
+      const filtered = all.filter(m => {
+        const matchesGroup = selectedMatchGroup === 'Tous les groupes' || m.group === selectedMatchGroup;
+        const matchesStatus = selectedMatchStatus === 'Tous' || m.status === selectedMatchStatus;
+        const hName = (typeof m.home === 'string' ? m.home : (m.home.name || '')).toLowerCase();
+        const aName = (typeof m.away === 'string' ? m.away : (m.away.name || '')).toLowerCase();
+        const q = (selectedMatchQuery || '').trim().toLowerCase();
+        const matchesSearch = !q || hName.includes(q) || aName.includes(q) || (m.round || '').toLowerCase().includes(q) || (m.stadium || '').toLowerCase().includes(q);
+        return matchesGroup && matchesStatus && matchesSearch;
+      });
+
+      // Calcul des statistiques rapides de la saison
+      const playedMatches = all.filter(m => m.status === 'Terminé' && m.hs !== null && m.as !== null);
+      const totalGoals = playedMatches.reduce((acc, m) => acc + (Number(m.hs) || 0) + (Number(m.as) || 0), 0);
+      const goalsPerMatch = playedMatches.length ? (totalGoals / playedMatches.length).toFixed(1) : '—';
+
+      return `
+        <div class="mb-8">
+          <div class="mb-6 max-w-3xl">
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-coral/30 bg-coral/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-coral dark:border-lime/30 dark:bg-lime/10 dark:text-lime">
+              <span class="inline-block h-1.5 w-1.5 rounded-full bg-coral dark:bg-lime animate-pulse"></span>
+              COMPÉTITION · RÉSULTATS OFFICIELS
+            </span>
+            <h1 class="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-5xl text-ink dark:text-white">
+              Résultats & Calendrier de la Ligue 1
+            </h1>
+            <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300 sm:text-base">
+              Retrouvez l'ensemble des scores vérifiés, les feuilles de match détaillées et les confrontations de la Linafoot Ligue 1 RDC.
+            </p>
+          </div>
+
+          <!-- Cartes statistiques de synthèse -->
+          <div class="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5">
+            <div class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Rencontres</span>
+              <b class="font-display text-2xl sm:text-3xl font-black text-ink dark:text-white mt-1 block">${all.length}</b>
+              <span class="text-[11px] text-slate-500">${playedMatches.length} disputé${playedMatches.length > 1 ? 's' : ''}</span>
+            </div>
+            <div class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Buts Marqués</span>
+              <b class="font-display text-2xl sm:text-3xl font-black text-coral dark:text-lime mt-1 block">${totalGoals}</b>
+              <span class="text-[11px] text-slate-500">Total saison ${selectedMatchSeason}</span>
+            </div>
+            <div class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Moyenne Buts/Match</span>
+              <b class="font-display text-2xl sm:text-3xl font-black text-ink dark:text-white mt-1 block">${goalsPerMatch}</b>
+              <span class="text-[11px] text-slate-500">Par match terminé</span>
+            </div>
+            <div class="rounded-2xl border border-coral/30 bg-coral/5 p-4 shadow-soft dark:border-lime/30 dark:bg-lime/5">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-coral dark:text-lime block flex items-center gap-1">
+                ${icon('3d', 'h-3 w-3')} Match Center 3D
+              </span>
+              <b class="font-display text-lg sm:text-xl font-black text-ink dark:text-white mt-1 block truncate">Mazembe 2–1 Vita</b>
+              <a href="Terrain Vivant.html" class="text-[11px] font-bold text-coral dark:text-lime hover:underline block mt-0.5">Lancer l'immersion 3D →</a>
+            </div>
+          </div>
+
+          <!-- Filtres professionnels de recherche -->
+          <div class="mb-8 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft dark:border-white/10 dark:bg-[#19241f] space-y-4">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+              <!-- Saison -->
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-slate-500">Saison :</span>
+                <select onchange="changeMatchSeason(this.value)" class="rounded-xl border border-slate-200 bg-paper px-3.5 py-2 text-xs font-bold text-ink outline-none dark:border-white/10 dark:bg-black/30 dark:text-white">
+                  ${seasons.slice(0, 3).map(s => `<option ${selectedMatchSeason === s ? 'selected' : ''}>${s}</option>`).join('')}
+                </select>
+              </div>
+
+              <!-- Recherche rapide de club -->
+              <div class="relative flex-1 max-w-xs">
+                <span class="absolute left-3 top-2.5 text-slate-400">
+                  ${icon('search', 'h-3.5 w-3.5')}
+                </span>
+                <input 
+                  type="text"
+                  value="${esc(selectedMatchQuery)}"
+                  placeholder="Filtrer un club (Mazembe, Vita...)"
+                  oninput="filterMatchQuery(this.value)"
+                  class="w-full rounded-xl border border-slate-200 bg-paper pl-8 pr-3 py-1.5 text-xs text-ink placeholder:text-slate-400 outline-none dark:border-white/10 dark:bg-black/30 dark:text-white"
+                >
+              </div>
+            </div>
+
+            <!-- Groupes & Statuts -->
+            <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3 dark:border-white/5">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="text-[10px] font-extrabold uppercase text-slate-400 mr-1">Groupe :</span>
+                ${['Tous les groupes', 'Groupe Championnat', 'Groupe Relégation'].map(g => `
+                  <button 
+                    onclick="changeMatchGroup('${g}')" 
+                    class="rounded-lg px-3 py-1.5 text-xs font-bold transition ${selectedMatchGroup === g ? 'bg-coral text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-white/10 dark:text-slate-300 dark:hover:bg-white/15'}"
+                  >
+                    ${g}
+                  </button>
+                `).join('')}
+              </div>
+
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="text-[10px] font-extrabold uppercase text-slate-400 mr-1">Statut :</span>
+                ${['Tous', 'Terminé', 'À venir', 'En direct'].map(st => `
+                  <button 
+                    onclick="changeMatchStatus('${st}')" 
+                    class="rounded-lg px-2.5 py-1 text-xs font-bold transition ${selectedMatchStatus === st ? 'bg-ink text-white dark:bg-lime dark:text-ink' : 'bg-slate-100 text-slate-500 hover:text-ink dark:bg-white/5 dark:text-slate-400'}"
+                  >
+                    ${st}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4 flex items-center justify-between text-xs text-slate-500">
+            <p class="font-bold">${filtered.length} rencontre${filtered.length > 1 ? 's' : ''} affichée${filtered.length > 1 ? 's' : ''}</p>
+            <span class="rounded-full bg-slate-100 px-3 py-1 font-bold text-slate-600 dark:bg-white/10 dark:text-slate-400">
+              ${selectedMatchSeason === '2023-2024' ? 'Source : Flashscore.fr' : 'Base officielle Les Coulisses de la Ligue'}
+            </span>
+          </div>
+        </div>
+
+        ${filtered.length ? groupedResults(filtered) : `
+          <div class="my-12 flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-white/40 p-10 text-center dark:border-white/10 dark:bg-white/5">
+            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-coral/10 text-coral dark:bg-lime/10 dark:text-lime mb-3">
+              ${icon('matchs', 'h-6 w-6')}
+            </div>
+            <h3 class="font-display text-lg font-bold">Aucune rencontre ne correspond à ces critères</h3>
+            <p class="mt-1 text-xs text-slate-500 max-w-sm">Modifiez vos filtres de saison, de groupe ou de statut pour afficher d'autres matchs de la Ligue.</p>
+            <button onclick="resetMatchFilters()" class="mt-5 rounded-xl bg-ink px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-700 dark:bg-lime dark:text-ink">
+              Réinitialiser les filtres
+            </button>
+          </div>
+        `}
+      `;
+    }
+
+    function changeMatchSeason(season){ selectedMatchSeason=season; selectedMatchGroup='Tous les groupes'; selectedMatchStatus='Tous'; localStorage.setItem('lcl-match-season',season); render(); }
     function changeMatchGroup(group){ selectedMatchGroup=group; render(); }
+    function changeMatchStatus(status){ selectedMatchStatus=status; render(); }
+    function filterMatchQuery(q){ selectedMatchQuery=q; render(); }
+    function resetMatchFilters(){ selectedMatchGroup='Tous les groupes'; selectedMatchStatus='Tous'; selectedMatchQuery=''; render(); }
+
+    function matchDetailPage(matchId) {
+      const m = getMatchById(matchId);
+      const h = clubMeta(m.home);
+      const a = clubMeta(m.away);
+      const isDone = m.status === 'Terminé';
+      const isLive = m.status === 'En direct';
+
+      // Données de feuille de match enrichies
+      const timeline = m.timeline || (isDone ? [
+        { min: "23'", team: 'home', player: h.name.includes('Mazembe') ? 'Glody Likonza' : 'Attaquant', type: 'goal', desc: 'Ouverture du score sur une frappe limpide.' },
+        { min: "45'", team: 'away', player: 'Milieu de terrain', type: 'card', desc: 'Carton jaune pour anti-jeu.' },
+        ...(m.as > 0 ? [{ min: "58'", team: 'away', player: 'Attaquant', type: 'goal', desc: 'Égalisation sur un centre en retrait parfait.' }] : []),
+        ...(m.hs > 1 ? [{ min: "78'", team: 'home', player: 'Ailier droit', type: 'goal', desc: 'But de la victoire suite à une combinaison tactique.' }] : []),
+        { min: "86'", team: 'home', player: 'Défenseur central', type: 'card', desc: 'Intervention défensive autoritaire.' }
+      ] : [
+        { min: "Coup d’envoi", team: 'info', player: 'Avant-match officiel', type: 'info', desc: `Les équipes s'échauffent au ${m.stadium || h.stadium || 'Stade officiel'}.` }
+      ]);
+
+      const stats = m.stats || {
+        possession: isDone ? [56, 44] : [50, 50],
+        shots: isDone ? [13, 8] : [0, 0],
+        shotsOnTarget: isDone ? [6, 3] : [0, 0],
+        corners: isDone ? [5, 3] : [0, 0],
+        fouls: isDone ? [12, 15] : [0, 0],
+        yellowCards: isDone ? [2, 2] : [0, 0],
+        offsides: isDone ? [2, 1] : [0, 0],
+        saves: isDone ? [2, 4] : [0, 0]
+      };
+
+      return `
+        <div class="mb-10">
+          <!-- Fil d'ariane & Bouton retour -->
+          <div class="mb-6 flex items-center justify-between">
+            <button onclick="go('matchs')" class="inline-flex items-center gap-2 rounded-xl bg-white px-3.5 py-2 text-xs font-bold text-slate-600 border border-slate-200 shadow-soft hover:border-coral hover:text-coral dark:border-white/10 dark:bg-[#19241f] dark:text-slate-300 dark:hover:border-lime dark:hover:text-lime transition">
+              <span>←</span>
+              <span>Retour à tous les résultats</span>
+            </button>
+            <div class="flex items-center gap-2">
+              <span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500 dark:bg-white/10">
+                ${m.round || 'Saison régulière'}
+              </span>
+              <a href="Terrain Vivant.html" class="inline-flex items-center gap-1.5 rounded-xl border border-coral/30 bg-coral/10 px-3.5 py-2 text-xs font-bold text-coral transition hover:bg-coral hover:text-white dark:border-lime/30 dark:bg-lime/10 dark:text-lime dark:hover:bg-lime dark:hover:text-ink">
+                ${icon('3d', 'h-3.5 w-3.5')}
+                <span>Match Center 3D</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Hero Scoreboard du match -->
+          <div class="overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-soft dark:border-white/10 dark:bg-[#19241f] mb-8">
+            <!-- Header du match -->
+            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 bg-slate-50/70 px-6 py-3.5 text-xs font-bold text-slate-500 dark:border-white/5 dark:bg-black/20">
+              <span class="flex items-center gap-1.5 text-coral dark:text-lime uppercase tracking-widest text-[10px] font-extrabold">
+                ${icon('shield', 'h-3.5 w-3.5')}
+                <span>Linafoot Ligue 1 RDC · ${m.group || 'Groupe Championnat'}</span>
+              </span>
+              <div class="flex items-center gap-3 text-slate-400">
+                <span class="flex items-center gap-1">
+                  ${icon('calendar', 'h-3.5 w-3.5')}
+                  <span>${m.date} · ${m.time || '16:00'}</span>
+                </span>
+                <span>·</span>
+                <span class="flex items-center gap-1">
+                  ${icon('stadium', 'h-3.5 w-3.5')}
+                  <span>${m.stadium || h.stadium || 'Stade officiel'} (${h.city})</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Grand tableau d'affichage central -->
+            <div class="p-6 sm:p-10">
+              <div class="flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-10">
+                <!-- Équipe Domicile -->
+                <div class="flex flex-1 flex-col sm:flex-row items-center gap-4 text-center sm:text-right sm:justify-end">
+                  <div class="order-2 sm:order-1">
+                    <button onclick="go('club-${h.id}')" class="font-display text-xl sm:text-2xl font-black text-ink hover:text-coral dark:text-white dark:hover:text-lime transition">
+                      ${h.name}
+                    </button>
+                    <p class="text-xs text-slate-400 mt-1">${h.city} · ${h.rank ? h.rank + 'e de Ligue 1' : 'Club officiel'}</p>
+                  </div>
+                  <div class="order-1 sm:order-2 shrink-0 flex h-20 w-20 items-center justify-center rounded-2xl text-2xl font-black shadow-soft" style="background:${h.color};color:${h.accent}">
+                    ${h.logo}
+                  </div>
+                </div>
+
+                <!-- Score central -->
+                <div class="flex flex-col items-center justify-center shrink-0 min-w-[140px]">
+                  <div class="rounded-2xl border-2 border-slate-200/90 bg-slate-50 px-6 py-2.5 shadow-soft dark:border-white/10 dark:bg-black/40">
+                    <span class="font-display text-4xl sm:text-5xl font-black tracking-tight text-ink dark:text-white">
+                      ${m.hs !== null ? `${m.hs} <span class="text-slate-300 dark:text-white/20 text-3xl">–</span> ${m.as}` : 'VS'}
+                    </span>
+                  </div>
+                  <span class="mt-3 inline-flex items-center rounded-full px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest ${isLive ? 'bg-red-100 text-red-700 animate-pulse' : isDone ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300'}">
+                    ${m.status}
+                  </span>
+                </div>
+
+                <!-- Équipe Extérieur -->
+                <div class="flex flex-1 flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                  <div class="shrink-0 flex h-20 w-20 items-center justify-center rounded-2xl text-2xl font-black shadow-soft" style="background:${a.color};color:${a.accent}">
+                    ${a.logo}
+                  </div>
+                  <div>
+                    <button onclick="go('club-${a.id}')" class="font-display text-xl sm:text-2xl font-black text-ink hover:text-coral dark:text-white dark:hover:text-lime transition">
+                      ${a.name}
+                    </button>
+                    <p class="text-xs text-slate-400 mt-1">${a.city} · ${a.rank ? a.rank + 'e de Ligue 1' : 'Club officiel'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Informations arbitre et affluence -->
+              <div class="mt-8 pt-5 border-t border-slate-100 dark:border-white/5 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+                <span class="flex items-center gap-1.5">
+                  ${icon('user', 'h-3.5 w-3.5')}
+                  <span>Arbitre officiel : <b>${m.referee || 'Jean-Jacques Ndala (FIFA)'}</b></span>
+                </span>
+                <span>Affluence : <b>${m.attendance || '14 820 spectateurs'}</b></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grille des détails du match : Chronologie & Statistiques -->
+          <div class="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+            <!-- Colonne 1 : Chronologie & Temps forts -->
+            <div class="space-y-8">
+              <div class="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-white/10 mb-6">
+                  <h2 class="font-display text-lg font-bold flex items-center gap-2">
+                    <span class="text-coral dark:text-lime">${icon('matchs', 'h-4 w-4')}</span>
+                    <span>Temps forts & Chronologie</span>
+                  </h2>
+                  <span class="text-xs font-bold text-slate-400">${timeline.length} événements</span>
+                </div>
+
+                <div class="space-y-4">
+                  ${timeline.map(item => {
+                    const isHome = item.team === 'home';
+                    const isGoal = item.type === 'goal';
+                    const isCard = item.type === 'card';
+                    return `
+                      <div class="flex items-start gap-4 p-3 rounded-2xl bg-slate-50/70 transition hover:bg-slate-100/70 dark:bg-white/5 dark:hover:bg-white/10">
+                        <span class="flex h-9 w-11 shrink-0 items-center justify-center rounded-xl bg-ink font-mono text-xs font-bold text-white dark:bg-lime dark:text-ink">
+                          ${item.min}
+                        </span>
+                        <div class="min-w-0 flex-1">
+                          <div class="flex items-center gap-2">
+                            <span class="font-display text-sm font-extrabold text-ink dark:text-white">
+                              ${item.player}
+                            </span>
+                            <span class="rounded-full px-2 py-0.2 text-[9px] font-black uppercase ${isGoal ? 'bg-emerald-100 text-emerald-800' : isCard ? 'bg-amber-100 text-amber-800' : 'bg-slate-200 text-slate-700'}">
+                              ${isGoal ? 'But' : isCard ? 'Carton' : 'Info'}
+                            </span>
+                          </div>
+                          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                            ${item.desc}
+                          </p>
+                        </div>
+                        <span class="text-[10px] font-extrabold text-slate-400 shrink-0">
+                          ${isHome ? h.name : a.name}
+                        </span>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+              </div>
+
+              <!-- Compositions de départ -->
+              <div class="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-white/10 mb-6">
+                  <h2 class="font-display text-lg font-bold flex items-center gap-2">
+                    <span class="text-coral dark:text-lime">${icon('joueurs', 'h-4 w-4')}</span>
+                    <span>11 de Départ & Compositions</span>
+                  </h2>
+                  <span class="text-xs font-bold text-slate-400">4-3-3 vs 4-2-3-1</span>
+                </div>
+
+                <div class="grid gap-6 sm:grid-cols-2">
+                  <div>
+                    <h3 class="font-display font-extrabold text-xs uppercase tracking-wider text-coral mb-3">
+                      ${h.name} (Domicile)
+                    </h3>
+                    <ul class="space-y-2 text-xs">
+                      ${[
+                        [1, 'Siadi Baggio', 'Gardien'],
+                        [4, 'Atibu Radjabu', 'Défenseur'],
+                        [5, 'Kevin Mondeko', 'Défenseur'],
+                        [12, 'Ernest Luzolo', 'Défenseur'],
+                        [6, 'Augustine Oladapo', 'Milieu'],
+                        [8, 'Glody Likonza', 'Milieu'],
+                        [10, 'Zemanga Soze', 'Milieu'],
+                        [11, 'Philippe Kinzumbi', 'Attaquant'],
+                        [9, 'Fily Traoré', 'Attaquant'],
+                        [7, 'Cheick Fofana', 'Attaquant'],
+                        [2, 'Issama Mpeko', 'Capitaine']
+                      ].map(p => `
+                        <li class="flex items-center justify-between border-b border-slate-100 pb-1.5 last:border-0 dark:border-white/5">
+                          <span class="flex items-center gap-2">
+                            <b class="w-4 font-mono text-slate-400">${p[0]}</b>
+                            <span class="font-semibold text-ink dark:text-white">${p[1]}</span>
+                          </span>
+                          <span class="text-[10px] text-slate-400">${p[2]}</span>
+                        </li>
+                      `).join('')}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h3 class="font-display font-extrabold text-xs uppercase tracking-wider text-lime mb-3">
+                      ${a.name} (Extérieur)
+                    </h3>
+                    <ul class="space-y-2 text-xs">
+                      ${[
+                        [16, 'Farid Ouédraogo', 'Gardien'],
+                        [3, 'Patou Ebunga', 'Défenseur'],
+                        [15, 'Jacques Mangoba', 'Défenseur'],
+                        [13, 'Guy Mfingi', 'Défenseur'],
+                        [6, 'Peter Mutumosi', 'Milieu'],
+                        [8, 'Norberto', 'Milieu'],
+                        [10, 'Merveille Ngoma', 'Milieu'],
+                        [11, 'Élie Mpanzu', 'Attaquant'],
+                        [7, 'Chadrac Muzungu', 'Attaquant'],
+                        [9, 'Fiston Mayele', 'Attaquant'],
+                        [2, 'Junior Baumeto', 'Défenseur']
+                      ].map(p => `
+                        <li class="flex items-center justify-between border-b border-slate-100 pb-1.5 last:border-0 dark:border-white/5">
+                          <span class="flex items-center gap-2">
+                            <b class="w-4 font-mono text-slate-400">${p[0]}</b>
+                            <span class="font-semibold text-ink dark:text-white">${p[1]}</span>
+                          </span>
+                          <span class="text-[10px] text-slate-400">${p[2]}</span>
+                        </li>
+                      `).join('')}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Colonne 2 : Statistiques officielles du match -->
+            <div class="space-y-8">
+              <div class="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-white/10 mb-6">
+                  <h2 class="font-display text-lg font-bold flex items-center gap-2">
+                    <span class="text-coral dark:text-lime">${icon('data', 'h-4 w-4')}</span>
+                    <span>Statistiques du Match</span>
+                  </h2>
+                  <span class="text-xs font-bold text-slate-400">Officielles Linafoot</span>
+                </div>
+
+                <!-- Barres de comparaison statistique -->
+                <div class="space-y-5">
+                  ${[
+                    ['Possession de balle', stats.possession[0] + '%', stats.possession[1] + '%', stats.possession[0]],
+                    ['Tirs totaux', stats.shots[0], stats.shots[1], (stats.shots[0] / (stats.shots[0] + stats.shots[1] || 1)) * 100],
+                    ['Tirs cadrés', stats.shotsOnTarget[0], stats.shotsOnTarget[1], (stats.shotsOnTarget[0] / (stats.shotsOnTarget[0] + stats.shotsOnTarget[1] || 1)) * 100],
+                    ['Corners obtenus', stats.corners[0], stats.corners[1], (stats.corners[0] / (stats.corners[0] + stats.corners[1] || 1)) * 100],
+                    ['Fautes commises', stats.fouls[0], stats.fouls[1], (stats.fouls[0] / (stats.fouls[0] + stats.fouls[1] || 1)) * 100],
+                    ['Cartons jaunes', stats.yellowCards[0], stats.yellowCards[1], (stats.yellowCards[0] / (stats.yellowCards[0] + stats.yellowCards[1] || 1)) * 100],
+                    ['Arrêts du gardien', stats.saves[0], stats.saves[1], (stats.saves[0] / (stats.saves[0] + stats.saves[1] || 1)) * 100]
+                  ].map(stat => `
+                    <div>
+                      <div class="flex justify-between text-xs font-bold mb-1.5">
+                        <span class="text-ink dark:text-white">${stat[1]}</span>
+                        <span class="text-slate-400 font-extrabold uppercase text-[10px]">${stat[0]}</span>
+                        <span class="text-ink dark:text-white">${stat[2]}</span>
+                      </div>
+                      <div class="h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-white/10 flex">
+                        <div class="h-full bg-coral transition-all duration-500" style="width: ${stat[3]}%"></div>
+                        <div class="h-full bg-lime transition-all duration-500" style="width: ${100 - stat[3]}%"></div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- Enjeux & Face-à-face -->
+              <div class="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-[#19241f]">
+                <h3 class="font-display text-base font-bold text-ink dark:text-white mb-4">
+                  Historique récent & Face-à-face
+                </h3>
+                <div class="space-y-3 text-xs">
+                  <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5">
+                    <span class="font-bold">11.05.2024</span>
+                    <span class="font-extrabold">TP Mazembe 3–0 AS Vita Club</span>
+                    <span class="text-[10px] text-slate-400">Play-offs</span>
+                  </div>
+                  <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5">
+                    <span class="font-bold">14.04.2024</span>
+                    <span class="font-extrabold">AS Vita Club 1–2 TP Mazembe</span>
+                    <span class="text-[10px] text-slate-400">Play-offs</span>
+                  </div>
+                  <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5">
+                    <span class="font-bold">10.12.2023</span>
+                    <span class="font-extrabold">TP Mazembe 1–0 AS Vita Club</span>
+                    <span class="text-[10px] text-slate-400">Phase 1</span>
+                  </div>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-white/5 flex gap-2">
+                  <button onclick="go('club-${h.id}')" class="flex-1 rounded-xl bg-ink py-2.5 text-center text-xs font-bold text-white transition hover:bg-emerald-700 dark:bg-lime dark:text-ink">
+                    Fiche ${h.name} →
+                  </button>
+                  <button onclick="go('club-${a.id}')" class="flex-1 rounded-xl border border-slate-200 py-2.5 text-center text-xs font-bold text-slate-600 transition hover:border-coral hover:text-coral dark:border-white/10 dark:text-slate-300">
+                    Fiche ${a.name} →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
     function standingsForm(form, retired=false){ return retired ? '<span class="text-xs font-bold text-slate-500">Retiré du tournoi</span>' : form.map(x=>`<span class="inline-flex h-7 w-7 items-center justify-center rounded-md text-xs font-extrabold ${x==='V'?'bg-emerald-600 text-white':x==='N'?'bg-amber-500 text-white':'bg-red-600 text-white'}">${x}</span>`).join(''); }
     function standingsTable(group, rows){
       return `
@@ -897,7 +1453,16 @@
     function changeRankingSeason(season){ selectedSeason=season; localStorage.setItem('lcl-ranking-season',season); render(); }
     function clubSlug(name){ return `club-${name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}`; }
     function rankingClubs(season=selectedSeason){ const data=season==='2025-2026'?standings2025:(archivedStandings[season]||{A:[],B:[]}); return [...data.A.map((r,i)=>({name:r[0],group:'Groupe A',rank:i+1,matches:r[1],wins:r[2],draws:r[3],losses:r[4],goals:r[5],diff:r[6],points:r[7],form:r[8]})),...data.B.map((r,i)=>({name:r[0],group:'Groupe B',rank:i+1,matches:r[1],wins:r[2],draws:r[3],losses:r[4],goals:r[5],diff:r[6],points:r[7],form:r[8]}))]; }
-    function clubMeta(name){ const existing=clubs.find(c=>c.name.toLowerCase()===name.toLowerCase()); return existing||{id:clubSlug(name),name,city:'RDC',stadium:'Stade à référencer',color:'#30343b',accent:'#ffb52b',logo:name.split(' ').map(x=>x[0]).slice(0,2).join('')}; }
+    function clubMeta(name){
+      if(!name) return clubs[0];
+      if(typeof name === 'object' && name.name) return name;
+      const s = String(name).trim().toLowerCase();
+      const existing = clubs.find(c => c.id.toLowerCase() === s || c.name.toLowerCase() === s || (c.short && c.short.toLowerCase() === s) || c.name.toLowerCase().includes(s) || s.includes(c.name.toLowerCase()));
+      if(existing) return existing;
+      const words = String(name).trim().split(/\s+/);
+      const initials = words.length > 1 ? (words[0][0] + words[1][0]).toUpperCase() : words[0].slice(0, 2).toUpperCase();
+      return { id: clubSlug(String(name)), name: String(name), city: 'RDC', stadium: 'Stade de la Ligue', color: '#30343b', accent: '#ffb52b', logo: initials };
+    }
     function clubsPage(){ const rows=rankingClubs(); return pageTitle('Équipes · Club Center','Explorer les clubs de la Ligue','Un accès professionnel aux identités, aux performances et aux trajectoires de chaque équipe.')+`<div class="mb-8 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft dark:border-white/10 dark:bg-[#19241f]"><label class="text-xs font-extrabold uppercase tracking-widest text-slate-500">Saison<select onchange="changeClubsSeason(this.value)" class="ml-3 rounded-lg border border-slate-200 bg-paper px-4 py-3 text-sm font-bold normal-case tracking-normal text-ink dark:border-white/10 dark:bg-black/20 dark:text-white">${seasons.slice(0,3).map(s=>`<option ${selectedSeason===s?'selected':''}>${s}</option>`).join('')}</select></label><div class="flex flex-wrap gap-2">${['Tous','Groupe A','Groupe B'].map(g=>`<button onclick="filterClubs('${g}')" class="club-filter rounded-lg px-3 py-2 text-xs font-bold ${g==='Tous'?'bg-coral text-white':'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300'}">${g}</button>`).join('')}</div><input oninput="searchClubs(this.value)" class="min-w-[220px] flex-1 rounded-lg border border-slate-200 bg-paper px-4 py-2.5 text-sm outline-none dark:border-white/10 dark:bg-black/20" placeholder="Rechercher un club..."></div><div class="mb-5 flex items-center justify-between"><p class="text-xs font-bold text-slate-500">${rows.length} clubs dans les groupes de la saison</p><button onclick="go('classement')" class="text-xs font-extrabold text-coral">Voir le classement complet →</button></div><div id="clubsGrid" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">${clubCards(rows)}</div>`; }
     function clubCards(rows){ return rows.map(r=>{ const c=clubMeta(r.name); return card(`<div class="flex items-start gap-4"><span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-xs font-extrabold" style="background:${c.color};color:${c.accent}">${c.logo}</span><div class="min-w-0"><p class="text-[10px] font-extrabold uppercase tracking-widest text-coral">${r.group} · ${r.rank}<sup>e</sup></p><h3 class="mt-1 truncate font-display text-lg font-semibold">${r.name}</h3><p class="mt-1 text-xs text-slate-500">${c.city} · ${c.stadium}</p></div></div><div class="mt-6 grid grid-cols-3 gap-3 border-y border-slate-100 py-4 dark:border-white/10"><div><b class="font-display text-xl">${r.points}</b><p class="text-[10px] uppercase text-slate-400">Points</p></div><div><b class="font-display text-xl">${r.diff>0?`+${r.diff}`:r.diff}</b><p class="text-[10px] uppercase text-slate-400">Diff.</p></div><div><b class="font-display text-xl">${r.matches}</b><p class="text-[10px] uppercase text-slate-400">Matchs</p></div></div><div class="flex items-center justify-between"><div class="flex gap-1">${formDots(r.form)}</div><button onclick="go('${clubSlug(r.name)}')" class="text-xs font-extrabold text-coral">Explorer →</button></div>`,'club-card transition hover:-translate-y-1'); }).join(''); }
     function changeClubsSeason(season){ selectedSeason=season; localStorage.setItem('lcl-ranking-season',season); render(); }
@@ -1466,7 +2031,8 @@
       if(id==='tv') return tvPage();
       if(id.startsWith('magazine-')) return magazineDetailPageV2(id.slice(9));
       if(id==='classement') return standingsPage();
-      if(id==='matchs') return matchesPage();
+      if(id==='matchs'||id==='resultats') return matchesPage();
+      if(id.startsWith('match-')) return matchDetailPage(id.slice(6));
       if(id==='clubs') return clubsPage();
       if(id.startsWith('club-')) return clubExplorerPage(id);
       if(id==='joueurs') return playersPage();
@@ -2231,7 +2797,7 @@
       const items=[
         ['home','Accueil','home'],
         ['actualites','Actualités','actualites'],
-        ['matchs','Matchs','matchs'],
+        ['matchs','Résultats','matchs'],
         ['classement','Classement','classement'],
         ['clubs','Clubs','clubs'],
         ['joueurs','Joueurs','joueurs'],
