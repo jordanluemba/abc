@@ -1470,6 +1470,7 @@
       if(id.startsWith('club-')) return clubExplorerPage(id);
       if(id==='joueurs') return playersPage();
       if(id.startsWith('player-')) return playerExplorerPage(id);
+      if(id==='search') return searchPage();
       if(id==='magazine') return magazinePage();
       if(id==='home') return home();
       if(id==='actualites') return pageTitle('Média · Actualités','L’actualité de la Ligue 1 RDC','Des analyses, portraits et reportages pour comprendre ce qui se joue sur et autour des terrains.') + `<div class="mb-6 flex flex-wrap gap-2">${['Toutes','Matchs','Analyses','Coulisses','Interviews','Data'].map(x=>`<button class="rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold dark:border-white/10 dark:bg-[#19241f]">${x}</button>`).join('')}</div><div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">${articles.concat(articles.slice(0,2)).map(a=>`<article class="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-white/10 dark:bg-[#19241f]"><img src="${a.image}" class="photo-zone" alt="${a.title}"><div class="p-5"><p class="text-[10px] font-extrabold uppercase tracking-widest text-coral">${a.cat}</p><h3 class="mt-2 font-display text-lg font-semibold">${a.title}</h3><p class="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">${a.excerpt}</p><p class="mt-5 text-xs font-bold text-slate-400">${a.date} · ${a.read}</p></div></article>`).join('')}</div>`;
@@ -1477,7 +1478,6 @@
       if(id==='matchs'||id==='direct') return pageTitle(id==='direct'?'Live · maintenant':'Compétition · calendrier',id==='direct'?'Le direct de la Ligue 1':'Matchs & résultats','Suivez les rencontres, les scores et le contexte de chaque affiche. Saison 2025-2026.') + `<div class="grid gap-8 lg:grid-cols-[1fr_300px]"><div>${id==='direct'?card(`<div class="flex items-center justify-between"><span class="rounded-full bg-coral px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-white">● En direct</span><span class="text-xs text-slate-500">67’</span></div><div class="mt-8 flex items-center justify-around text-center"><div>${logo(club('mazembe'))}<p class="mt-3 text-sm font-bold">TP Mazembe</p></div><div><b class="font-display text-5xl">2–1</b><p class="mt-2 text-xs text-slate-400">Stade de la Kamalondo</p></div><div>${logo(club('vita'))}<p class="mt-3 text-sm font-bold">Vita Club</p></div></div><div class="mt-8 border-t border-slate-200 pt-5 text-sm dark:border-white/10"><p><b>67’</b> 🟨 Carton jaune, le match se tend au milieu.</p><p class="mt-3"><b>45’</b> ⚽ Mazembe revient avec plus d’intensité.</p></div>`):card(matches.map(matchRow).join(''))}</div><aside>${card('<p class="text-xs font-extrabold uppercase tracking-widest">Filtrer les matchs</p><label class="mt-5 block text-xs font-bold text-slate-500">Saison<select class="mt-2 w-full rounded-lg border border-slate-200 bg-paper p-3 text-sm dark:border-white/10 dark:bg-black/20"><option>2025-2026</option><option>2024-2025</option></select></label><label class="mt-4 block text-xs font-bold text-slate-500">Compétition<select class="mt-2 w-full rounded-lg border border-slate-200 bg-paper p-3 text-sm dark:border-white/10 dark:bg-black/20"><option>Ligue 1 RDC</option><option>Coupe du Congo</option></select></label>')}</aside></div>`;
       if(id==='classement') return pageTitle('Compétition · officiel','Classement Ligue 1 RDC','La table officielle de la saison, mise à jour après chaque journée.') + card(`<div class="mb-5 flex items-center justify-between"><span class="rounded-lg bg-lime px-3 py-2 text-xs font-extrabold text-ink">2025-2026</span><span class="text-xs text-slate-500">Journée 6 · 18 clubs</span></div><div class="overflow-x-auto"><table class="w-full min-w-[650px] text-left text-sm"><thead class="border-b border-slate-200 text-[10px] uppercase tracking-widest text-slate-400 dark:border-white/10"><tr><th class="p-3"># Club</th><th class="p-3">MJ</th><th class="p-3">V</th><th class="p-3">N</th><th class="p-3">D</th><th class="p-3">Diff.</th><th class="p-3">Pts</th><th class="p-3">Forme</th></tr></thead><tbody>${clubs.map((c,i)=>`<tr class="border-b border-slate-100 dark:border-white/10"><td class="flex items-center gap-3 p-3 font-bold"><b class="w-5 text-slate-400">${i+1}</b>${logo(c,true)}${c.name}</td><td class="p-3">${6-i%2}</td><td class="p-3">${4-i%3}</td><td class="p-3">${i%3}</td><td class="p-3">${i%2}</td><td class="p-3 text-emerald-600">+${12-i*2}</td><td class="p-3 font-display font-bold">${c.pts}</td><td class="p-3"><div class="flex gap-1">${formDots(c.form)}</div></td></tr>`).join('')}</tbody></table></div>`);
       if(id==='clubs') return pageTitle('Équipes · 18 clubs','Les clubs de la Ligue','Découvrez les identités, villes, stades et dynamiques des équipes congolaises.') + `<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">${clubs.map(c=>card(`<div class="flex items-center gap-4">${logo(c)}<div><h3 class="font-display font-semibold">${c.name}</h3><p class="mt-1 text-xs text-slate-500">${c.city} · ${c.stadium}</p></div></div><div class="mt-6 flex items-end justify-between"><div><p class="text-[10px] uppercase tracking-widest text-slate-400">Points</p><b class="font-display text-3xl">${c.pts}</b></div><div class="flex gap-1">${formDots(c.form)}</div></div><button onclick="go('club-${c.id}')" class="mt-5 w-full rounded-lg bg-ink py-3 text-xs font-bold text-white dark:bg-lime dark:text-ink">Explorer le club →</button>`,'hover:-translate-y-1 transition')) .join('')}</div>`;
-      if(id.startsWith('club-')) { const c=club(id.slice(5)); return pageTitle('Club · fiche équipe',c.name,`${c.city} · ${c.stadium} · Saison 2025-2026`) + `<div class="grid gap-8 lg:grid-cols-[260px_1fr]"><aside>${card(`${logo(c)}<h2 class="mt-4 font-display text-xl font-semibold">${c.name}</h2><p class="mt-1 text-sm text-slate-500">${c.city}, RDC</p><div class="mt-6 grid gap-2 text-sm font-bold"><button class="rounded-lg bg-lime px-3 py-2 text-left text-ink">Aperçu</button><button class="rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-white/10">Résultats</button><button class="rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-white/10">Effectif</button><button class="rounded-lg px-3 py-2 text-left hover:bg-slate-100 dark:hover:bg-white/10">Archives</button></div>`)}</aside><div class="space-y-8">${card(`<div class="grid gap-5 sm:grid-cols-3"><div><p class="text-xs text-slate-500">Classement</p><b class="font-display text-3xl">${c.rank}<sup>e</sup></b></div><div><p class="text-xs text-slate-500">Points</p><b class="font-display text-3xl">${c.pts}</b></div><div><p class="text-xs text-slate-500">Forme</p><div class="mt-2 flex gap-1">${formDots(c.form)}</div></div></div>`)}${sectionHead('Dernières actualités','Autour du club','actualites')}${card(articles.slice(0,2).map(a=>`<div class="flex gap-4 border-b border-slate-100 py-3 last:border-0 dark:border-white/10"><img src="${a.image}" class="h-16 w-24 rounded-lg object-cover"><div><p class="text-[10px] font-bold uppercase text-coral">${a.cat}</p><p class="mt-1 text-sm font-bold">${a.title}</p></div></div>`).join(''))}</div></div>`; }
       if(id==='joueurs') return pageTitle('Équipes · Player Center','Les joueurs à suivre','Les profils, statistiques et trajectoires qui racontent la saison.') + `<div class="grid gap-5 md:grid-cols-2 lg:grid-cols-4">${players.map(p=>{const c=club(p.club);return card(`<div class="flex h-20 w-20 items-center justify-center rounded-2xl text-2xl font-display font-bold text-white" style="background:${c.color}">${p.initials}</div><p class="mt-5 text-[10px] font-extrabold uppercase tracking-widest text-coral">${p.position}</p><h3 class="mt-2 font-display font-semibold">${p.name}</h3><p class="mt-1 text-xs text-slate-500">${c.name} · ${p.nationality}</p><div class="mt-5 grid grid-cols-2 gap-3 border-t border-slate-100 pt-4 dark:border-white/10"><div><b class="font-display text-xl">${p.goals}</b><p class="text-[10px] uppercase text-slate-400">Buts</p></div><div><b class="font-display text-xl">${p.assists}</b><p class="text-[10px] uppercase text-slate-400">Passes</p></div></div>`);}).join('')}</div>`;
       if(id==='data'||id==='records'||id==='ranking') return dataPage(id);
       if(id==='saisons') return pageTitle('Mémoire · saisons','Les saisons de la Ligue','Chaque saison devient un chapitre consultable de la mémoire du championnat.') + `<div class="grid gap-5 md:grid-cols-2 lg:grid-cols-4">${seasons.map((s,i)=>card(`<span class="text-5xl font-display font-semibold ${i===0?'text-emerald-700 dark:text-lime':'text-slate-300 dark:text-slate-600'}">${s.slice(0,4)}</span><h3 class="mt-5 font-display text-xl font-semibold">${s}</h3><p class="mt-2 text-sm text-slate-500">${i===0?'Saison actuelle':'Archives complètes'}</p><button class="mt-6 text-xs font-extrabold text-emerald-700 dark:text-lime">Explorer la saison →</button>`)).join('')}</div>`;
@@ -1485,12 +1485,733 @@
       if(id==='archives') return pageTitle('Patrimoine · musée','Le musée de la Ligue','Objets, images et moments qui ont façonné le football congolais.') + `<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">${[['Trophées','Les titres qui ont marqué les générations','🏆'],['Maillots','Les couleurs de nos clubs','◈'],['Photographies','Les instants qui restent','▧'],['Matchs historiques','Les affiches fondatrices','◒'],['Anciens logos','L’identité en mouvement','◎'],['Stades','Les temples du football','⌖'],['Programmes','Les feuilles de match','▤'],['Légendes','Les noms qui résonnent','✦']].map(x=>card(`<div class="text-4xl">${x[2]}</div><h3 class="mt-5 font-display text-lg font-semibold">${x[0]}</h3><p class="mt-2 text-sm leading-6 text-slate-500">${x[1]}</p><button class="mt-5 text-xs font-bold text-emerald-700 dark:text-lime">Ouvrir la collection →</button>`)).join('')}</div>`;
       if(id==='supporters') return pageTitle('Communauté · 12e homme','Le 12e homme','Les tribunes, les déplacements et les votes qui donnent une autre mesure à la saison.') + `<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">${[['14 820','Spectateurs au dernier choc'],['68%','Taux de remplissage moyen'],['1 240','Déplacements recensés'],['9 450','Votes du mois']].map(x=>card(`<p class="font-display text-4xl">${x[0]}</p><p class="mt-3 text-xs font-bold uppercase tracking-widest text-slate-500">${x[1]}</p>`)).join('')}</div><div class="mt-10 grid gap-8 lg:grid-cols-2">${card('<p class="text-xs font-extrabold uppercase tracking-widest text-emerald-700 dark:text-lime">Vote du mois</p><h2 class="mt-3 font-display text-2xl font-semibold">Élisez le joueur du mois</h2><p class="mt-3 text-sm text-slate-500">Votre voix compte dans la conversation de la Ligue.</p><button onclick="toast(\'Merci pour votre vote\')" class="mt-6 rounded-lg bg-ink px-4 py-3 text-xs font-bold text-white dark:bg-lime dark:text-ink">Voter maintenant</button>')}${card('<p class="text-xs font-extrabold uppercase tracking-widest text-emerald-700 dark:text-lime">Ambiance</p><h2 class="mt-3 font-display text-2xl font-semibold">Le baromètre des tribunes</h2><div class="mt-6 h-3 overflow-hidden rounded-full bg-slate-100 dark:bg-white/10"><div class="bar h-full w-[82%] rounded-full bg-coral"></div></div><div class="mt-3 flex justify-between text-xs font-bold"><span>Kamalondo</span><span>82 / 100</span></div>')}</div>`;
       if(id==='carte') return pageTitle('Explorer · territoire','La carte de la Ligue','Les clubs et les stades de la saison, de Kinshasa à Lubumbashi et jusqu’à Kindu.') + card(`<div class="relative min-h-[430px] overflow-hidden rounded-xl bg-[#dce7dd] dark:bg-[#20332b]"><div class="absolute inset-0 opacity-30" style="background-image:linear-gradient(35deg,transparent 48%,#6f997b 49%,transparent 50%),linear-gradient(120deg,transparent 48%,#6f997b 49%,transparent 50%);background-size:130px 130px"></div><div class="absolute left-[55%] top-[25%] flex items-center gap-2"><span class="h-4 w-4 animate-pulse rounded-full bg-coral ring-4 ring-white/60"></span><span class="rounded-lg bg-white px-3 py-2 text-xs font-bold shadow">Kinshasa · 2 clubs</span></div><div class="absolute left-[72%] top-[60%] flex items-center gap-2"><span class="h-4 w-4 rounded-full bg-emerald-700 ring-4 ring-white/60"></span><span class="rounded-lg bg-white px-3 py-2 text-xs font-bold shadow">Kindu · 1 club</span></div><div class="absolute left-[24%] top-[72%] flex items-center gap-2"><span class="h-4 w-4 rounded-full bg-amber-500 ring-4 ring-white/60"></span><span class="rounded-lg bg-white px-3 py-2 text-xs font-bold shadow">Lubumbashi · 3 clubs</span></div><div class="absolute bottom-5 left-5 rounded-xl bg-white/85 p-4 text-xs shadow backdrop-blur dark:bg-ink/90 dark:text-white"><b>RDC · 12 stades référencés</b><p class="mt-1 text-slate-500">Déplacements disponibles selon les données fiables</p></div></div>`);
-      if(id==='search') return pageTitle('Explorer · recherche','Rechercher dans la Ligue','Retrouvez une entité, une histoire, un match ou une statistique.') + `<div class="mb-8 flex max-w-3xl gap-2"><input autofocus class="flex-1 rounded-xl border border-slate-200 bg-white px-5 py-4 text-sm outline-none focus:border-emerald-600 dark:border-white/10 dark:bg-[#19241f]" placeholder="Club, joueur, match, article..." oninput="searchList(this.value)"><button class="rounded-xl bg-ink px-5 text-sm font-bold text-white dark:bg-lime dark:text-ink">⌕</button></div><div id="searchResults">${searchResults('')}</div>`;
       if(id==='profile') return pageTitle('Espace utilisateur','Mon espace','Gardez vos clubs, joueurs et histoires préférés à portée de main.') + `<div class="grid gap-6 md:grid-cols-3">${card('<div class="flex h-16 w-16 items-center justify-center rounded-full bg-lime text-xl font-black">AM</div><h2 class="mt-4 font-display text-xl font-semibold">Ami de la Ligue</h2><p class="mt-1 text-sm text-slate-500">Membre depuis août 2025</p><button onclick="toast(\'Profil enregistré\')" class="mt-6 rounded-lg bg-ink px-4 py-3 text-xs font-bold text-white dark:bg-lime dark:text-ink">Modifier le profil</button>')}${card('<p class="text-xs font-extrabold uppercase tracking-widest text-coral">Mon club favori</p><div class="mt-5 flex items-center gap-3">'+logo(club('mazembe'))+'<b class="font-display">TP Mazembe</b></div><button onclick="go(\'club-mazembe\')" class="mt-6 text-xs font-bold text-emerald-700 dark:text-lime">Voir la fiche →</button>')}${card('<p class="text-xs font-extrabold uppercase tracking-widest text-coral">Mes alertes</p><p class="mt-5 text-sm leading-6 text-slate-500">Recevez les résultats, compositions et analyses de votre club.</p><label class="mt-5 flex items-center gap-3 text-sm font-bold"><input type="checkbox" checked class="h-4 w-4 accent-emerald-700"> Notifications actives</label>')}</div>`;
       return pageTitle('Explorer la Ligue 1','Une encyclopédie vivante du football congolais','Choisissez une porte d’entrée pour explorer les personnes, les lieux, les chiffres et les histoires.') + `<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">${[['Saisons','Les chapitres de la compétition','saisons'],['Clubs','Les identités et territoires','clubs'],['Joueurs','Les profils à suivre','joueurs'],['Stades','Les lieux du football','carte'],['Data Center','Les chiffres vérifiables','data'],['Records','Les performances historiques','records'],['Archives','Le patrimoine de la Ligue','archives'],['Matchs','Les affiches et résultats','matchs']].map(x=>card(`<span class="text-3xl text-emerald-700 dark:text-lime">${icon(x[2])}</span><h3 class="mt-5 font-display text-lg font-semibold">${x[0]}</h3><p class="mt-2 text-sm text-slate-500">${x[1]}</p><button onclick="go('${x[2]}')" class="mt-5 text-xs font-extrabold text-emerald-700 dark:text-lime">Explorer →</button>`)).join('')}</div>`;
     }
-    function dataPage(id){ const title=id==='records'?'Record Watch':id==='ranking'?'Power Ranking':'Data Center'; const desc=id==='ranking'?'Un classement éditorial produit par Les Coulisses de la Ligue 1.': 'Des indicateurs lisibles, sourcés et reliés aux entités de la compétition.'; return pageTitle('Data · exploration',title,desc)+`<div class="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">${[['632','Buts'],['245','Matchs'],['14 820','Affluence record'],['18','Clubs']].map(x=>card(`<p class="font-display text-3xl">${x[0]}</p><p class="mt-2 text-xs font-bold uppercase tracking-widest text-slate-500">${x[1]}</p>`)).join('')}</div><div class="grid gap-8 lg:grid-cols-[1fr_320px]"><div class="space-y-5">${card(`<div class="flex items-center justify-between"><div><p class="text-xs font-extrabold uppercase tracking-widest text-emerald-700 dark:text-lime">${id==='records'?'Record de buts':'Buts par journée'}</p><h2 class="mt-2 font-display text-xl font-semibold">${id==='records'?'Glody Likonza · 8 buts':'La dynamique offensive de la saison'}</h2></div><span class="rounded-lg bg-lime px-3 py-2 text-xs font-bold text-ink">2025-26</span></div><div class="mt-8 flex h-48 items-end gap-3 border-b border-l border-slate-200 px-4 dark:border-white/10">${[42,60,48,75,68,92,80,100,76,88].map((h,i)=>`<div class="bar flex-1 rounded-t-md bg-emerald-700/80 dark:bg-lime" style="height:${h}%" title="Journée ${i+1}"></div>`).join('')}</div><div class="mt-3 flex justify-between text-[10px] text-slate-400"><span>J1</span><span>J5</span><span>J10</span></div>`)}${card(`<p class="text-xs font-extrabold uppercase tracking-widest text-emerald-700 dark:text-lime">${id==='ranking'?'Forme du moment':'Traçabilité'}</p><div class="mt-5 space-y-4 text-sm"><div class="flex justify-between"><span>Valeur</span><b>${id==='records'?'8 buts':'632 buts'}</b></div><div class="flex justify-between"><span>Saison</span><b>2025-2026</b></div><div class="flex justify-between"><span>Source</span><b>Base LCL RDC</b></div><div class="flex justify-between"><span>Fiabilité</span><b class="text-emerald-600">Vérifiée</b></div></div>`)}</div><aside>${card('<p class="text-xs font-extrabold uppercase tracking-widest">Filtres</p><div class="mt-5 space-y-3"><select class="w-full rounded-lg border border-slate-200 bg-paper p-3 text-sm dark:border-white/10 dark:bg-black/20"><option>Saison 2025-2026</option></select><select class="w-full rounded-lg border border-slate-200 bg-paper p-3 text-sm dark:border-white/10 dark:bg-black/20"><option>Tous les clubs</option></select><select class="w-full rounded-lg border border-slate-200 bg-paper p-3 text-sm dark:border-white/10 dark:bg-black/20"><option>Tous les indicateurs</option></select><button onclick="toast(\'Filtres appliqués\')" class="w-full rounded-lg bg-ink py-3 text-xs font-bold text-white dark:bg-lime dark:text-ink">Appliquer</button></div>')}</aside></div>`; }
-    function searchResults(q){ const list=[...clubs.map(c=>({type:'Club',name:c.name,detail:c.city,id:'clubs'})),...players.map(p=>({type:'Joueur',name:p.name,detail:club(p.club).name,id:'joueurs'})),...articles.map(a=>({type:'Article',name:a.title,detail:a.cat+' · '+a.date,id:`article-${a.id}`}))].filter(x=>!q||x.name.toLowerCase().includes(q.toLowerCase())); return `<div class="grid gap-3">${list.map(x=>`<button onclick="go('${x.id}')" class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 text-left hover:border-emerald-500 dark:border-white/10 dark:bg-[#19241f]"><span class="flex h-10 w-10 items-center justify-center rounded-lg bg-lime font-bold text-ink">${x.type[0]}</span><span class="flex-1"><b class="block text-sm">${x.name}</b><small class="text-xs text-slate-500">${x.type} · ${x.detail}</small></span><span>→</span></button>`).join('')}</div>`; }
+
+    function clubExplorerPage(id) {
+      const c = club(id.slice(5));
+      return pageTitle('Club · Fiche officielle', c.name, `${c.city} · ${c.stadium} · Saison 2025-2026`) + `
+        <div class="grid gap-8 lg:grid-cols-[280px_1fr]">
+          <aside class="space-y-6">
+            ${card(`
+              <div class="text-center">
+                <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl text-2xl font-display font-bold shadow-soft" style="background:${c.color};color:${c.accent}">
+                  ${c.logo}
+                </div>
+                <h2 class="mt-4 font-display text-xl font-bold">${c.name}</h2>
+                <p class="text-xs text-slate-500 mt-1">📍 ${c.city}, RDC · 🏟️ ${c.stadium}</p>
+                <div class="mt-6 grid grid-cols-2 gap-2 text-center text-xs">
+                  <div class="rounded-xl bg-slate-50 p-2.5 dark:bg-white/5">
+                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-extrabold block">Classement</span>
+                    <b class="font-display text-lg">${c.rank}<sup>e</sup></b>
+                  </div>
+                  <div class="rounded-xl bg-slate-50 p-2.5 dark:bg-white/5">
+                    <span class="text-[9px] uppercase tracking-wider text-slate-400 font-extrabold block">Points</span>
+                    <b class="font-display text-lg text-coral dark:text-lime">${c.pts}</b>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-6 grid gap-2 text-xs font-bold border-t border-slate-100 pt-5 dark:border-white/10">
+                <button onclick="go('classement')" class="rounded-xl bg-lime px-3 py-2.5 text-left text-ink transition">Voir le classement →</button>
+                <button onclick="go('matchs')" class="rounded-xl px-3 py-2.5 text-left hover:bg-slate-100 dark:hover:bg-white/10 transition">Calendrier des matchs →</button>
+                <button onclick="go('joueurs')" class="rounded-xl px-3 py-2.5 text-left hover:bg-slate-100 dark:hover:bg-white/10 transition">Effectif des joueurs →</button>
+              </div>
+            `)}
+          </aside>
+          <div class="space-y-8">
+            ${card(`
+              <div class="grid gap-5 sm:grid-cols-3">
+                <div><p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Position</p><b class="font-display text-3xl font-extrabold">${c.rank}<sup>e</sup> sur 18</b></div>
+                <div><p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Points engrangés</p><b class="font-display text-3xl font-extrabold text-coral dark:text-lime">${c.pts} pts</b></div>
+                <div><p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Dynamique récente</p><div class="mt-2 flex gap-1">${formDots(c.form)}</div></div>
+              </div>
+            `)}
+            <div>
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-display text-xl font-bold">Dernières actualités du club</h3>
+                <button onclick="go('actualites')" class="text-xs font-bold text-coral hover:underline">Toute l'actualité →</button>
+              </div>
+              <div class="grid gap-4 sm:grid-cols-2">
+                ${articles.filter(a => a.title.toLowerCase().includes(c.name.toLowerCase()) || a.excerpt.toLowerCase().includes(c.name.toLowerCase()) || a.title.toLowerCase().includes(c.city.toLowerCase())).concat(articles.slice(0, 2)).slice(0, 2).map(a => `
+                  <article onclick="go('article-${a.id}')" class="group flex gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-soft transition hover:-translate-y-1 dark:border-white/10 dark:bg-[#19241f] cursor-pointer">
+                    <img src="${a.image}" class="h-20 w-24 rounded-xl object-cover shrink-0" alt="">
+                    <div class="min-w-0 flex-1">
+                      <span class="text-[10px] font-extrabold uppercase text-coral">${a.cat}</span>
+                      <h4 class="mt-1 text-sm font-bold group-hover:text-coral transition-colors line-clamp-2">${a.title}</h4>
+                      <p class="mt-2 text-[11px] text-slate-400">${a.date} · ${a.read}</p>
+                    </div>
+                  </article>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function playerExplorerPage(id) {
+      const slug = id.slice(7).toLowerCase();
+      const p = players.find(x => x.name.toLowerCase().replace(/[^a-z0-9]/g, '-').includes(slug) || slug.includes(x.name.toLowerCase().split(' ')[0])) || players[0];
+      const c = club(p.club);
+      const related = articles.filter(a => a.title.toLowerCase().includes(p.name.toLowerCase()) || a.excerpt.toLowerCase().includes(p.name.toLowerCase()) || a.title.toLowerCase().includes(c.name.toLowerCase())).concat(articles.slice(0, 2)).slice(0, 3);
+      return pageTitle('Joueur · Fiche officielle', p.name, `${p.position} · ${c.name} · Ligue 1 RDC 2025-2026`) + `
+        <div class="grid gap-8 lg:grid-cols-[300px_1fr]">
+          <aside class="space-y-6">
+            ${card(`
+              <div class="text-center">
+                <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl text-2xl font-display font-bold text-white shadow-soft" style="background:${c.color}">
+                  ${p.initials}
+                </div>
+                <h2 class="mt-4 font-display text-2xl font-bold">${p.name}</h2>
+                <span class="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-coral/15 border border-coral/30 px-3 py-1 text-xs font-bold text-coral">
+                  ${p.position}
+                </span>
+                <div class="mt-6 flex items-center justify-center gap-3 border-t border-slate-100 pt-4 dark:border-white/10">
+                  ${logo(c, true)}
+                  <div class="text-left">
+                    <b class="text-sm block">${c.name}</b>
+                    <span class="text-xs text-slate-400">${c.city}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-6 space-y-3 border-t border-slate-100 pt-5 text-xs dark:border-white/10">
+                <div class="flex justify-between">
+                  <span class="text-slate-400">Nationalité</span>
+                  <b>🇨🇩 ${p.nationality}</b>
+                </div>
+                ${p.age ? `<div class="flex justify-between"><span class="text-slate-400">Âge</span><b>${p.age} ans (${p.birth})</b></div>` : ''}
+                ${p.loanTo ? `<div class="flex justify-between"><span class="text-slate-400">Prêté à</span><b class="text-lime">${p.loanTo}</b></div>` : ''}
+                <div class="flex justify-between">
+                  <span class="text-slate-400">Statut</span>
+                  <b class="text-emerald-600">Actif en Ligue 1</b>
+                </div>
+              </div>
+              <button onclick="go('club-${c.id}')" class="mt-6 w-full rounded-xl bg-ink py-2.5 text-xs font-bold text-white transition hover:bg-emerald-700 dark:bg-lime dark:text-ink">
+                Fiche du club ${c.name} →
+              </button>
+            `)}
+          </aside>
+          <div class="space-y-6">
+            <div class="grid gap-4 sm:grid-cols-4">
+              ${card(`<p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Buts inscrits</p><b class="font-display text-4xl text-coral">${p.goals}</b><span class="text-[10px] text-slate-400 block mt-1">Saison 2025-26</span>`)}
+              ${card(`<p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Passes clés</p><b class="font-display text-4xl text-lime">${p.assists}</b><span class="text-[10px] text-slate-400 block mt-1">Distributions</span>`)}
+              ${card(`<p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Titularisations</p><b class="font-display text-4xl text-ink dark:text-white">6/6</b><span class="text-[10px] text-slate-400 block mt-1">Cadre indiscutable</span>`)}
+              ${card(`<p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Note LCL</p><b class="font-display text-4xl text-emerald-600">8.6</b><span class="text-[10px] text-slate-400 block mt-1">Indice de performance</span>`)}
+            </div>
+            ${card(`
+              <h3 class="font-display text-lg font-bold mb-4">Actualités & reportages associés</h3>
+              <div class="space-y-3">
+                ${related.map(a => `
+                  <div onclick="go('article-${a.id}')" class="flex items-center gap-4 border-b border-slate-100 pb-3 last:border-0 dark:border-white/10 cursor-pointer group">
+                    <img src="${a.image}" class="h-14 w-20 rounded-xl object-cover shrink-0" alt="">
+                    <div class="min-w-0 flex-1">
+                      <span class="text-[10px] font-extrabold uppercase text-coral">${a.cat}</span>
+                      <h4 class="text-sm font-bold group-hover:text-coral transition-colors truncate">${a.title}</h4>
+                      <p class="text-xs text-slate-400 mt-0.5">${a.date} · ${a.read}</p>
+                    </div>
+                    <span class="text-slate-400 group-hover:translate-x-1 transition-transform">→</span>
+                  </div>
+                `).join('')}
+              </div>
+            `)}
+          </div>
+        </div>
+      `;
+    }
+
+    /* MOTEUR DE RECHERCHE INTELLIGENT DE LA LIGUE 1 */
+    window.currentSearchQuery = '';
+    window.currentSearchCategory = 'all';
+
+    function highlightMatch(text, q) {
+      if (!q || !text) return esc(text || '');
+      const escapedText = esc(text);
+      const escapedQ = esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`(${escapedQ})`, 'gi');
+      return escapedText.replace(regex, '<mark class="bg-lime/30 text-ink dark:text-white rounded px-0.5 font-bold">$1</mark>');
+    }
+
+    function getSearchData(query) {
+      const q = (query || '').trim().toLowerCase();
+      const matchedClubs = clubs.filter(c => 
+        !q || c.name.toLowerCase().includes(q) || c.short.toLowerCase().includes(q) || c.city.toLowerCase().includes(q) || c.stadium.toLowerCase().includes(q)
+      );
+      const matchedPlayers = players.filter(p => {
+        const c = club(p.club);
+        return !q || p.name.toLowerCase().includes(q) || p.position.toLowerCase().includes(q) || p.nationality.toLowerCase().includes(q) || c.name.toLowerCase().includes(q);
+      });
+      const matchedArticles = articles.filter(a =>
+        !q || a.title.toLowerCase().includes(q) || (a.excerpt && a.excerpt.toLowerCase().includes(q)) || (a.cat && a.cat.toLowerCase().includes(q)) || (a.code && a.code.toLowerCase().includes(q))
+      );
+      const matchedMatches = matches.filter(m => {
+        const h = club(m.home);
+        const a = club(m.away);
+        return !q || h.name.toLowerCase().includes(q) || a.name.toLowerCase().includes(q) || (m.stadium && m.stadium.toLowerCase().includes(q)) || (m.status && m.status.toLowerCase().includes(q));
+      });
+      const matchedTV = tv.filter(v =>
+        !q || v.title.toLowerCase().includes(q) || (v.meta && v.meta.toLowerCase().includes(q)) || (v.type && v.type.toLowerCase().includes(q))
+      );
+      const matchedMagazines = magazines.filter(m =>
+        !q || m.title.toLowerCase().includes(q) || (m.number && m.number.toLowerCase().includes(q)) || (m.theme && m.theme.toLowerCase().includes(q)) || (m.season && m.season.toLowerCase().includes(q))
+      );
+      const total = matchedClubs.length + matchedPlayers.length + matchedArticles.length + matchedMatches.length + matchedTV.length + matchedMagazines.length;
+      return { clubs: matchedClubs, players: matchedPlayers, articles: matchedArticles, matches: matchedMatches, tv: matchedTV, magazines: matchedMagazines, total };
+    }
+
+    function renderClubSearchCard(c, q) {
+      return `
+        <div class="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-5 shadow-soft transition-all duration-200 hover:-translate-y-1 hover:shadow-md dark:border-white/10 dark:bg-[#19241f]">
+          <div>
+            <div class="flex items-center gap-3.5">
+              ${logo(c)}
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2">
+                  <h3 class="font-display text-base font-bold text-ink dark:text-white truncate">
+                    ${highlightMatch(c.name, q)}
+                  </h3>
+                  <span class="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-extrabold uppercase text-slate-500 dark:bg-white/10">
+                    ${c.short}
+                  </span>
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5">
+                  📍 ${highlightMatch(c.city, q)} · 🏟️ ${c.stadium}
+                </p>
+              </div>
+            </div>
+            <div class="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-white/10 text-xs">
+              <div>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Classement</span>
+                <p class="font-display text-base font-extrabold text-ink dark:text-white">${c.rank}<sup>e</sup> <span class="text-xs font-normal text-slate-400">(${c.pts} pts)</span></p>
+              </div>
+              <div>
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block text-right">Forme</span>
+                <div class="flex gap-1 mt-1">${formDots(c.form)}</div>
+              </div>
+            </div>
+          </div>
+          <button onclick="go('club-${c.id}')" class="mt-4 w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-ink py-2.5 text-xs font-bold text-white transition hover:bg-emerald-700 dark:bg-lime dark:text-ink">
+            <span>Fiche du club</span>
+            <span>→</span>
+          </button>
+        </div>
+      `;
+    }
+
+    function renderPlayerSearchCard(p, q) {
+      const c = club(p.club);
+      return `
+        <div class="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-5 shadow-soft transition-all duration-200 hover:-translate-y-1 hover:shadow-md dark:border-white/10 dark:bg-[#19241f]">
+          <div>
+            <div class="flex items-center gap-3.5">
+              <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl font-display text-sm font-bold text-white shadow-sm" style="background:${c.color}">
+                ${p.initials}
+              </div>
+              <div class="min-w-0 flex-1">
+                <span class="inline-flex rounded-full bg-coral/10 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-coral dark:bg-lime/10 dark:text-lime">
+                  ${p.position}
+                </span>
+                <h3 class="font-display text-base font-bold text-ink dark:text-white truncate mt-1">
+                  ${highlightMatch(p.name, q)}
+                </h3>
+                <p class="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
+                  <span>${c.name}</span>
+                  <span class="text-slate-300 dark:text-white/20">·</span>
+                  <span>🇨🇩 ${p.nationality}</span>
+                </p>
+              </div>
+            </div>
+            <div class="mt-4 grid grid-cols-2 gap-2 rounded-xl bg-slate-50 p-2.5 dark:bg-white/5 text-center text-xs">
+              <div>
+                <span class="text-[9px] font-extrabold uppercase tracking-wider text-slate-400">Buts</span>
+                <p class="font-display text-base font-extrabold text-coral">${p.goals}</p>
+              </div>
+              <div>
+                <span class="text-[9px] font-extrabold uppercase tracking-wider text-slate-400">Passes</span>
+                <p class="font-display text-base font-extrabold text-lime">${p.assists}</p>
+              </div>
+            </div>
+          </div>
+          <button onclick="go('player-${p.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}')" class="mt-4 w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 py-2.5 text-xs font-bold transition hover:border-coral hover:text-coral dark:border-white/10 dark:hover:border-lime dark:hover:text-lime">
+            <span>Profil joueur</span>
+            <span>→</span>
+          </button>
+        </div>
+      `;
+    }
+
+    function renderArticleSearchCard(a, q) {
+      return `
+        <article onclick="go('article-${a.id}')" class="group flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white overflow-hidden shadow-soft transition-all duration-200 hover:-translate-y-1 hover:shadow-md dark:border-white/10 dark:bg-[#19241f] cursor-pointer">
+          <div>
+            <div class="relative h-44 overflow-hidden bg-slate-900">
+              <img src="${a.image}" alt="${a.title}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+              <span class="absolute top-3 left-3 rounded-full bg-coral px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-white shadow">
+                ${a.cat}
+              </span>
+              ${a.code ? `
+                <span class="absolute bottom-3 left-3 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 px-2 py-0.5 text-[9px] font-mono font-bold text-lime">
+                  ★ Magazine N°1
+                </span>
+              ` : ''}
+              <span class="absolute bottom-3 right-3 text-[10px] font-bold text-white/80">
+                ${a.read}
+              </span>
+            </div>
+            <div class="p-5">
+              <p class="text-[11px] font-bold text-slate-400 mb-1.5">📅 ${a.date}</p>
+              <h3 class="font-display text-base font-bold text-ink dark:text-white leading-snug group-hover:text-coral transition-colors">
+                ${highlightMatch(a.title, q)}
+              </h3>
+              <p class="mt-2.5 text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2">
+                ${highlightMatch(a.excerpt || '', q)}
+              </p>
+            </div>
+          </div>
+          <div class="px-5 pb-5 pt-0">
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-coral group-hover:translate-x-1 transition-transform">
+              <span>Lire l'article</span>
+              <span>→</span>
+            </span>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderMatchSearchCard(m, q) {
+      const h = club(m.home);
+      const a = club(m.away);
+      const isFinished = m.status === 'Terminé';
+      return `
+        <div class="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-5 shadow-soft transition-all duration-200 hover:-translate-y-1 hover:shadow-md dark:border-white/10 dark:bg-[#19241f]">
+          <div>
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-white/10 text-xs">
+              <span class="font-bold text-slate-400">📅 ${m.date} · ${m.time}</span>
+              <span class="rounded-full ${isFinished ? 'bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-slate-300' : 'bg-coral/15 text-coral border border-coral/30 animate-pulse'} px-2.5 py-0.5 text-[9px] font-extrabold uppercase">
+                ${m.status}
+              </span>
+            </div>
+            <div class="my-4 flex items-center justify-between gap-2">
+              <div class="flex flex-1 items-center gap-2 min-w-0">
+                ${logo(h, true)}
+                <b class="text-xs sm:text-sm font-bold text-ink dark:text-white truncate">${highlightMatch(h.name, q)}</b>
+              </div>
+              <div class="px-3 text-center">
+                <span class="font-display text-lg font-bold text-ink dark:text-white">
+                  ${m.hs !== null ? `${m.hs} - ${m.as}` : '<span class="text-xs text-slate-400">VS</span>'}
+                </span>
+              </div>
+              <div class="flex flex-1 items-center justify-end gap-2 min-w-0 text-right">
+                <b class="text-xs sm:text-sm font-bold text-ink dark:text-white truncate">${highlightMatch(a.name, q)}</b>
+                ${logo(a, true)}
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-400 text-center">
+              🏟️ ${highlightMatch(m.stadium || 'Stade officiel', q)}
+            </p>
+          </div>
+          <button onclick="go('matchs')" class="mt-4 w-full rounded-xl border border-slate-200 py-2.5 text-xs font-bold text-ink hover:border-coral hover:text-coral dark:border-white/10 dark:text-white dark:hover:border-lime dark:hover:text-lime transition">
+            Voir le centre de match →
+          </button>
+        </div>
+      `;
+    }
+
+    function renderTVSearchCard(v, q) {
+      return `
+        <article onclick="go('tv')" class="group flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white overflow-hidden shadow-soft transition-all duration-200 hover:-translate-y-1 hover:shadow-md dark:border-white/10 dark:bg-[#19241f] cursor-pointer">
+          <div>
+            <div class="relative h-44 overflow-hidden bg-slate-900">
+              <img src="${v.image}" alt="${v.title}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+              <span class="absolute bottom-3 left-3 rounded-lg bg-lime px-2.5 py-1 text-[10px] font-extrabold text-ink shadow flex items-center gap-1.5">
+                <span>▶</span> REGARDER
+              </span>
+              <span class="absolute top-3 right-3 rounded-full bg-black/60 backdrop-blur-sm border border-white/20 px-2.5 py-0.5 text-[9px] font-bold text-white">
+                ${v.meta}
+              </span>
+            </div>
+            <div class="p-5">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-coral">Coulisses TV</span>
+              <h3 class="font-display text-base font-bold text-ink dark:text-white leading-snug group-hover:text-coral transition-colors mt-1">
+                ${highlightMatch(v.title, q)}
+              </h3>
+              <p class="mt-2 text-xs text-slate-500">
+                Immersion vidéo exclusive au plus près des acteurs de la compétition.
+              </p>
+            </div>
+          </div>
+          <div class="px-5 pb-5">
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-coral group-hover:translate-x-1 transition-transform">
+              <span>Lancer la vidéo</span>
+              <span>→</span>
+            </span>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderMagazineSearchCard(m, q) {
+      return `
+        <div onclick="go('magazine-${m.id}')" class="group flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white overflow-hidden shadow-soft transition-all duration-200 hover:-translate-y-1 hover:shadow-md dark:border-white/10 dark:bg-[#19241f] cursor-pointer">
+          <div>
+            <div class="relative h-48 overflow-hidden bg-slate-900 flex items-center justify-center">
+              <img src="${m.cover}" alt="${m.title}" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-90">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent"></div>
+              <span class="absolute top-3 left-3 rounded-full bg-lime px-2.5 py-0.5 text-[9px] font-extrabold uppercase text-ink shadow">
+                ${m.number} · ${m.season}
+              </span>
+              <span class="absolute bottom-3 right-3 rounded-full bg-black/70 backdrop-blur-sm border border-white/20 px-2 py-0.5 text-[9px] font-bold text-white">
+                📖 ${m.totalPages} pages HD
+              </span>
+            </div>
+            <div class="p-5">
+              <span class="text-[10px] font-extrabold uppercase tracking-wider text-coral">Édition Officielle</span>
+              <h3 class="font-display text-base font-bold text-ink dark:text-white leading-snug group-hover:text-coral transition-colors mt-1">
+                ${highlightMatch(m.title, q)}
+              </h3>
+              <p class="mt-2 text-xs text-slate-500 line-clamp-2">
+                ${highlightMatch(m.intro || '', q)}
+              </p>
+            </div>
+          </div>
+          <div class="px-5 pb-5">
+            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-coral group-hover:translate-x-1 transition-transform">
+              <span>Feuilleter dans la liseuse HD</span>
+              <span>→</span>
+            </span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSearchEmptyState(q) {
+      return `
+        <div class="my-12 flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-200 bg-white/50 p-10 text-center dark:border-white/10 dark:bg-white/5 max-w-2xl mx-auto">
+          <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-coral/10 text-2xl text-coral dark:bg-lime/10 dark:text-lime mb-4">
+            ⌕
+          </div>
+          <h3 class="font-display text-xl font-bold text-ink dark:text-white">
+            Aucun résultat trouvé pour « <span class="text-coral">${esc(q)}</span> »
+          </h3>
+          <p class="mt-2 text-xs text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">
+            Nous n'avons trouvé aucun club, joueur, article ou document correspondant à votre recherche. Vérifiez l'orthographe ou essayez l'un des termes suggérés ci-dessous :
+          </p>
+          <div class="mt-6 flex flex-wrap justify-center gap-2">
+            ${['TP Mazembe', 'AS Vita Club', 'Glody Likonza', 'Kamalondo', 'Linafoot', 'Derby'].map(tag => `
+              <button onclick="applySearchSuggestion('${tag}')" class="rounded-full bg-slate-100 hover:bg-coral hover:text-white dark:bg-white/10 dark:hover:bg-lime dark:hover:text-ink px-3 py-1.5 text-xs font-bold transition">
+                ${tag}
+              </button>
+            `).join('')}
+          </div>
+          <button onclick="clearSearchInput()" class="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-ink px-5 py-2.5 text-xs font-bold text-white transition hover:bg-emerald-700 dark:bg-lime dark:text-ink">
+            <span>Réinitialiser la recherche</span>
+          </button>
+        </div>
+      `;
+    }
+
+    function renderSearchTabsHtml(data, activeCat) {
+      const tabs = [
+        { id: 'all', label: 'Tout', count: data.total },
+        { id: 'clubs', label: 'Clubs', count: data.clubs.length, icon: '🛡️' },
+        { id: 'players', label: 'Joueurs', count: data.players.length, icon: '👤' },
+        { id: 'articles', label: 'Articles', count: data.articles.length, icon: '📰' },
+        { id: 'matches', label: 'Matchs', count: data.matches.length, icon: '⚽' },
+        { id: 'tv', label: 'Coulisses TV', count: data.tv.length, icon: '▶' },
+        { id: 'magazines', label: 'Magazines', count: data.magazines.length, icon: '📖' }
+      ];
+
+      return tabs.map(tab => {
+        const isActive = activeCat === tab.id;
+        return `
+          <button 
+            onclick="setSearchFilter('${tab.id}')"
+            class="flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold transition-all ${
+              isActive 
+                ? 'bg-ink text-white shadow-sm dark:bg-lime dark:text-ink' 
+                : 'border border-slate-200 bg-white text-slate-600 hover:border-coral hover:text-coral dark:border-white/10 dark:bg-[#19241f] dark:text-slate-300 dark:hover:border-lime dark:hover:text-lime'
+            }"
+          >
+            <span>${tab.icon ? tab.icon + ' ' : ''}${tab.label}</span>
+            <span class="rounded-full px-1.5 py-0.2 text-[10px] ${
+              isActive 
+                ? 'bg-white/20 text-white dark:bg-black/20 dark:text-ink' 
+                : 'bg-slate-100 text-slate-500 dark:bg-white/10 dark:text-slate-400'
+            }">${tab.count}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function renderSearchResultsHtml(data, q, cat) {
+      if (data.total === 0) {
+        return renderSearchEmptyState(q);
+      }
+
+      if (cat === 'clubs') {
+        return `<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">${data.clubs.map(c => renderClubSearchCard(c, q)).join('')}</div>`;
+      }
+      if (cat === 'players') {
+        return `<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">${data.players.map(p => renderPlayerSearchCard(p, q)).join('')}</div>`;
+      }
+      if (cat === 'articles') {
+        return `<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">${data.articles.map(a => renderArticleSearchCard(a, q)).join('')}</div>`;
+      }
+      if (cat === 'matches') {
+        return `<div class="grid gap-5 md:grid-cols-2">${data.matches.map(m => renderMatchSearchCard(m, q)).join('')}</div>`;
+      }
+      if (cat === 'tv') {
+        return `<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">${data.tv.map(v => renderTVSearchCard(v, q)).join('')}</div>`;
+      }
+      if (cat === 'magazines') {
+        return `<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">${data.magazines.map(m => renderMagazineSearchCard(m, q)).join('')}</div>`;
+      }
+
+      let html = '';
+      if (data.clubs.length > 0) {
+        html += `
+          <section class="mb-10">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2 dark:border-white/10">
+              <h2 class="font-display text-lg font-bold flex items-center gap-2">
+                <span>🛡️</span>
+                <span>Clubs officiels</span>
+                <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-white/10">${data.clubs.length}</span>
+              </h2>
+              ${data.clubs.length > 3 ? `<button onclick="setSearchFilter('clubs')" class="text-xs font-bold text-coral hover:underline">Voir tous les clubs (${data.clubs.length}) →</button>` : ''}
+            </div>
+            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              ${data.clubs.slice(0, 6).map(c => renderClubSearchCard(c, q)).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      if (data.players.length > 0) {
+        html += `
+          <section class="mb-10">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2 dark:border-white/10">
+              <h2 class="font-display text-lg font-bold flex items-center gap-2">
+                <span>👤</span>
+                <span>Joueurs & Talents</span>
+                <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-white/10">${data.players.length}</span>
+              </h2>
+              ${data.players.length > 4 ? `<button onclick="setSearchFilter('players')" class="text-xs font-bold text-coral hover:underline">Tous les joueurs (${data.players.length}) →</button>` : ''}
+            </div>
+            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              ${data.players.slice(0, 4).map(p => renderPlayerSearchCard(p, q)).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      if (data.articles.length > 0) {
+        html += `
+          <section class="mb-10">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2 dark:border-white/10">
+              <h2 class="font-display text-lg font-bold flex items-center gap-2">
+                <span>📰</span>
+                <span>Actualités, Enquêtes & Analyses</span>
+                <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-white/10">${data.articles.length}</span>
+              </h2>
+              ${data.articles.length > 6 ? `<button onclick="setSearchFilter('articles')" class="text-xs font-bold text-coral hover:underline">Toutes les analyses (${data.articles.length}) →</button>` : ''}
+            </div>
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              ${data.articles.slice(0, 6).map(a => renderArticleSearchCard(a, q)).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      if (data.matches.length > 0) {
+        html += `
+          <section class="mb-10">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2 dark:border-white/10">
+              <h2 class="font-display text-lg font-bold flex items-center gap-2">
+                <span>⚽</span>
+                <span>Matchs & Calendrier</span>
+                <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-white/10">${data.matches.length}</span>
+              </h2>
+              <button onclick="go('matchs')" class="text-xs font-bold text-coral hover:underline">Accéder au calendrier complet →</button>
+            </div>
+            <div class="grid gap-5 md:grid-cols-2">
+              ${data.matches.slice(0, 4).map(m => renderMatchSearchCard(m, q)).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      if (data.tv.length > 0) {
+        html += `
+          <section class="mb-10">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2 dark:border-white/10">
+              <h2 class="font-display text-lg font-bold flex items-center gap-2">
+                <span>▶</span>
+                <span>Coulisses TV & Vidéos</span>
+                <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-white/10">${data.tv.length}</span>
+              </h2>
+              <button onclick="go('tv')" class="text-xs font-bold text-coral hover:underline">Tous les épisodes TV →</button>
+            </div>
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              ${data.tv.slice(0, 3).map(v => renderTVSearchCard(v, q)).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      if (data.magazines.length > 0) {
+        html += `
+          <section class="mb-10">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-2 dark:border-white/10">
+              <h2 class="font-display text-lg font-bold flex items-center gap-2">
+                <span>📖</span>
+                <span>Éditions du Magazine Officiel</span>
+                <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-white/10">${data.magazines.length}</span>
+              </h2>
+              <button onclick="go('magazine')" class="text-xs font-bold text-coral hover:underline">Toutes les parutions →</button>
+            </div>
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              ${data.magazines.slice(0, 3).map(m => renderMagazineSearchCard(m, q)).join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      return html;
+    }
+
+    function searchPage() {
+      const q = window.currentSearchQuery || '';
+      const cat = window.currentSearchCategory || 'all';
+      const data = getSearchData(q);
+      const popularChips = ['TP Mazembe', 'AS Vita Club', 'Glody Likonza', 'Maniema Union', 'Kamalondo', 'Magazine N°1', 'Arbitrage', 'Lupopo'];
+
+      return `
+        <div class="mb-8">
+          <div class="mb-6 max-w-3xl">
+            <span class="inline-flex items-center gap-1.5 rounded-full border border-coral/30 bg-coral/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-widest text-coral dark:border-lime/30 dark:bg-lime/10 dark:text-lime">
+              <span class="inline-block h-1.5 w-1.5 rounded-full bg-coral dark:bg-lime animate-pulse"></span>
+              EXPLORER · RECHERCHE INTELLIGENTE
+            </span>
+            <h1 class="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-5xl text-ink dark:text-white">
+              Rechercher dans la Ligue
+            </h1>
+            <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300 sm:text-base">
+              Retrouvez instantanément un club, un joueur, une analyse tactique, une feuille de match ou une édition du magazine.
+            </p>
+          </div>
+
+          <!-- Barre de recherche moderne avec glassmorphism -->
+          <div class="relative max-w-4xl">
+            <div class="relative flex items-center rounded-2xl border-2 border-slate-200/90 bg-white p-1.5 shadow-soft transition-all duration-200 focus-within:border-coral focus-within:ring-4 focus-within:ring-coral/10 dark:border-white/10 dark:bg-[#19241f] dark:focus-within:border-lime dark:focus-within:ring-lime/10">
+              <div class="pointer-events-none pl-4 pr-2 text-coral dark:text-lime">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </div>
+              <input 
+                id="mainSearchInput"
+                type="text" 
+                value="${esc(q)}"
+                placeholder="Tapez un club, joueur, match, article, ville (ex: Mazembe, Likonza, Kamalondo)..." 
+                class="w-full bg-transparent px-3 py-3 text-sm sm:text-base font-semibold text-ink placeholder:font-normal placeholder:text-slate-400 outline-none dark:text-white dark:placeholder:text-slate-500"
+                oninput="handleSearchInput(this.value)"
+                autocomplete="off"
+              >
+              <button 
+                id="searchClearBtn" 
+                onclick="clearSearchInput()" 
+                class="${q ? 'flex' : 'hidden'} h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-xs font-bold text-slate-500 hover:bg-coral hover:text-white dark:bg-white/10 dark:text-slate-300 dark:hover:bg-coral dark:hover:text-white transition mr-2"
+                title="Effacer la recherche"
+              >
+                ✕
+              </button>
+            </div>
+
+            <!-- Chips de recherches populaires -->
+            <div class="mt-3.5 flex flex-wrap items-center gap-2 text-xs">
+              <span class="font-extrabold text-slate-400 text-[10px] uppercase tracking-wider">Suggestions :</span>
+              ${popularChips.map(tag => `
+                <button 
+                  onclick="applySearchSuggestion('${tag}')" 
+                  class="rounded-full border border-slate-200 bg-white px-3 py-1 font-semibold text-slate-600 transition hover:border-coral hover:bg-coral/5 hover:text-coral dark:border-white/10 dark:bg-white/5 dark:text-slate-300 dark:hover:border-lime dark:hover:text-lime text-[11px]"
+                >
+                  ${tag}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtres par catégories (Onglets) -->
+        <div class="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-4 dark:border-white/10">
+          <div id="searchFilterTabs" class="flex flex-wrap gap-2">
+            ${renderSearchTabsHtml(data, cat)}
+          </div>
+          <div id="searchSummaryCount" class="text-xs font-extrabold uppercase tracking-widest text-slate-400">
+            ${data.total} élément${data.total > 1 ? 's' : ''} ${q ? 'trouvé' + (data.total > 1 ? 's' : '') : 'disponible' + (data.total > 1 ? 's' : '')}
+          </div>
+        </div>
+
+        <!-- Conteneur dynamique des résultats -->
+        <div id="searchResultsContainer">
+          ${renderSearchResultsHtml(data, q, cat)}
+        </div>
+      `;
+    }
+
+    function searchResults(q) {
+      const data = getSearchData(q);
+      return renderSearchResultsHtml(data, q, window.currentSearchCategory || 'all');
+    }
+
+    window.handleSearchInput = function(val) {
+      window.currentSearchQuery = val;
+      const clearBtn = document.getElementById('searchClearBtn');
+      if (clearBtn) {
+        if (val) clearBtn.classList.remove('hidden');
+        else clearBtn.classList.add('hidden');
+      }
+      updateSearchResultsView();
+    };
+
+    window.setSearchFilter = function(cat) {
+      window.currentSearchCategory = cat;
+      updateSearchResultsView();
+    };
+
+    window.clearSearchInput = function() {
+      window.currentSearchQuery = '';
+      const inp = document.getElementById('mainSearchInput');
+      if (inp) { inp.value = ''; inp.focus(); }
+      const clearBtn = document.getElementById('searchClearBtn');
+      if (clearBtn) clearBtn.classList.add('hidden');
+      updateSearchResultsView();
+    };
+
+    window.applySearchSuggestion = function(tag) {
+      window.currentSearchQuery = tag;
+      window.currentSearchCategory = 'all';
+      const inp = document.getElementById('mainSearchInput');
+      if (inp) inp.value = tag;
+      const clearBtn = document.getElementById('searchClearBtn');
+      if (clearBtn) clearBtn.classList.remove('hidden');
+      updateSearchResultsView();
+    };
+
+    function updateSearchResultsView() {
+      const q = window.currentSearchQuery || '';
+      const cat = window.currentSearchCategory || 'all';
+      const data = getSearchData(q);
+      const tabsEl = document.getElementById('searchFilterTabs');
+      const countEl = document.getElementById('searchSummaryCount');
+      const resultsEl = document.getElementById('searchResultsContainer');
+      if (tabsEl) tabsEl.innerHTML = renderSearchTabsHtml(data, cat);
+      if (countEl) countEl.textContent = `${data.total} élément${data.total > 1 ? 's' : ''} ${q ? 'trouvé' + (data.total > 1 ? 's' : '') : 'disponible' + (data.total > 1 ? 's' : '')}`;
+      if (resultsEl) resultsEl.innerHTML = renderSearchResultsHtml(data, q, cat);
+    }
     function desktopSidebar(){
       const items=[
         ['home','Accueil','home'],
@@ -1758,7 +2479,7 @@
     function toggleSidebar(){ sidebarCollapsed=!sidebarCollapsed; localStorage.setItem('lcl-sidebar',sidebarCollapsed?'collapsed':'expanded'); render(); }
     function toggleMenu(){ document.getElementById('mobileMenu').classList.toggle('hidden'); }
     function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),2200); }
-    function searchList(q){ document.getElementById('searchResults').innerHTML=searchResults(q); }
+    function searchList(q){ if(window.handleSearchInput) window.handleSearchInput(q); const el = document.getElementById('searchResults'); if(el) el.innerHTML = searchResults(q); }
     window.addEventListener('hashchange',()=>{ current=location.hash.slice(1)||'home'; render(); });
     document.addEventListener('keydown',(e)=>{
       if(!location.hash.startsWith('#magazine-')) return;
